@@ -27,6 +27,11 @@ module.exports = {
           allowNull: false,
           type: Sequelize.STRING(256),
         },
+        activated: {
+          allowNull: false,
+          type: Sequelize.BOOLEAN,
+          defaultValue: false,
+        },
       },
       {
         uniqueKeys: {

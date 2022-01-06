@@ -34,9 +34,14 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: sequelize.fn("NOW"),
       },
       created_at: {
-        allowNullL: false,
+        allowNull: false,
         type: DataTypes.DATE,
         defaultValue: sequelize.fn("NOW"),
+      },
+      published: {
+        allowNull: false,
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
       },
     },
     {

@@ -12,6 +12,14 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING(64),
       },
+      firstname: {
+        allowNull: false,
+        type: Sequelize.STRING(32),
+      },
+      lastname: {
+        allowNull: false,
+        type: Sequelize.STRING(32),
+      },
       password: {
         allowNull: false,
         type: Sequelize.STRING(256),
