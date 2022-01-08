@@ -3,7 +3,6 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable("Available_Times", {
       available_time_id: {
-        allowNull: false,
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true,

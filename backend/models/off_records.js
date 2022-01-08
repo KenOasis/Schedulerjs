@@ -1,5 +1,6 @@
 "use strict";
 const { Model } = require("sequelize");
+const Deferrable = require("sequelize").Deferrable;
 module.exports = (sequelize, DataTypes) => {
   class Off_Records extends Model {
     /**
@@ -14,7 +15,6 @@ module.exports = (sequelize, DataTypes) => {
   Off_Records.init(
     {
       off_record_id: {
-        allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: DataTypes.INTEGER,
@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
       requested_at: {
         allowNull: false,
         type: DataTypes.DATE,
-        defaultValue: dequelize.fn("NOW"),
+        defaultValue: sequelize.fn("NOW"),
       },
       off_id: {
         allowNull: false,
@@ -73,6 +73,7 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     {
+      timestamps: false,
       sequelize,
       modelName: "Off_Records",
     }

@@ -14,7 +14,6 @@ module.exports = (sequelize, DataTypes) => {
   Actions.init(
     {
       action_id: {
-        allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: DataTypes.INTEGER,
@@ -25,6 +24,7 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     {
+      timestamps: false,
       sequelize,
       modelName: "Actions",
     }

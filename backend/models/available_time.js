@@ -1,5 +1,6 @@
 "use strict";
 const { Model } = require("sequelize");
+const Deferrable = require("sequelize").Deferrable;
 module.exports = (sequelize, DataTypes) => {
   class Available_Time extends Model {
     /**
@@ -14,7 +15,6 @@ module.exports = (sequelize, DataTypes) => {
   Available_Time.init(
     {
       available_time_id: {
-        allowNull: false,
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
           model: "Employees",
           key: "employee_id",
         },
-        defferable: Defferable.INITIALLT_IMMEDIATE,
+        deferrable: Deferrable.INITIALLT_IMMEDIATE,
       },
       day: {
         allowNull: "false",
@@ -55,6 +55,7 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     {
+      timestamps: false,
       sequelize,
       modelName: "Available_Time",
     }

@@ -1,5 +1,6 @@
 "use strict";
 const { Model } = require("sequelize");
+const Deferrable = require("sequelize").Deferrable;
 module.exports = (sequelize, DataTypes) => {
   class Punch_Records extends Model {
     /**
@@ -14,7 +15,6 @@ module.exports = (sequelize, DataTypes) => {
   Punch_Records.init(
     {
       punch_record_id: {
-        allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: DataTypes.INTEGER,
@@ -35,6 +35,7 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     {
+      timestamps: false,
       sequelize,
       modelName: "Punch_Records",
     }

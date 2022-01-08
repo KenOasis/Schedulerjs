@@ -1,5 +1,6 @@
 "use strict";
 const { Model } = require("sequelize");
+const Deferrable = require("sequelize").Deferrable;
 module.exports = (sequelize, DataTypes) => {
   class Off_Types extends Model {
     /**
@@ -14,7 +15,6 @@ module.exports = (sequelize, DataTypes) => {
   Off_Types.init(
     {
       off_id: {
-        allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: DataTypes.INTEGER,
@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
           model: "Groups",
           key: "group_id",
         },
-        defferable: Defferable.INITIALLY_IMMEDIATE,
+        deferrable: Deferrable.INITIALLY_IMMEDIATE,
       },
       name: {
         allowNull: false,
@@ -38,6 +38,7 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     {
+      timestamps: false,
       sequelize,
       modelName: "Off_Types",
     }

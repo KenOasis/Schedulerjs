@@ -1,27 +1,36 @@
-/**
- * Get company info
- * GET ../api/admin/?company_id=?
- */
+const express = require("express");
+const router = express.Router();
+const companyController = require("../../controllers/admin/company");
 
 /**
  * Sign up a new company account
  * POST ../api/admin/signup
  */
+router.post("/signup", companyController.signup);
 
 /**
  * Update company info
  * PUT ../api/admin/?company_id
  */
+router.put("/signup", companyController.update);
 
 /**
  * Login company account
  * POST ../api/admin/login
  */
+router.post("/login", companyController.login);
 
 /**
  * Logout company account
  * GET ../api/admin/logout
  */
+router.post("/logout", companyController.logout);
+
+/**
+ * Get company info
+ * GET ../api/admin/?company_id=?
+ */
+router.get("/:company_id", companyController.getCompany);
 
 /**
  * Get all the group of the current company account
@@ -107,3 +116,5 @@
  * Update an off type info
  * PUT ../api/admin/off/:off_id
  */
+
+module.exports = router;

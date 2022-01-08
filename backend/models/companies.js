@@ -17,7 +17,11 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
+      },
+      name: {
         allowNull: false,
+        type: DataTypes.STRING(64),
+        unique: true,
       },
       address: {
         allowNull: false,
@@ -26,6 +30,10 @@ module.exports = (sequelize, DataTypes) => {
       email: {
         allowNull: false,
         type: DataTypes.STRING(64),
+        unique: true,
+        validate: {
+          isEmail: true,
+        },
       },
       phone: {
         allowNull: false,
@@ -37,6 +45,7 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     {
+      timestamps: false,
       sequelize,
       modelName: "Companies",
     }

@@ -1,5 +1,6 @@
 "use strict";
 const { Model } = require("sequelize");
+const Deferrable = require("sequelize").Deferrable;
 module.exports = (sequelize, DataTypes) => {
   class Roles extends Model {
     /**
@@ -11,10 +12,9 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  roles.init(
+  Roles.init(
     {
       role_id: {
-        allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: DataTypes.INTEGER,
@@ -46,6 +46,7 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     {
+      timestamps: false,
       sequelize,
       modelName: "roles",
     }
