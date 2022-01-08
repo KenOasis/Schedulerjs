@@ -5,15 +5,34 @@ const companyController = require("../../controllers/admin/company");
 /**
  * Sign up a new company account
  * POST ../api/admin/signup
+ * body: {
+ *  name,
+ *  address,
+ *  email,
+ *  phone,
+ *  password
+ * }
  */
 router.post("/signup", companyController.signup);
 
 /**
- * Update company info
- * PUT ../api/admin/?company_id
+ * Update basic company info
+ * PUT ../api/admin/:company_id
+ * // Each property of body is OPTIONAL
+ * body: {
+ *  name,
+ *  address,
+ *  phone
+ * }
  */
-router.put("/signup", companyController.update);
+router.put("/:company_id", companyController.update);
 
+/**
+ * Update password of company account
+ * PUT ../api/admin/change_pw/:company_id
+ */
+
+router.put("/change_pw/:company_id", companyController.updatePassword);
 /**
  * Login company account
  * POST ../api/admin/login

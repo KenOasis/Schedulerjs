@@ -1,14 +1,9 @@
 const companyDriver = require("../../db/admin/company-driver");
 
-exports.getCompany = (req, res, next) => {
-  const { company_id } = req.params;
-  res.status(200).json({ status: "success" });
-};
-
 exports.signup = async (req, res, next) => {
   const { name, address, email, phone, password } = req.body;
   try {
-    // TODO check existed name / email;
+    // TODO check if existed email; Email is the id used for login, cannot be changed.
     // TODO encrypted password
     const new_company = await companyDriver.signup(
       name,
@@ -18,29 +13,61 @@ exports.signup = async (req, res, next) => {
       password
     );
     if (new_company) {
-      const obj = {
-        name: new_company.name,
-        address: new_company.address,
-        email: new_company.email,
-        phone: new_company.phone,
-        password: new_company.phone,
-      };
-      console.log(obj);
-      res.status(200).json({ status: "success" });
+      res.status(200).json({ status: "success", new_company: new_company });
     }
   } catch (error) {
     next(error);
   }
 };
 
-exports.update = (req, res, next) => {
+exports.update = async (req, res, next) => {
+  const company_id = +req.params.company_id;
+  const { name, address, phone } = req.body;
+  try {
+    if (typeof company_id === "number") {
+      const updatedResult = await companyDriver.update(
+        company_id,
+        name,
+        address,
+        phone
+      );
+      if (updatedResult) {
+        res.status(200).json({ status: "success" });
+      }
+    } else {
+      throw new Error("Wrong parameters.");
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.updatePassword = (req, res, next) => {
+  // TODO Verify and change password
   res.status(200).json({ status: "success" });
 };
 
 exports.login = (req, res, next) => {
+  // TODO
   res.status(200).json({ status: "success" });
 };
 
 exports.logout = (req, res, next) => {
+  // TODO
   res.status(200).json({ status: "success" });
+};
+
+exports.getCompany = async (req, res, next) => {
+  const company_id = +req.params.company_id;
+  // TODO check whether login
+  try {
+    if (typeof company_id === "number") {
+      const company = await companyDriver.getCompany(company_id);
+      if (company) {
+        res.status(200).json({ status: "success", company: company });
+      }
+    }
+  } catch (error) {
+    next(error);
+  }
 };

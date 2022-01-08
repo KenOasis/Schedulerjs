@@ -10,7 +10,6 @@ module.exports = {
       name: {
         allowNull: false,
         type: Sequelize.STRING(64),
-        unique: true,
       },
       address: {
         allowNull: false,
