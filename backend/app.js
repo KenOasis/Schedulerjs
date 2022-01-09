@@ -3,15 +3,16 @@ if (process.env.NODE_ENV === "development") {
 }
 
 const express = require("express");
-const path = require("path");
 const app = express();
-
+const errorHanlder = require("./middleware/error-handlder");
 const adminRoutes = require("./routes/api/admin");
+const logger = require("./middleware/logger");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
+app.use(logger);
 app.use("/api/admin", adminRoutes);
 
+app.use(errorHanlder);
 let port_number = process.env.PORT || 3000;
 app.listen(port_number);
