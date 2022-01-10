@@ -1,7 +1,9 @@
 const LogicalError = require("../error/LogicalError");
 const ValidationError = require("../error/ValidationError");
+const errorLogger = require("./logger").errorLogger;
 const errorHanlder = (err, req, res, next) => {
-  console.error(err);
+  errorLogger.error(err.name);
+  errorLogger.error(err.stack);
   if (err instanceof ValidationError) {
     return res.status(err.http_code).json({
       status: "forbidden",

@@ -6,11 +6,12 @@ const express = require("express");
 const app = express();
 const errorHanlder = require("./middleware/error-handlder");
 const adminRoutes = require("./routes/api/admin");
-const logger = require("./middleware/logger");
+const morgan = require("morgan");
+const httpLogger = require("./middleware/logger").httpLogger;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(logger);
+app.use(morgan("tiny", { stream: httpLogger.stream }));
 app.use("/api/admin", adminRoutes);
 
 app.use(errorHanlder);

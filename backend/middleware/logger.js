@@ -1,10 +1,13 @@
 const { format } = require("winston");
 const winston = require("winston");
-const morgan = require("morgan");
-const formatter = (params) => {
-  return undefined !== params.message ? params.message : "";
+
+const timezoned = () => {
+  return new Date().toLocaleString("en-US", {
+    timeZone: "America/Los_Angeles",
+  });
 };
-const WinstonLogger = new winston.createLogger({
+
+const httpLogger = new winston.createLogger({
   transports: [
     new winston.transports.File({
       level: "info",
@@ -14,37 +17,65 @@ const WinstonLogger = new winston.createLogger({
       maxsize: 5242880, //5MB
       maxFiles: 5,
       colorize: false,
-      format: format.combine(format.splat(), format.simple()),
+      format: format.combine(
+        format.timestamp({ format: timezoned }),
+        format.printf(
+          (info) => `${info.timestamp} ${info.level}: ${info.message}`
+        )
+      ),
     }),
     new winston.transports.Console({
       level: "debug",
       handleExceptions: true,
       json: false,
       colorize: true,
-      format: format.combine(format.splat(), format.simple()),
+      format: format.combine(
+        format.timestamp({ format: timezoned }),
+        format.printf(
+          (info) => `${info.timestamp} ${info.level}: ${info.message}`
+        )
+      ),
     }),
+  ],
+  exitOnError: false,
+});
+
+httpLogger.stream = {
+  write: function (message, encoding) {
+    httpLogger.info(message.trim());
+  },
+};
+
+exports.httpLogger = httpLogger;
+
+exports.errorLogger = new winston.createLogger({
+  transports: [
     new winston.transports.File({
-      level: "debug",
+      level: "error",
       filename: "./logs/errors.log",
       handleExceptions: true,
       json: true,
       maxsize: 5242880, //5MB
       maxFiles: 5,
       colorize: false,
-      format: format.combine(format.splat(), format.simple()),
+      format: format.combine(
+        format.timestamp({ format: timezoned }),
+        format.printf(
+          (info) => `${info.timestamp} ${info.level}: ${info.message}`
+        )
+      ),
+    }),
+    new winston.transports.Console({
+      level: "debug",
+      handleExceptions: true,
+      json: false,
+      colorize: true,
+      format: format.combine(
+        format.timestamp({ format: timezoned }),
+        format.printf(
+          (info) => `${info.timestamp} ${info.level}: ${info.message}`
+        )
+      ),
     }),
   ],
-  exitOnError: false,
 });
-
-WinstonLogger.stream = {
-  write: function (message, encoding) {
-    WinstonLogger.info(message);
-  },
-};
-morgan.token("body", (req, res) => JSON.stringify(req.body));
-const logger = morgan(
-  ":method :url :status :response-time ms - :res[content-length] :body",
-  { stream: WinstonLogger.stream }
-);
-module.exports = logger;
