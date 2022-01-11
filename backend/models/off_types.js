@@ -19,12 +19,12 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
         type: DataTypes.INTEGER,
       },
-      group_id: {
+      company_id: {
         allowNull: false,
         type: DataTypes.INTEGER,
         references: {
-          model: "Groups",
-          key: "group_id",
+          model: "Companies",
+          key: "company_id",
         },
         deferrable: Deferrable.INITIALLY_IMMEDIATE,
       },

@@ -7,12 +7,12 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      group_id: {
+      company_id: {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
-          model: "Groups",
-          key: "group_id",
+          model: "Companies",
+          key: "company_id",
         },
         onDelete: "CASCADE",
       },

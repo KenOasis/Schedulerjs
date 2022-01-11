@@ -1,7 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const companyController = require("../../controllers/admin/company");
-
+const groupController = require("../../controllers/admin/group");
+const roleController = require("../../controllers/admin/role");
+const adminEmployeeController = require("../../controllers/admin/employee");
+const offController = require("../../controllers/admin/off");
 /**
  * Sign up a new company account
  * POST ../api/admin/signup
@@ -53,87 +56,107 @@ router.get("/:company_id", companyController.getCompany);
 
 /**
  * Get all the group of the current company account
- * GET ../api/admin/group/getall/:company_id
+ * GET ../api/admin/group/all/:company_id
  */
+router.get("/group/all/:company_id", groupController.getGroupsByCompany);
 
 /**
  * Get the group info
- * GET ../api/admin/group/get/:group_id
+ * GET ../api/admin/group/:group_id
  */
+router.get("/group/:group_id", groupController.getGroupById);
 
 /**
  * Create a new group
  * POST ../api/admin/group/
  */
+router.post("/group", groupController.creatGroup);
 
 /**
  * Update an existing group info
  * PUT ../api/admin/group/:group_id
  */
+router.put("/group/:group_id", groupController.updateGroup);
 
 /**
  * Get all the roles of a certain group
- * GET ../api/admin/role/getall/
+ * GET ../api/admin/role/all/:group_id
  */
+router.get("/role/all/:group_id", roleController.getRolesByGroup);
 
 /**
  * Get role info
- * GET ../api/admin/role/get/:role_id
+ * GET ../api/admin/role/:role_id
  */
+router.get("/role/:role_id", roleController.getRolesById);
 
 /**
  * Create a new role
  * POST ../api/admin/role/
  */
+router.post("/role/", roleController.createRole);
 
 /**
  * Update an exsting role
  * PUT ../api/admin/role/:role_id
  */
+router.put("/role/:role_id", roleController.updateRole);
 
 /**
  * Delete a role
  * DELETE ../api/admin/role/:role_id
  */
+router.delete("/role/:role_id".roleController.deleteRole);
 
 /**
  * Get all the employee account of current group
  * GET ../api/admin/employee/getall
  */
-
+router.get(
+  "/employee/all/:group_id",
+  adminEmployeeController.getEmployeeByGroup
+);
 /**
  * Get a employee account info
- * GET ../api/admin/employee/get/:employee_id
+ * GET ../api/admin/employee/:employee_id
  */
+router.get("/employee/:employee_id", adminEmployeeController.getEmployeeById);
 
 /**
  * Create an account
  * POST ../api/admin/employee/
  */
+router.post("/employee", adminEmployeeController.createEmployee);
 
 /**
  * Update an account
- * PUT ../api/admin/gemployee/
+ * PUT ../api/admin/gemployee/:employee_id
  */
+router.put("/employee/:employee_id", adminEmployeeController.updateEmployee);
+// TODISCUSS: Do we need a specific route to activated or deactivated mulitiple account(whole group) ?
 
 /**
- * Get all the off type
- * GET ../api/admin/off/getall
+ * Get all the off type of one company
+ * GET ../api/admin/off/all/:company_id
  */
+router.get("/off/all/:company_id", offController.getOffByCompany);
 
 /**
  * Get an off type info
- * GET ../api/admin/off/get/:off_id
+ * GET ../api/admin/off/:off_id
  */
+router.get("/off/:off_id", offController.getOffById);
 
 /**
  * Create an off type info
  * POST ../api/admin/off/
  */
+router.post("/off", offController.createOff);
 
 /**
  * Update an off type info
  * PUT ../api/admin/off/:off_id
  */
+router.put("/off/:off_id", offController.updateOff);
 
-module.exports = router;
+router.module.exports = router;
