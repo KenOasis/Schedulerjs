@@ -5,7 +5,7 @@ if (process.env.NODE_ENV === "development") {
 const express = require("express");
 const app = express();
 const errorHanlder = require("./middleware/error-handlder");
-const adminRoutes = require("./routes/api/admin");
+const adminRoutes = require("./routes/api/admin-routes");
 const morgan = require("morgan");
 const httpLogger = require("./middleware/logger").httpLogger;
 

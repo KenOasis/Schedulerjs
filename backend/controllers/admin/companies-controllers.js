@@ -4,7 +4,7 @@ exports.signup = async (req, res, next) => {
   const { name, address, email, phone, password } = req.body;
   try {
     // TODO check if existed email; Email is the id used for login, cannot be changed.
-    // TODO encrypted password
+    // TODO encrypted password and store the encrypted password instead
     const new_company = await companyDriver.signup(
       name,
       address,

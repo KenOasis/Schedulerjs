@@ -1,10 +1,13 @@
 const express = require("express");
 const router = express.Router();
-const companyController = require("../../controllers/admin/company");
-const groupController = require("../../controllers/admin/group");
-const roleController = require("../../controllers/admin/role");
-const adminEmployeeController = require("../../controllers/admin/employee");
-const offController = require("../../controllers/admin/off");
+const companyController = require("../../controllers/admin/companies-controllers");
+const groupController = require("../../controllers/admin/groups-controllers");
+const roleController = require("../../controllers/admin/roles-controllers");
+const adminEmployeeController = require("../../controllers/admin/employees-controllers");
+const offController = require("../../controllers/admin/offs-controllers");
+
+const dataValidator = require("../../middleware/data-validator");
+
 /**
  * Sign up a new company account
  * POST ../api/admin/signup
@@ -16,7 +19,11 @@ const offController = require("../../controllers/admin/off");
  *  password
  * }
  */
-router.post("/signup", companyController.signup);
+router.post(
+  "/signup",
+  dataValidator.companySignupValidation,
+  companyController.signup
+);
 
 /**
  * Update basic company info

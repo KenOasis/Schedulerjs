@@ -1,4 +1,4 @@
-const LogicalError = require("../../error/LogicalError");
+const LogicalError = require("../../error/logical-error");
 const db = require("../../models");
 const Companies = db["Companies"];
 
@@ -45,7 +45,8 @@ exports.update = async (company_id, name, address, phone) => {
       return true;
     } else {
       throw new LogicalError(
-        `company_id:${updatedObj.comapny_id} is not existed`
+        `company_id:${updatedObj.comapny_id} is not existed`,
+        400
       );
     }
   } catch (error) {
@@ -81,6 +82,11 @@ exports.getCompany = async (company_id) => {
         address: company.address,
         phone: company.phone,
       };
+    } else {
+      throw new LogicalError(
+        `company_id:${updatedObj.comapny_id} is not existed`,
+        400
+      );
     }
   } catch (error) {
     throw error;
