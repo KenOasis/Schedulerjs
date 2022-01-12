@@ -106,7 +106,7 @@ router.put("/role/:role_id", roleController.updateRole);
  * Delete a role
  * DELETE ../api/admin/role/:role_id
  */
-router.delete("/role/:role_id".roleController.deleteRole);
+router.delete("/role/:role_id", roleController.deleteRole);
 
 /**
  * Get all the employee account of current group
@@ -159,4 +159,4 @@ router.post("/off", offController.createOff);
  */
 router.put("/off/:off_id", offController.updateOff);
 
-router.module.exports = router;
+module.exports = router;

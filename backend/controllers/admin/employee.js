@@ -23,7 +23,7 @@ exports.createEmployee = async (req, res, next) => {
   }
 };
 
-exports.uodateEmployee = async (req, res, next) => {
+exports.updateEmployee = async (req, res, next) => {
   const { username, password, activated } = req.body;
   const role_id = +req.body.role_id;
   try {

@@ -8,6 +8,7 @@
     "start": "nodemon app.js",
     "start-server": "node app.js",
     "start:dev": "NODE_ENV=development DEBUG=APP_NAME:* nodemon ./bin/www",
+    "start:test": "NODE_ENV=test DEBUG=APP_NAME:* nodemon ./bin/www",
     "db:create:migration": "npx sequelize migration:generate --name ",
     "db:migrate": "npx sequelize db:migrate",
     "db:rollback": "npx sequelize db:migrate:undo",

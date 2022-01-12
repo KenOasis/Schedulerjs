@@ -1,5 +1,7 @@
 const { format } = require("winston");
 const winston = require("winston");
+const env = process.env.NODE_ENV || "development";
+const config = require(__dirname + "/../config/logger-config.js")[env];
 
 const timezoned = () => {
   return new Date().toLocaleString("en-US", {
@@ -9,6 +11,25 @@ const timezoned = () => {
 
 const httpLogger = new winston.createLogger({
   transports: [
+    new winston.transports.Console({
+      level: "debug",
+      handleExceptions: true,
+      json: false,
+      colorize: true,
+      format: format.combine(
+        format.timestamp({ format: timezoned }),
+        format.printf((info) => {
+          console.log();
+          return `${info.timestamp} ${info.level}: ${info.message}`;
+        })
+      ),
+    }),
+  ],
+  exitOnError: false,
+});
+
+if (config.http_logger) {
+  httpLogger.add(
     new winston.transports.File({
       level: "info",
       filename: "./logs/logs.log",
@@ -23,22 +44,9 @@ const httpLogger = new winston.createLogger({
           (info) => `${info.timestamp} ${info.level}: ${info.message}`
         )
       ),
-    }),
-    new winston.transports.Console({
-      level: "debug",
-      handleExceptions: true,
-      json: false,
-      colorize: true,
-      format: format.combine(
-        format.timestamp({ format: timezoned }),
-        format.printf(
-          (info) => `${info.timestamp} ${info.level}: ${info.message}`
-        )
-      ),
-    }),
-  ],
-  exitOnError: false,
-});
+    })
+  );
+}
 
 httpLogger.stream = {
   write: function (message, encoding) {

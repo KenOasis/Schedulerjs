@@ -1,9 +1,13 @@
 const LogicalError = require("../error/LogicalError");
 const ValidationError = require("../error/ValidationError");
+const env = process.env.NODE_ENV || "development";
+const config = require(__dirname + "/../config/logger-config.js")[env];
 const errorLogger = require("./logger").errorLogger;
 const errorHanlder = (err, req, res, next) => {
-  errorLogger.error(err.name);
-  errorLogger.error(err.stack);
+  if (config.error_logger) {
+    errorLogger.error(err.name);
+    errorLogger.error(err.stack);
+  }
   if (err instanceof ValidationError) {
     return res.status(err.http_code).json({
       status: "forbidden",
