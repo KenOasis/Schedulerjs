@@ -12,7 +12,7 @@ module.exports = (req, res, next) => {
     if (!token) {
       throw new ValidationError("Authorization Failed", 401);
     }
-    const decodedToken = jwt.verify(token, "Zhejiushimimi!BieGaoShuBieRen0!");
+    const decodedToken = jwt.verify(token, "5ecret_5equ@nce_4jwt");
     req.userData = { company_id: decodedToken.company_id };
     next();
   } catch (error) {

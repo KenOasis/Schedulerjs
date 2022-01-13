@@ -1,6 +1,7 @@
 exports.getGroupsByCompany = async (req, res, next) => {
   const company_id = +req.params.company_id;
   try {
+    res.status(200).json({ status: "Success!" });
   } catch (error) {
     next(error);
   }

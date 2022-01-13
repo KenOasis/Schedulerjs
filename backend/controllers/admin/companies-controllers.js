@@ -2,7 +2,7 @@ const companyDriver = require("../../db/admin/company-driver");
 const bcrypt = require("bcryptjs");
 const ValidationError = require("../../error/validation-error");
 const salt = bcrypt.genSaltSync(10);
-
+const jwt = require("jsonwebtoken");
 exports.signup = async (req, res, next) => {
   const { name, address, email, phone, password } = req.body;
   try {
@@ -59,19 +59,27 @@ exports.updatePassword = (req, res, next) => {
 
 exports.login = async (req, res, next) => {
   const { email, password } = req.body;
-  let existing_email;
+  let existing_user;
   try {
-    existing_email = await companyDriver.emailExisted(email);
-    if (existing_email === null) {
+    existing_user = await companyDriver.emailExisted(email);
+    if (existing_user === null) {
       throw new ValidationError("The email is not existed", 401);
     }
 
     const isPasswordMatched = bcrypt.compareSync(
       password,
-      existing_email.password
+      existing_user.password
     );
     if (isPasswordMatched) {
-      return res.status(200).json({ status: "success" });
+      const token = jwt.sign(
+        {
+          company_id: existing_user.company_id,
+          email: existing_user.email,
+        },
+        "5ecret_5equ@nce_4jwt",
+        { expiresIn: "1h" }
+      );
+      return res.status(200).json({ status: "success", token: token });
     } else {
       throw new ValidationError("Wrong password", 401);
     }
@@ -80,14 +88,8 @@ exports.login = async (req, res, next) => {
   }
 };
 
-exports.logout = (req, res, next) => {
-  // TODO
-  res.status(200).json({ status: "success" });
-};
-
 exports.getCompany = async (req, res, next) => {
-  const company_id = +req.params.company_id;
-  // TODO check whether login
+  const company_id = req.userData.company_id;
   try {
     if (typeof company_id === "number") {
       const company = await companyDriver.getCompany(company_id);

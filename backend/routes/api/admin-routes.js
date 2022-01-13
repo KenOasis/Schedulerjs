@@ -7,7 +7,7 @@ const adminEmployeeController = require("../../controllers/admin/employees-contr
 const offController = require("../../controllers/admin/offs-controllers");
 
 const dataValidator = require("../../middleware/data-validator");
-
+const authChecker = require("../../middleware/auth-checker");
 /**
  * Sign up a new company account
  * POST ../api/admin/signup
@@ -26,6 +26,22 @@ router.post(
 );
 
 /**
+ * Login company account
+ * POST ../api/admin/login
+ * body {
+ *  email,
+ *  password
+ * }
+ *
+ * return {
+ *    status: "success",
+ *    token: token
+ * }
+ */
+router.post("/login", companyController.login);
+
+router.use(authChecker);
+/**
  * Update basic company info
  * PUT ../api/admin/:company_id
  * // Each property of body is OPTIONAL
@@ -43,23 +59,12 @@ router.put("/:company_id", companyController.update);
  */
 
 router.put("/change_pw/:company_id", companyController.updatePassword);
-/**
- * Login company account
- * POST ../api/admin/login
- */
-router.post("/login", companyController.login);
-
-/**
- * Logout company account
- * GET ../api/admin/logout
- */
-router.post("/logout", companyController.logout);
 
 /**
  * Get company info
  * GET ../api/admin/?company_id=?
  */
-router.get("/:company_id", companyController.getCompany);
+router.get("/", companyController.getCompany);
 
 /**
  * Get all the group of the current company account
