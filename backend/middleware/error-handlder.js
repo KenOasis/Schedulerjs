@@ -11,8 +11,8 @@ const errorHanlder = (err, req, res, next) => {
   console.log(err);
   if (err instanceof ValidationError) {
     return res.status(err.http_code).json({
-      status: "forbidden",
-      message: "Your action is forbidden",
+      status: "Unauthorized",
+      message: "Wrong Credential!",
     });
   } else if (err instanceof LogicalError) {
     return res.status(err.http_code).json({

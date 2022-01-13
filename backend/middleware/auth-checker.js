@@ -1,0 +1,21 @@
+const jwt = require("jsonwebtoken");
+const ValidationError = require("../error/validation-error");
+
+module.exports = (req, res, next) => {
+  if (req.method === "OPTIONS") {
+    return next();
+  }
+
+  try {
+    // the first element is "Bearer TOKEN"
+    const token = req.headers.authorization.split(" ")[1];
+    if (!token) {
+      throw new ValidationError("Authorization Failed", 401);
+    }
+    const decodedToken = jwt.verify(token, "Zhejiushimimi!BieGaoShuBieRen0!");
+    req.userData = { company_id: decodedToken.company_id };
+    next();
+  } catch (error) {
+    next(error);
+  }
+};

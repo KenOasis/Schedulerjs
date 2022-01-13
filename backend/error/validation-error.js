@@ -1,5 +1,5 @@
 // Validation Error is the error which the client request to do something
-// but they are not authorized
+// but they are not authorized to
 class ValidationError extends Error {
   constructor(message, http_code) {
     super(message);

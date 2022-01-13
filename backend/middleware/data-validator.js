@@ -47,7 +47,9 @@ exports.companySignupValidation = async (req, res, next) => {
 
   let results = validationResult(req);
   if (!results.isEmpty()) {
-    return res.status(400).json({ errors: results.array() });
+    return res
+      .status(400)
+      .json({ status: "invalid data", errors: results.array() });
   } else {
     next();
   }
