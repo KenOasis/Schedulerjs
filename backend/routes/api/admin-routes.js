@@ -41,9 +41,10 @@ router.post(
 router.post("/login", companyController.login);
 
 router.use(authChecker);
+
 /**
  * Update basic company info
- * PUT ../api/admin/:company_id
+ * PUT ../api/admin/
  * // Each property of body is OPTIONAL
  * body: {
  *  name,
@@ -51,26 +52,26 @@ router.use(authChecker);
  *  phone
  * }
  */
-router.put("/:company_id", companyController.update);
+router.put("/", companyController.update);
 
 /**
  * Update password of company account
- * PUT ../api/admin/change_pw/:company_id
+ * PUT ../api/admin/change_pw/
  */
 
-router.put("/change_pw/:company_id", companyController.updatePassword);
+router.put("/change_pw/", companyController.updatePassword);
 
 /**
  * Get company info
- * GET ../api/admin/?company_id=?
+ * GET ../api/admin/
  */
 router.get("/", companyController.getCompany);
 
 /**
  * Get all the group of the current company account
- * GET ../api/admin/group/all/:company_id
+ * GET ../api/admin/group/all/
  */
-router.get("/group/all/:company_id", groupController.getGroupsByCompany);
+router.get("/group/all", groupController.getGroupsByCompany);
 
 /**
  * Get the group info

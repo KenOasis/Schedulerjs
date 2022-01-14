@@ -45,17 +45,9 @@ exports.update = async (company_id, name, address, phone) => {
   try {
     const company = await Companies.findByPk(company_id);
     if (company) {
-      const updatedObj = {};
-      if (name !== undefined) {
-        updatedObj.name = name;
-      }
-      if (address !== undefined) {
-        updatedObj.address = address;
-      }
-      if (phone !== undefined) {
-        updatedObj.phone = phone;
-      }
-      company.set(updatedObj);
+      company.name = name;
+      company.address = address;
+      company.phone = phone;
       await company.save();
       return true;
     } else {
@@ -71,7 +63,6 @@ exports.update = async (company_id, name, address, phone) => {
 
 exports.updatePassword = async (old_password, new_password) => {
   try {
-    // TODO check old password matching
     // TODO update the password to new password
   } catch (error) {
     throw error;
@@ -86,7 +77,7 @@ exports.login = async (email, password) => {
   }
 };
 
-exports.getCompany = async (company_id) => {
+exports.getCompanyInfo = async (company_id) => {
   try {
     const company = await Companies.findByPk(company_id);
     if (company) {

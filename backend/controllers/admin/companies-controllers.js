@@ -31,7 +31,7 @@ exports.signup = async (req, res, next) => {
 };
 
 exports.update = async (req, res, next) => {
-  const company_id = +req.params.company_id;
+  const company_id = req.userData.company_id;
   const { name, address, phone } = req.body;
   try {
     if (typeof company_id === "number") {
@@ -52,9 +52,29 @@ exports.update = async (req, res, next) => {
   }
 };
 
-exports.updatePassword = (req, res, next) => {
-  // TODO Verify and change password
-  res.status(200).json({ status: "success" });
+exports.updatePassword = async (req, res, next) => {
+  const email = req.userData.email;
+  const { password, new_password } = req.body;
+
+  try {
+    const existing_user = await companyDriver.emailExisted(email);
+    if (existing_user) {
+      const isPasswordMatched = bcrypt.compareSync(
+        password,
+        existing_user.password
+      );
+      if (isPasswordMatched) {
+        const hash_password = bcrypt.hashSync(new_password, salt);
+        existing_user.password = hash_password;
+        await existing_user.save();
+        res.status(200).json({ status: "success" });
+      } else {
+        throw new ValidationError("Wrong password", 401);
+      }
+    }
+  } catch (error) {
+    next(error);
+  }
 };
 
 exports.login = async (req, res, next) => {
@@ -92,7 +112,7 @@ exports.getCompany = async (req, res, next) => {
   const company_id = req.userData.company_id;
   try {
     if (typeof company_id === "number") {
-      const company = await companyDriver.getCompany(company_id);
+      const company = await companyDriver.getCompanyInfo(company_id);
       if (company) {
         res.status(200).json({ status: "success", company: company });
       }
