@@ -45,9 +45,9 @@ exports.getGroupsByCompany = async (company_id) => {
         company_id,
       },
     });
-
+    let results = [];
     if (groups && groups.length) {
-      const results = groups.map((group) => {
+      results = groups.map((group) => {
         return {
           group_id: group.group_id,
           name: group.name,
@@ -55,8 +55,8 @@ exports.getGroupsByCompany = async (company_id) => {
           activated: group.activated,
         };
       });
-      return results;
     }
+    return results;
   } catch (error) {
     throw error;
   }

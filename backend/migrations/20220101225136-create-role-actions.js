@@ -3,11 +3,17 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable("Role_Actions", {
       action_id: {
-        autoIncrement: true,
         primaryKey: true,
+        allowNull: false,
         type: Sequelize.INTEGER,
+        references: {
+          model: "Actions",
+          key: "action_id",
+        },
+        onDelete: "CASCADE",
       },
       role_id: {
+        primaryKey: true,
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {

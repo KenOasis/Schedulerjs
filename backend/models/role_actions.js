@@ -15,11 +15,17 @@ module.exports = (sequelize, DataTypes) => {
   Role_Actions.init(
     {
       action_id: {
-        autoIncrement: true,
         primaryKey: true,
+        allowNull: false,
         type: DataTypes.INTEGER,
+        references: {
+          model: "Actions",
+          key: "action_id",
+        },
+        deferrable: Deferrable.INITIALLY_IMMEDIATE,
       },
       role_id: {
+        primaryKey: true,
         allowNull: false,
         type: DataTypes.INTEGER,
         references: {

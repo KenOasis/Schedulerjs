@@ -16,7 +16,8 @@ const authChecker = require("../../middleware/auth-checker");
  *  address,
  *  email,
  *  phone,
- *  password
+ *  password,
+ *  password_confirmation
  * }
  */
 router.post(
@@ -91,6 +92,12 @@ router.post("/group", groupController.creatGroup);
  */
 router.put("/group/:group_id", groupController.updateGroup);
 
+/**
+ * Get all the assignable actions
+ * GET ../api/admin/actions
+ */
+
+router.get("/actions", roleController.getActions);
 /**
  * Get all the roles of a certain group
  * GET ../api/admin/role/all/:group_id

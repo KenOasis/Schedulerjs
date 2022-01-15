@@ -1,10 +1,10 @@
-const groupDriver = require("../../db/admin/group-driver");
+const groupDrivers = require("../../db/admin/group-drivers");
 
 exports.getGroupsByCompany = async (req, res, next) => {
   const company_id = req.userData.company_id;
   try {
-    const groups = await groupDriver.getGroupsByCompany(company_id);
-    res.status(200).json({ status: "Success!", groups: groups });
+    const groups = await groupDrivers.getGroupsByCompany(company_id);
+    return res.status(200).json({ status: "Success!", groups: groups });
   } catch (error) {
     next(error);
   }
@@ -13,9 +13,9 @@ exports.getGroupsByCompany = async (req, res, next) => {
 exports.getGroupById = async (req, res, next) => {
   const group_id = +req.params.group_id;
   try {
-    const group = await groupDriver.getGroupById(group_id);
+    const group = await groupDrivers.getGroupById(group_id);
     if (group) {
-      res.status(200).json({ status: "success", group: group });
+      return res.status(200).json({ status: "success", group: group });
     }
   } catch (error) {
     next(error);
@@ -26,13 +26,13 @@ exports.creatGroup = async (req, res, next) => {
   const { name, description } = req.body;
   const company_id = req.userData.company_id;
   try {
-    const new_group = await groupDriver.createGroup(
+    const new_group = await groupDrivers.createGroup(
       company_id,
       name,
       description
     );
     if (new_group) {
-      res.status(200).json({ status: "success", new_group: new_group });
+      return res.status(200).json({ status: "success", new_group: new_group });
     }
   } catch (error) {
     next(error);
@@ -43,14 +43,14 @@ exports.updateGroup = async (req, res, next) => {
   const group_id = +req.params.group_id;
   const { name, description, activated } = req.body;
   try {
-    const updatedResult = await groupDriver.updateGroup(
+    const updatedResult = await groupDrivers.updateGroup(
       group_id,
       name,
       description,
       activated
     );
     if (updatedResult) {
-      res.status(200).json({ status: "success" });
+      return res.status(200).json({ status: "success" });
     }
   } catch (error) {
     next(error);
