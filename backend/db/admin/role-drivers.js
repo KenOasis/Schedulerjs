@@ -2,6 +2,7 @@ const db = require("../../models");
 const Actions = db["Actions"];
 const Roles = db["Roles"];
 const Role_Actions = db["Role_Actions"];
+const Employees = db["Employees"];
 Role_Actions.hasMany(Actions, { foreignKey: "action_id" });
 const LogicalError = require("../../error/logical-error");
 exports.getActions = async () => {
@@ -113,6 +114,59 @@ exports.getRolesById = async (role_id) => {
       };
 
       return results;
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+
+exports.updateRole = async (
+  role_id,
+  title,
+  abbreviation,
+  description,
+  priority,
+  actions
+) => {
+  const role = await Roles.findByPk(role_id);
+  if (role) {
+    role.title = title;
+    role.abbreviation = abbreviation;
+    role.description = description;
+    role.priority = priority;
+    await role.save();
+  } else {
+    throw new LogicalError(`Role with role_id:${role_id} is not existed.`, 404);
+  }
+  await Role_Actions.destroy({
+    where: {
+      role_id,
+    },
+  });
+  for await (action_id of actions) {
+    await Role_Actions.create({
+      role_id: role_id,
+      action_id: action_id,
+    });
+  }
+  return true;
+};
+exports.deleteRole = async (role_id) => {
+  try {
+    const isAssigned = await Employees.findOne({
+      where: {
+        role_id,
+      },
+    });
+    if (isAssigned !== null) {
+      return false;
+    } else {
+      await Roles.destroy({
+        where: {
+          role_id,
+        },
+      });
+      return true;
     }
   } catch (error) {
     throw error;

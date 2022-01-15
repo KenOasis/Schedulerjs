@@ -1,4 +1,5 @@
 const roleDrivers = require("../../db/admin/role-drivers");
+const roles = require("../../models/roles");
 
 exports.getActions = async (req, res, next) => {
   try {
@@ -56,9 +57,20 @@ exports.createRole = async (req, res, next) => {
 
 exports.updateRole = async (req, res, next) => {
   const role_id = +req.params.role_id;
-  const { title, abbreviation, description, acitons } = req.body;
+  const { title, abbreviation, description, actions } = req.body;
   const priority = +req.body.priority;
   try {
+    const isUpdated = await roleDrivers.updateRole(
+      role_id,
+      title,
+      abbreviation,
+      description,
+      priority,
+      actions
+    );
+    if (isUpdated) {
+      return res.status(200).json({ status: "success" });
+    }
   } catch (error) {
     next(error);
   }
@@ -67,6 +79,15 @@ exports.updateRole = async (req, res, next) => {
 exports.deleteRole = async (req, res, next) => {
   const role_id = +req.params.role_id;
   try {
+    const isDeleted = await roleDrivers.deleteRole(role_id);
+    if (isDeleted) {
+      return res.status(200).json({ status: "success" });
+    } else {
+      return res.status(409).json({
+        status: "conflict",
+        message: "Cannot delete role which has assigned to some employees.",
+      });
+    }
   } catch (error) {
     next(error);
   }
