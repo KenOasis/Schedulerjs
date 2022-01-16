@@ -6,6 +6,11 @@ const Groups = db["Groups"];
 Roles.belongsTo(Groups, { as: "groups", foreignKey: "group_id" });
 Employees.belongsTo(Roles, { as: "roles", foreignKey: "role_id" });
 
+const stringGenerator = require("../../util/random-string-generator");
+
+const bcrypt = require("bcryptjs");
+const salt = bcrypt.genSaltSync(10);
+
 exports.getEmployeesByGroup = async (group_id) => {
   try {
     const employees = await Employees.findAll({
@@ -68,19 +73,15 @@ exports.getEmployeeById = async (employee_id) => {
   }
 };
 
-exports.createEmployee = async (
-  username,
-  firstname,
-  lastname,
-  password,
-  role_id
-) => {
+exports.createEmployee = async (username, firstname, lastname, role_id) => {
   try {
+    let random_password = stringGenerator(8);
+    let hash_password = bcrypt.hashSync(random_password, salt);
     const new_employee = await Employees.create({
       username,
       firstname,
       lastname,
-      password,
+      password: hash_password,
       role_id,
     });
 
@@ -97,7 +98,7 @@ exports.createEmployee = async (
         username: new_employee.username,
         firstname: new_employee.firstname,
         lastname: new_employee.lastname,
-        password: new_employee.password,
+        password: random_password,
         role_id: new_employee.role_id,
         title: role.title,
         abbreviation: role.abbreviation,
@@ -126,6 +127,26 @@ exports.updateEmployee = async (
       employee.activated = activated;
       await employee.save();
       return true;
+    } else {
+      throw new LogicalError(
+        `Employee with employee_id:${employee_id} is not existed.`,
+        404
+      );
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+
+exports.resetPassword = async (employee_id) => {
+  try {
+    const employee = await Employees.findByPk(employee_id);
+    if (employee) {
+      let new_randown_password = stringGenerator(8);
+      let hash_password = bcrypt.hashSync(new_randown_password, salt);
+      employee.password = hash_password;
+      await employee.save();
+      return new_randown_password;
     } else {
       throw new LogicalError(
         `Employee with employee_id:${employee_id} is not existed.`,
