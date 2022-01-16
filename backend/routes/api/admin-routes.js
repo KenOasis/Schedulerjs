@@ -155,6 +155,8 @@ router.post("/employee", adminEmployeeController.createEmployee);
 router.put("/employee/:employee_id", adminEmployeeController.updateEmployee);
 // TODISCUSS: Do we need a specific route to activated or deactivated mulitiple account(whole group) ?
 
+router.post("/employee/activated", adminEmployeeController.activatedEmployee);
+
 /**
  * Get all the off type of one company
  * GET ../api/admin/off/all/:company_id

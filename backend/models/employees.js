@@ -22,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
       username: {
         allowNull: false,
         type: DataTypes.STRING(64),
+        unique: true,
       },
       firstname: {
         allowNull: false,
@@ -47,6 +48,7 @@ module.exports = (sequelize, DataTypes) => {
       activated: {
         allowNull: false,
         type: DataTypes.BOOLEAN,
+        defaultValue: false,
       },
     },
     {

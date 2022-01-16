@@ -10,6 +10,7 @@ module.exports = {
       username: {
         allowNull: false,
         type: Sequelize.STRING(64),
+        unique: true,
       },
       firstname: {
         allowNull: false,
@@ -35,6 +36,7 @@ module.exports = {
       activated: {
         allowNull: false,
         type: Sequelize.BOOLEAN,
+        defaultValue: false,
       },
     });
   },
