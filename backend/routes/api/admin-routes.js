@@ -160,9 +160,9 @@ router.put(
 );
 /**
  * Get all the off type of one company
- * GET ../api/admin/off/all/:company_id
+ * GET ../api/admin/off/all
  */
-router.get("/off/all/:company_id", offController.getOffByCompany);
+router.get("/off/all", offController.getOffByCompany);
 
 /**
  * Get an off type info
