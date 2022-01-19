@@ -1,4 +1,4 @@
-# Admin-Company routes
+# Admin-Company Routes
 
 ## @.../api/admin/signup POST
 
@@ -161,3 +161,275 @@ if success:
     }
 }
 ```
+
+# Admin-Group Routes
+
+## .../api/admin/group POST
+
+#### Create a new group
+
+body:
+
+```
+{
+    "name": "Walmart",
+    "description": "A Walmart store in Bay Area."
+}
+```
+
+if success:
+
+```
+{
+    "status": "success",
+    "new_group": {
+        "group_id": 1,
+        "name": "Walmart",
+        "description": "A Walmart store in Bay Area."
+    }
+}
+```
+
+## .../api/admin/group/all GET
+
+#### Get all the groups of current company
+
+if success:
+
+```
+{
+    "status": "Success!",
+    "groups": [
+        {
+            "group_id": 1,
+            "name": "Walmart",
+            "description": "A Walmart store in Bay Area.",
+            "activated": false
+        },
+        {
+            "group_id": 2,
+            "name": "Walgreen",
+            "description": "A Walgreen store in Bay Area.",
+            "activated": false
+        }
+    ]
+}
+```
+
+## .../api/admin/group/:group_id GET
+
+#### Get group info of given group_id
+
+if success (group_id = 1):
+
+```
+{
+    "status": "success",
+    "group": {
+        "group_id": 1,
+        "name": "Walmart",
+        "description": "A Walmart store in Bay Area.",
+        "activated": false
+    }
+}
+```
+
+## .../api/admin/group/:group_id PUT
+
+#### Updated group info of given group_id
+
+body
+
+```
+{
+    "name": "Walgreen 00893",
+    "description": "A Walgreen store in Bay Area.",
+    "activated": true
+}
+```
+
+# Admin-Role Routes
+
+## .../api/admin/actions GET
+
+#### Get all the assignable actions
+
+if success:
+
+```
+{
+    "status": "success",
+    "actions": [
+        {
+            "action_id": 1,
+            "name": "Reset teams' password",
+            "description": "Reset all group members' password. This should be the group leader's action."
+        },
+        {
+            "action_id": 2,
+            "name": "Record Timestamp",
+            "description": "Record the timestamp when starting/ending shift/break."
+        },
+        {
+            "action_id": 3,
+            "name": "Setting available working time",
+            "description": "Setting up the available working time frame for every weekday/weekend."
+        },
+        {
+            "action_id": 4,
+            "name": "Request day off",
+            "description": "Request day off or vacation for the future."
+        },
+        {
+            "action_id": 5,
+            "name": "Adjusting timestamp",
+            "description": "Adjusting the timestamp for the finished shift. This should be the group leader's action."
+        },
+        {
+            "action_id": 6,
+            "name": "Making Schedule",
+            "description": "Creating, modifying, publishing, or deleting the incoming sheduled. This should be the group leader's action."
+        }
+    ]
+}
+```
+
+## .../api/admin/role POST
+
+#### Create a new role
+
+body:
+
+```
+{
+    "group_id": 1,
+    "title": "Store Manager",
+    "abbreviation": "STRM",
+    "description": "The management leadership of the store.",
+    "priority": 1,
+    "actions": [1,2,3,4,5,6]
+}
+```
+
+if failed by conflict title or abbreviation:
+
+```
+{
+    "status": "conflict",
+    "message": "title: Store Manager 893 is already existed in the group."
+}
+```
+
+## .../api/admin/role/all/:group_id GET
+
+#### Get all the roles of given group_id
+
+if success (group_id = 1):
+
+```
+{
+    "status": "success",
+    "roles": [
+        {
+            "role_id": 2,
+            "tilte": "Assitant Manager",
+            "abbreviation": "ASM"
+        },
+        {
+            "role_id": 1,
+            "tilte": "Store Manager",
+            "abbreviation": "STRM"
+        }
+    ]
+}
+```
+
+## .../api/admin/role/:role_id GET
+
+#### Get the role info of the given role_id
+
+if success (role_id = 1):
+
+```
+{
+    "status": "success",
+    "role": {
+        "role_id": 1,
+        "abbreviation": "STRM",
+        "description": "The management leadership of the store.",
+        "priority": 1,
+        "actions": [
+            {
+                "action_id": 1,
+                "name": "Reset teams' password",
+                "description": "Reset all group members' password. This should be the group leader's action."
+            },
+            {
+                "action_id": 2,
+                "name": "Record Timestamp",
+                "description": "Record the timestamp when starting/ending shift/break."
+            },
+            {
+                "action_id": 3,
+                "name": "Setting available working time",
+                "description": "Setting up the available working time frame for every weekday/weekend."
+            },
+            {
+                "action_id": 4,
+                "name": "Request day off",
+                "description": "Request day off or vacation for the future."
+            },
+            {
+                "action_id": 5,
+                "name": "Adjusting timestamp",
+                "description": "Adjusting the timestamp for the finished shift. This should be the group leader's action."
+            },
+            {
+                "action_id": 6,
+                "name": "Making Schedule",
+                "description": "Creating, modifying, publishing, or deleting the incoming sheduled. This should be the group leader's action."
+            }
+        ]
+    }
+}
+```
+
+## .../api/admin/role/:role_id PUT
+
+#### Updated role info of the given role_id
+
+body:
+
+```
+{
+    "title": "Store Manager 893",
+    "abbreviation": "STRM",
+    "description": "The management leadership of the store.",
+    "priority": 1,
+    "actions": [1,2,3,4,5,6]
+}
+```
+
+if failed by conflict title or abbreviation:
+
+```
+{
+    "status": "conflict",
+    "message": "title: Store Manager 893 is already existed in the group."
+}
+```
+
+## .../api/admin/role/:role_id DELETE
+
+#### Delete a role of given role_id if it is not currently assigned to any employee
+
+if failed by conflict with employee assigned
+
+```
+{
+    "status": "conflict",
+    "message": "Cannot delete role which has assigned to some employees.",
+}
+```
+
+# Admin-Employee Routes

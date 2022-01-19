@@ -34,6 +34,27 @@ exports.createRole = async (
   actions
 ) => {
   try {
+    const existing_title = await Roles.findOne({
+      where: {
+        title,
+      },
+    });
+    if (existing_title) {
+      return [false, `title: ${title} is already existed in the group.`];
+    }
+
+    const existing_abbreviation = await Roles.findOne({
+      where: {
+        abbreviation,
+      },
+    });
+
+    if (existing_abbreviation) {
+      return [
+        false,
+        `abbreviation: ${abbreviation} is already existed in the group`,
+      ];
+    }
     const new_role = await Roles.create({
       group_id,
       title,
@@ -128,6 +149,27 @@ exports.updateRole = async (
   priority,
   actions
 ) => {
+  const existing_title = await Roles.findOne({
+    where: {
+      title,
+    },
+  });
+  if (existing_title) {
+    return [false, `title: ${title} is already existed in the group.`];
+  }
+
+  const existing_abbreviation = await Roles.findOne({
+    where: {
+      abbreviation,
+    },
+  });
+
+  if (existing_abbreviation) {
+    return [
+      false,
+      `abbreviation: ${abbreviation} is already existed in the group`,
+    ];
+  }
   const role = await Roles.findByPk(role_id);
   if (role) {
     role.title = title;

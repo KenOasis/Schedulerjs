@@ -11,7 +11,9 @@ module.exports = (req, res, next) => {
     if (req.headers.authorization === null) {
       throw new ValidationError("Authorization Failed", 401);
     }
+
     const token = req.headers.authorization.split(" ")[1];
+
     if (!token) {
       throw new ValidationError("Authorization Failed", 401);
     }

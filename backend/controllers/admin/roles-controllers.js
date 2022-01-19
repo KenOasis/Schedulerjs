@@ -39,7 +39,7 @@ exports.createRole = async (req, res, next) => {
   const { title, abbreviation, description, actions } = req.body;
   const priority = +req.body.priority;
   try {
-    const isCreated = await roleDrivers.createRole(
+    const [isCreated, message] = await roleDrivers.createRole(
       group_id,
       title,
       abbreviation,
@@ -49,6 +49,8 @@ exports.createRole = async (req, res, next) => {
     );
     if (isCreated) {
       return res.status(200).json({ status: "success" });
+    } else {
+      return res.status(409).json({ status: "conflict", message: message });
     }
   } catch (error) {
     next(error);
@@ -60,7 +62,7 @@ exports.updateRole = async (req, res, next) => {
   const { title, abbreviation, description, actions } = req.body;
   const priority = +req.body.priority;
   try {
-    const isUpdated = await roleDrivers.updateRole(
+    const [isUpdated, message] = await roleDrivers.updateRole(
       role_id,
       title,
       abbreviation,
@@ -70,6 +72,8 @@ exports.updateRole = async (req, res, next) => {
     );
     if (isUpdated) {
       return res.status(200).json({ status: "success" });
+    } else {
+      return res.status(409).json({ status: "conflict", message: message });
     }
   } catch (error) {
     next(error);
