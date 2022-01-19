@@ -142,6 +142,7 @@ router.get(
  */
 router.get("/employee/:employee_id", adminEmployeeController.getEmployeeById);
 
+router.get("/employee/:employee_id");
 /**
  * Create an account
  * POST ../api/admin/employee/
@@ -154,6 +155,10 @@ router.post("/employee", adminEmployeeController.createEmployee);
  */
 router.put("/employee/:employee_id", adminEmployeeController.updateEmployee);
 
+/**
+ * Reset the password of a employee account
+ * PUT .../api/admin/employee/reset_pw/:employee_id
+ */
 router.put(
   "/employee/reset_pw/:employee_id",
   adminEmployeeController.resetPassword

@@ -433,3 +433,223 @@ if failed by conflict with employee assigned
 ```
 
 # Admin-Employee Routes
+
+## .../api/admin/employee POST
+
+#### Create a new employee account
+
+body:
+
+```
+{
+    "role_id": 1,
+    "username": "jtan886",
+    "firstname": "Jimmy",
+    "lastname": "Tan",
+    "safety_pin": "1234"   // Safety pin should be last 4 digits of SSID
+}
+```
+
+if success:
+
+```
+{
+    "status": "success",
+    "new_employee": {
+        "employee_id": 1,
+        "username": "jtan886",
+        "firstname": "Jimmy",
+        "lastname": "Tan",
+        "password": "U20r0vV2",
+        "role_id": 1,
+        "title": "Store Manager 893",
+        "abbreviation": "STRM",
+        "activated": false
+    }
+}
+```
+
+## .../api/admin/employee/all/:group_id GET
+
+#### Get all employees belong to the given group with group_id
+
+if success (group_id = 1):
+
+```
+{
+    "status": "success",
+    "employees": [
+        {
+            "employee_id": 1,
+            "username": "jtan886",
+            "firstname": "Jimmy",
+            "lastname": "Tan",
+            "activated": false,
+            "title": "Store Manager 893",
+            "abbreviation": "STRM",
+            "name": "Walgreen 00893"
+        },
+        {
+            "employee_id": 2,
+            "username": "alin999",
+            "firstname": "Alin",
+            "lastname": "Huang",
+            "activated": false,
+            "title": "Assitant Manager",
+            "abbreviation": "ASM",
+            "name": "Walgreen 00893"
+        }
+    ]
+}
+```
+
+## .../api/admin/employee/:employee_id GET
+
+#### Get employee info of given employee_id
+
+if success (employee_id = 1):
+
+```
+{
+    "status": "success",
+    "employee": {
+        "employee_id": 1,
+        "username": "jtan886",
+        "firstname": "Jimmy",
+        "lastname": "Tan",
+        "role_id": 1,
+        "activated": false
+    }
+}
+```
+
+## .../api/admin/employee/:employee_id PUT
+
+#### Update the employee info of given employee_id
+
+body:
+
+```
+{
+    "firstname": "Jimmy",
+    "lastname": "Tan",
+    "activated": true,
+    "role_id": 2
+}
+```
+
+## .../api/admin/employee/reset_pw/employee_id PUT
+
+#### Reset the password of an employee account of given employee_id
+
+body:
+
+```
+{
+    "safety_pin": "1234",
+}
+```
+
+if success (employee_id = 1):
+
+```
+{
+    "status": "success",
+    "password": "l5wxfvML"  // new password
+}
+```
+
+if failed (wrong safety_pin):
+
+```
+{
+"status": "Unauthorized",
+"message": "Wrong Credential!"
+}
+```
+
+# Admin-Off Routes
+
+## .../api/admin/off POST
+
+#### Create a new off type
+
+body:
+
+```
+{
+    "name": "PTO",
+    "description": "Paid time off of San Francisco Area."
+}
+```
+
+if success:
+
+```
+{
+    "status": "success",
+    "off": {
+        "off_id": 1,
+        "company_id": 1,
+        "name": "PTO",
+        "description": "Paid time off of San Francisco Area."
+    }
+}
+```
+
+## .../api/admin/off/all POST
+
+#### Get all the off type of current company
+
+if success:
+
+```
+{
+    "status": "success",
+    "offs": [
+        {
+            "off_id": 1,
+            "company_id": 1,
+            "name": "PTO",
+            "description": "Paid time off of San Francisco Area."
+        },
+        {
+            "off_id": 2,
+            "company_id": 1,
+            "name": "Holiday",
+            "description": "Legal Holiday."
+        }
+    ]
+}
+```
+
+## .../api/admin/off/:off_id GET
+
+#### GET the off type info of given off_id
+
+if success (off_id = 1):
+
+```
+{
+    "status": "success",
+    "off": {
+        "off_id": 1,
+        "company_id": 1,
+        "name": "PTO",
+        "description": "Paid time off of San Francisco Area."
+    }
+}
+```
+
+## .../api/admin/off/:off_id PUT
+
+#### Update the off type info of given off_id
+
+body:
+
+```
+{
+    "name": "PTO SF",
+    "description": "Paid time off of San Francisco Area"
+}
+```

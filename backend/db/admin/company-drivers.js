@@ -61,22 +61,6 @@ exports.update = async (company_id, name, address, phone) => {
   }
 };
 
-exports.updatePassword = async (old_password, new_password) => {
-  try {
-    // TODO update the password to new password
-  } catch (error) {
-    throw error;
-  }
-};
-
-exports.login = async (email, password) => {
-  try {
-    // TODO
-  } catch (error) {
-    throw error;
-  }
-};
-
 exports.getCompanyInfo = async (company_id) => {
   try {
     const company = await Companies.findByPk(company_id);

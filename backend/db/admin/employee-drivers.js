@@ -9,6 +9,7 @@ Employees.belongsTo(Roles, { as: "roles", foreignKey: "role_id" });
 const stringGenerator = require("../../util/random-string-generator");
 
 const bcrypt = require("bcryptjs");
+const ValidationError = require("../../error/validation-error");
 const salt = bcrypt.genSaltSync(10);
 
 exports.getEmployeesByGroup = async (group_id) => {
@@ -73,14 +74,22 @@ exports.getEmployeeById = async (employee_id) => {
   }
 };
 
-exports.createEmployee = async (username, firstname, lastname, role_id) => {
+exports.createEmployee = async (
+  username,
+  firstname,
+  lastname,
+  safety_pin,
+  role_id
+) => {
   try {
     let random_password = stringGenerator(8);
     let hash_password = bcrypt.hashSync(random_password, salt);
+    let hash_safety_pin = bcrypt.hashSync(safety_pin, salt);
     const new_employee = await Employees.create({
       username,
       firstname,
       lastname,
+      safety_pin: hash_safety_pin,
       password: hash_password,
       role_id,
     });
@@ -138,15 +147,23 @@ exports.updateEmployee = async (
   }
 };
 
-exports.resetPassword = async (employee_id) => {
+exports.resetPassword = async (safety_pin, employee_id) => {
   try {
     const employee = await Employees.findByPk(employee_id);
     if (employee) {
-      let new_randown_password = stringGenerator(8);
-      let hash_password = bcrypt.hashSync(new_randown_password, salt);
-      employee.password = hash_password;
-      await employee.save();
-      return new_randown_password;
+      let is_safety_pin_matched = bcrypt.compareSync(
+        safety_pin,
+        employee.safety_pin
+      );
+      if (is_safety_pin_matched) {
+        let new_randown_password = stringGenerator(8);
+        let hash_password = bcrypt.hashSync(new_randown_password, salt);
+        employee.password = hash_password;
+        await employee.save();
+        return new_randown_password;
+      } else {
+        throw new ValidationError("Wrong safety pin.", 403);
+      }
     } else {
       throw new LogicalError(
         `Employee with employee_id:${employee_id} is not existed.`,

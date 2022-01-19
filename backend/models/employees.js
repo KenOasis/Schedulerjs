@@ -32,6 +32,10 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         type: DataTypes.STRING(32),
       },
+      safty_pin: {
+        allowNull: false,
+        type: DataTypes.STRING(4),
+      },
       password: {
         allowNull: false,
         type: DataTypes.STRING(256),

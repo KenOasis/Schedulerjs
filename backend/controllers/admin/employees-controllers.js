@@ -26,13 +26,14 @@ exports.getEmployeeById = async (req, res, next) => {
 };
 
 exports.createEmployee = async (req, res, next) => {
-  const { username, firstname, lastname } = req.body;
+  const { username, firstname, lastname, safty_pin } = req.body;
   const role_id = +req.body.role_id;
   try {
     const new_employee = await employeeDrivers.createEmployee(
       username,
       firstname,
       lastname,
+      safty_pin,
       role_id
     );
 
@@ -67,8 +68,12 @@ exports.updateEmployee = async (req, res, next) => {
 
 exports.resetPassword = async (req, res, next) => {
   const employee_id = +req.params.employee_id;
+  const safty_pin = +req.body.safty_pin;
   try {
-    const reset_password = await employeeDrivers.resetPassword(employee_id);
+    const reset_password = await employeeDrivers.resetPassword(
+      safty_pin,
+      employee_id
+    );
     if (reset_password) {
       return res
         .status(200)
