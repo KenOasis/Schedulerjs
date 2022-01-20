@@ -74,6 +74,24 @@ exports.getEmployeeById = async (employee_id) => {
   }
 };
 
+exports.existedEmployeeByUsername = async (username) => {
+  try {
+    const existing_username = await Employees.findOne({
+      where: {
+        username,
+      },
+    });
+
+    if (existing_username) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+
 exports.createEmployee = async (
   username,
   firstname,

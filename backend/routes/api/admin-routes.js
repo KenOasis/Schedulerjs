@@ -81,7 +81,11 @@ router.get("/group/all", groupController.getGroupsByCompany);
  * Get the group info
  * GET ../api/admin/group/:group_id
  */
-router.get("/group/:group_id", adminRouteChecker, groupController.getGroupById);
+router.get(
+  "/group/:group_id",
+  adminRouteChecker.groupChecker,
+  groupController.getGroupById
+);
 
 /**
  * Create a new group
@@ -93,7 +97,11 @@ router.post("/group", groupController.creatGroup);
  * Update an existing group info
  * PUT ../api/admin/group/:group_id
  */
-router.put("/group/:group_id", adminRouteChecker, groupController.updateGroup);
+router.put(
+  "/group/:group_id",
+  adminRouteChecker.groupChecker,
+  groupController.updateGroup
+);
 
 /**
  * Get all the assignable actions
@@ -105,31 +113,51 @@ router.get("/actions", roleController.getActions);
  * Get all the roles of a certain group
  * GET ../api/admin/role/all/:group_id
  */
-router.get("/role/all/:group_id", roleController.getRolesByGroup);
+router.get(
+  "/role/all/:group_id",
+  adminRouteChecker.groupChecker,
+  roleController.getRolesByGroup
+);
 
 /**
  * Get role info
  * GET ../api/admin/role/:role_id
  */
-router.get("/role/:role_id", roleController.getRolesById);
+router.get(
+  "/role/:role_id",
+  adminRouteChecker.roleChecker,
+  roleController.getRolesById
+);
 
 /**
  * Create a new role
  * POST ../api/admin/role/
  */
-router.post("/role/", roleController.createRole);
+router.post(
+  "/role/",
+  adminRouteChecker.groupChecker,
+  roleController.createRole
+);
 
 /**
  * Update an exsting role
  * PUT ../api/admin/role/:role_id
  */
-router.put("/role/:role_id", roleController.updateRole);
+router.put(
+  "/role/:role_id",
+  adminRouteChecker.roleChecker,
+  roleController.updateRole
+);
 
 /**
  * Delete a role
  * DELETE ../api/admin/role/:role_id
  */
-router.delete("/role/:role_id", roleController.deleteRole);
+router.delete(
+  "/role/:role_id",
+  adminRouteChecker.roleChecker,
+  roleController.deleteRole
+);
 
 /**
  * Get all the employee account of current group
@@ -137,26 +165,38 @@ router.delete("/role/:role_id", roleController.deleteRole);
  */
 router.get(
   "/employee/all/:group_id",
+  adminRouteChecker.groupChecker,
   adminEmployeeController.getEmployeeByGroup
 );
 /**
  * Get a employee account info
  * GET ../api/admin/employee/:employee_id
  */
-router.get("/employee/:employee_id", adminEmployeeController.getEmployeeById);
+router.get(
+  "/employee/:employee_id",
+  adminRouteChecker.employeeChecker,
+  adminEmployeeController.getEmployeeById
+);
 
-router.get("/employee/:employee_id");
 /**
  * Create an account
  * POST ../api/admin/employee/
  */
-router.post("/employee", adminEmployeeController.createEmployee);
+router.post(
+  "/employee",
+  adminRouteChecker.roleChecker,
+  adminEmployeeController.createEmployee
+);
 
 /**
  * Update an account
  * PUT ../api/admin/gemployee/:employee_id
  */
-router.put("/employee/:employee_id", adminEmployeeController.updateEmployee);
+router.put(
+  "/employee/:employee_id",
+  adminRouteChecker.employeeChecker,
+  adminEmployeeController.updateEmployee
+);
 
 /**
  * Reset the password of a employee account
@@ -164,10 +204,11 @@ router.put("/employee/:employee_id", adminEmployeeController.updateEmployee);
  */
 router.put(
   "/employee/reset_pw/:employee_id",
+  adminRouteChecker.employeeChecker,
   adminEmployeeController.resetPassword
 );
 /**
- * Get all the off type of one company
+ * Get all the off type of current company
  * GET ../api/admin/off/all
  */
 router.get("/off/all", offController.getOffByCompany);
@@ -176,7 +217,11 @@ router.get("/off/all", offController.getOffByCompany);
  * Get an off type info
  * GET ../api/admin/off/:off_id
  */
-router.get("/off/:off_id", offController.getOffById);
+router.get(
+  "/off/:off_id",
+  adminRouteChecker.offTypeChecker,
+  offController.getOffById
+);
 
 /**
  * Create an off type info
@@ -188,6 +233,10 @@ router.post("/off", offController.createOff);
  * Update an off type info
  * PUT ../api/admin/off/:off_id
  */
-router.put("/off/:off_id", offController.updateOff);
+router.put(
+  "/off/:off_id",
+  adminRouteChecker.offTypeChecker,
+  offController.updateOff
+);
 
 module.exports = router;

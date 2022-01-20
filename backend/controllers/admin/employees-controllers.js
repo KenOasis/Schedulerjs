@@ -26,19 +26,31 @@ exports.getEmployeeById = async (req, res, next) => {
 };
 
 exports.createEmployee = async (req, res, next) => {
-  const { username, firstname, lastname, safty_pin } = req.body;
+  const { username, firstname, lastname, safety_pin } = req.body;
   const role_id = +req.body.role_id;
   try {
-    const new_employee = await employeeDrivers.createEmployee(
-      username,
-      firstname,
-      lastname,
-      safty_pin,
-      role_id
+    const isUsernameExisted = await employeeDrivers.existedEmployeeByUsername(
+      username
     );
+    if (!isUsernameExisted) {
+      const new_employee = await employeeDrivers.createEmployee(
+        username,
+        firstname,
+        lastname,
+        safety_pin,
+        role_id
+      );
 
-    if (new_employee) {
-      res.status(200).json({ status: "success", new_employee: new_employee });
+      if (new_employee) {
+        return res
+          .status(200)
+          .json({ status: "success", new_employee: new_employee });
+      }
+    } else {
+      return res.status(409).json({
+        status: "conflict",
+        message: `Username: ${username} is already existed`,
+      });
     }
   } catch (error) {
     next(error);
@@ -68,10 +80,10 @@ exports.updateEmployee = async (req, res, next) => {
 
 exports.resetPassword = async (req, res, next) => {
   const employee_id = +req.params.employee_id;
-  const safty_pin = +req.body.safty_pin;
+  const safety_pin = req.body.safety_pin;
   try {
     const reset_password = await employeeDrivers.resetPassword(
-      safty_pin,
+      safety_pin,
       employee_id
     );
     if (reset_password) {

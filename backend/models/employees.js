@@ -22,7 +22,6 @@ module.exports = (sequelize, DataTypes) => {
       username: {
         allowNull: false,
         type: DataTypes.STRING(64),
-        unique: true,
       },
       firstname: {
         allowNull: false,
@@ -32,9 +31,9 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         type: DataTypes.STRING(32),
       },
-      safty_pin: {
+      safety_pin: {
         allowNull: false,
-        type: DataTypes.STRING(4),
+        type: DataTypes.STRING(64),
       },
       password: {
         allowNull: false,

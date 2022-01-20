@@ -20,10 +20,6 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING(32),
       },
-      safty_pin: {
-        allowNull: false,
-        type: Sequelize.STRING(4),
-      },
       password: {
         allowNull: false,
         type: Sequelize.STRING(256),

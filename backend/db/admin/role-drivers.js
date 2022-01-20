@@ -69,7 +69,7 @@ exports.createRole = async (
           action_id: action_id,
         });
       }
-      return true;
+      return [true, ""];
     }
   } catch (error) {
     throw error;
