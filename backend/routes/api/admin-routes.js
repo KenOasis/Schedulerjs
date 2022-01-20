@@ -8,11 +8,13 @@ const offController = require("../../controllers/admin/offs-controllers");
 
 const dataValidator = require("../../middleware/data-validator");
 const authChecker = require("../../middleware/auth-checker");
+const adminRouteChecker = require("../../middleware/admin-route-checker");
 /**
  * Sign up a new company account
  * POST ../api/admin/signup
  * body: {
  *  name,
+ *
  *  address,
  *  email,
  *  phone,
@@ -72,13 +74,14 @@ router.get("/", companyController.getCompany);
  * Get all the group of the current company account
  * GET ../api/admin/group/all/
  */
+
 router.get("/group/all", groupController.getGroupsByCompany);
 
 /**
  * Get the group info
  * GET ../api/admin/group/:group_id
  */
-router.get("/group/:group_id", groupController.getGroupById);
+router.get("/group/:group_id", adminRouteChecker, groupController.getGroupById);
 
 /**
  * Create a new group
@@ -90,7 +93,7 @@ router.post("/group", groupController.creatGroup);
  * Update an existing group info
  * PUT ../api/admin/group/:group_id
  */
-router.put("/group/:group_id", groupController.updateGroup);
+router.put("/group/:group_id", adminRouteChecker, groupController.updateGroup);
 
 /**
  * Get all the assignable actions

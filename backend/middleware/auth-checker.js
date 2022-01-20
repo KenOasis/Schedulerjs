@@ -22,7 +22,7 @@ module.exports = (req, res, next) => {
       company_id: decodedToken.company_id,
       email: decodedToken.email,
     };
-    next();
+    return next();
   } catch (error) {
     next(error);
   }
