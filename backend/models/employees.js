@@ -33,7 +33,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       safety_pin: {
         allowNull: false,
-        type: DataTypes.STRING(64),
+        type: DataTypes.STRING(4),
       },
       password: {
         allowNull: false,
@@ -47,6 +47,10 @@ module.exports = (sequelize, DataTypes) => {
           key: "role_id",
         },
         deferrable: Deferrable.INITIALLY_IMMEDIATE,
+      },
+      emergency_contact: {
+        allowNull: false,
+        type: DataTypes.STRING(16),
       },
       activated: {
         allowNull: false,

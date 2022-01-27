@@ -12,6 +12,7 @@ exports.getActions = async () => {
       const results = actions.map((action) => {
         return {
           action_id: action.action_id,
+          key: action.key,
           name: action.name,
           description: action.description,
         };
@@ -63,10 +64,15 @@ exports.createRole = async (
       priority,
     });
     if (new_role) {
-      for await (action_id of actions) {
+      for await (key of actions) {
+        let action = await Actions.findOne({
+          where: {
+            key,
+          },
+        });
         await Role_Actions.create({
           role_id: new_role.role_id,
-          action_id: action_id,
+          action_id: action.action_id,
         });
       }
       return [true, ""];
@@ -110,6 +116,7 @@ exports.getRolesById = async (role_id) => {
       attributes: [
         "role_id",
         "action_id",
+        "Actions.key",
         "Actions.name",
         "Actions.description",
       ],
@@ -127,7 +134,7 @@ exports.getRolesById = async (role_id) => {
         priority: role.priority,
         actions: actions.map((action) => {
           return {
-            action_id: action.action_id,
+            key: action.key,
             name: action.name,
             description: action.description,
           };

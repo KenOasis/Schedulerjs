@@ -26,13 +26,17 @@ exports.creatGroup = async (req, res, next) => {
   const { name, description } = req.body;
   const company_id = req.userData.company_id;
   try {
-    const new_group = await groupDrivers.createGroup(
+    const [is_create_success, obj] = await groupDrivers.createGroup(
       company_id,
       name,
       description
     );
-    if (new_group) {
-      return res.status(200).json({ status: "success", new_group: new_group });
+    if (is_create_success) {
+      return res
+        .status(200)
+        .json({ status: "success", new_group: obj.new_group });
+    } else {
+      return res.status(409).json({ status: "conflict", message: obj.message });
     }
   } catch (error) {
     next(error);
@@ -43,14 +47,16 @@ exports.updateGroup = async (req, res, next) => {
   const group_id = +req.params.group_id;
   const { name, description, activated } = req.body;
   try {
-    const updatedResult = await groupDrivers.updateGroup(
+    const [is_update_status, message] = await groupDrivers.updateGroup(
       group_id,
       name,
       description,
       activated
     );
-    if (updatedResult) {
+    if (is_update_status) {
       return res.status(200).json({ status: "success" });
+    } else {
+      return res.status(409).json({ status: "conflict", message: message });
     }
   } catch (error) {
     next(error);

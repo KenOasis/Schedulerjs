@@ -33,6 +33,14 @@ module.exports = {
         },
         onDelete: "CASCADE",
       },
+      safety_pin: {
+        allowNull: false,
+        type: Sequelize.STRING(4),
+      },
+      emergency_contact: {
+        allowNull: false,
+        type: Sequelize.STRING(16),
+      },
       activated: {
         allowNull: false,
         type: Sequelize.BOOLEAN,

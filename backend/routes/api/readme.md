@@ -7,7 +7,7 @@
 ```
 body:
 {
-  "name": "Jjtan886",
+  "name": "Jimmy's Company",
   "address": "888 Broadway st. San Francisco CA. 94133",
   "email": "test@test.com",
   "phone": "14151234567",
@@ -23,7 +23,7 @@ IF success it will return json object:
   "status": "success",
   "new_company":
     {
-    "name": "Jjtan886",
+    "name": "Jimmy's Company",
     "address": "888 Broadway st. San Francisco CA. 94133",
     "email": "test@test.com",
     "phone": "14151234567"
@@ -172,8 +172,8 @@ body:
 
 ```
 {
-    "name": "Walmart",
-    "description": "A Walmart store in Bay Area."
+      "name": "Walmart",
+      "description": "A Walmart store in Bay Area."
 }
 ```
 
@@ -190,6 +190,15 @@ if success:
 }
 ```
 
+if failed by confilct group name:
+
+```
+{
+    "status": "conflict",
+    "message": "Group name: Walgreen 893 is already existed"
+}
+```
+
 ## .../api/admin/group/all GET
 
 #### Get all the groups of current company
@@ -201,15 +210,15 @@ if success:
     "status": "Success!",
     "groups": [
         {
-            "group_id": 1,
-            "name": "Walmart",
-            "description": "A Walmart store in Bay Area.",
+            "group_id": 2,
+            "name": "Walgreen 0502",
+            "description": "A Walgreen store in San Francisco Bay Area.",
             "activated": false
         },
         {
-            "group_id": 2,
-            "name": "Walgreen",
-            "description": "A Walgreen store in Bay Area.",
+            "group_id": 1,
+            "name": "Walgreen 893",
+            "description": "A Walgreen store in San Francisco Bay Area.",
             "activated": false
         }
     ]
@@ -227,8 +236,8 @@ if success (group_id = 1):
     "status": "success",
     "group": {
         "group_id": 1,
-        "name": "Walmart",
-        "description": "A Walmart store in Bay Area.",
+        "name": "Walgreen 893",
+        "description": "A Walgreen store in San Francisco Bay Area.",
         "activated": false
     }
 }
@@ -262,33 +271,45 @@ if success:
     "actions": [
         {
             "action_id": 1,
-            "name": "Reset teams' password",
-            "description": "Reset all group members' password. This should be the group leader's action."
-        },
-        {
-            "action_id": 2,
+            "key": "E1",
             "name": "Record Timestamp",
             "description": "Record the timestamp when starting/ending shift/break."
         },
         {
-            "action_id": 3,
+            "action_id": 2,
+            "key": "E2",
             "name": "Setting available working time",
             "description": "Setting up the available working time frame for every weekday/weekend."
         },
         {
-            "action_id": 4,
+            "action_id": 3,
+            "key": "E3",
             "name": "Request day off",
-            "description": "Request day off or vacation for the future."
+            "description": "Request day off or vacation for future"
+        },
+        {
+            "action_id": 4,
+            "key": "M1",
+            "name": "Reset Team member's password",
+            "description": "Reset all group members' password. This should be the group leader's action."
         },
         {
             "action_id": 5,
-            "name": "Adjusting timestamp",
-            "description": "Adjusting the timestamp for the finished shift. This should be the group leader's action."
+            "key": "M2",
+            "name": "Manage the day off request",
+            "description": "Approved/Declined day off request  for the future."
         },
         {
             "action_id": 6,
-            "name": "Making Schedule",
-            "description": "Creating, modifying, publishing, or deleting the incoming sheduled. This should be the group leader's action."
+            "key": "M3",
+            "name": "Manage punch records",
+            "description": "Adjusting the timestamp for the finished shift."
+        },
+        {
+            "action_id": 7,
+            "key": "M4",
+            "name": "Manage Schedule",
+            "description": "Creating, modifying, publishing, or deleting the unpublished incoming sheduled. This should be the group leader's action."
         }
     ]
 }
@@ -307,7 +328,7 @@ body:
     "abbreviation": "STRM",
     "description": "The management leadership of the store.",
     "priority": 1,
-    "actions": [1,2,3,4,5,6]
+    "actions": ["E1","E2","E3","M1","M2","M3","M4"]
 }
 ```
 
@@ -316,7 +337,7 @@ if failed by conflict title or abbreviation:
 ```
 {
     "status": "conflict",
-    "message": "title: Store Manager 893 is already existed in the group."
+    "message": "title: Store Manager is already existed in the group."
 }
 ```
 
@@ -331,12 +352,12 @@ if success (group_id = 1):
     "status": "success",
     "roles": [
         {
-            "role_id": 2,
+            "role_id": 6,
             "tilte": "Assitant Manager",
             "abbreviation": "ASM"
         },
         {
-            "role_id": 1,
+            "role_id": 5,
             "tilte": "Store Manager",
             "abbreviation": "STRM"
         }
@@ -348,46 +369,51 @@ if success (group_id = 1):
 
 #### Get the role info of the given role_id
 
-if success (role_id = 1):
+if success (role_id = 5):
 
 ```
 {
     "status": "success",
     "role": {
-        "role_id": 1,
+        "role_id": 5,
         "abbreviation": "STRM",
         "description": "The management leadership of the store.",
         "priority": 1,
         "actions": [
             {
-                "action_id": 1,
-                "name": "Reset teams' password",
-                "description": "Reset all group members' password. This should be the group leader's action."
-            },
-            {
-                "action_id": 2,
+                "key": "E1",
                 "name": "Record Timestamp",
                 "description": "Record the timestamp when starting/ending shift/break."
             },
             {
-                "action_id": 3,
+                "key": "E2",
                 "name": "Setting available working time",
                 "description": "Setting up the available working time frame for every weekday/weekend."
             },
             {
-                "action_id": 4,
+                "key": "E3",
                 "name": "Request day off",
-                "description": "Request day off or vacation for the future."
+                "description": "Request day off or vacation for future"
             },
             {
-                "action_id": 5,
-                "name": "Adjusting timestamp",
-                "description": "Adjusting the timestamp for the finished shift. This should be the group leader's action."
+                "key": "M1",
+                "name": "Reset Team member's password",
+                "description": "Reset all group members' password. This should be the group leader's action."
             },
             {
-                "action_id": 6,
-                "name": "Making Schedule",
-                "description": "Creating, modifying, publishing, or deleting the incoming sheduled. This should be the group leader's action."
+                "key": "M2",
+                "name": "Manage the day off request",
+                "description": "Approved/Declined day off request  for the future."
+            },
+            {
+                "key": "M3",
+                "name": "Manage punch records",
+                "description": "Adjusting the timestamp for the finished shift."
+            },
+            {
+                "key": "M4",
+                "name": "Manage Schedule",
+                "description": "Creating, modifying, publishing, or deleting the unpublished incoming sheduled. This should be the group leader's action."
             }
         ]
     }
@@ -398,6 +424,7 @@ if success (role_id = 1):
 
 #### Updated role info of the given role_id
 
+now role_id = 5 (check example above)
 body:
 
 ```

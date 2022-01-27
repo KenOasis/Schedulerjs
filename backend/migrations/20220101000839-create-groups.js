@@ -17,10 +17,12 @@ module.exports = {
             key: "company_id",
           },
           onDelete: "CASCADE",
+          unique: ["company_group_name_unique"],
         },
         name: {
           allowNull: false,
           type: Sequelize.STRING(64),
+          unique: ["company_group_name_unique"],
         },
         description: {
           allowNull: false,
@@ -34,8 +36,8 @@ module.exports = {
       },
       {
         uniqueKeys: {
-          company_group_unique: {
-            fields: ["company_id", "group_id"],
+          company_group_name_unique: {
+            fields: ["company_id", "name"],
           },
         },
       }

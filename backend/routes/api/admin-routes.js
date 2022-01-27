@@ -48,14 +48,17 @@ router.use(authChecker);
 /**
  * Update basic company info
  * PUT ../api/admin/
- * // Each property of body is OPTIONAL
  * body: {
  *  name,
  *  address,
  *  phone
  * }
  */
-router.put("/", companyController.update);
+router.put(
+  "/",
+  dataValidator.companyUpdateValidation,
+  companyController.update
+);
 
 /**
  * Update password of company account
