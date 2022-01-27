@@ -24,7 +24,7 @@ const adminRouteChecker = require("../../middleware/admin-route-checker");
  */
 router.post(
   "/signup",
-  dataValidator.companySignupValidation,
+  dataValidator.companySignupValidator,
   companyController.signup
 );
 
@@ -54,11 +54,7 @@ router.use(authChecker);
  *  phone
  * }
  */
-router.put(
-  "/",
-  dataValidator.companyUpdateValidation,
-  companyController.update
-);
+router.put("/", dataValidator.companyUpdateValidator, companyController.update);
 
 /**
  * Update password of company account
@@ -84,9 +80,11 @@ router.get("/group/all", groupController.getGroupsByCompany);
  * Get the group info
  * GET ../api/admin/group/:group_id
  */
+
 router.get(
   "/group/:group_id",
   adminRouteChecker.groupChecker,
+  dataValidator.paramsValidator,
   groupController.getGroupById
 );
 
@@ -102,6 +100,7 @@ router.post("/group", groupController.creatGroup);
  */
 router.put(
   "/group/:group_id",
+  dataValidator.paramsValidator,
   adminRouteChecker.groupChecker,
   groupController.updateGroup
 );
