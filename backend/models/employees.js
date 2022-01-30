@@ -33,7 +33,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       safety_pin: {
         allowNull: false,
-        type: DataTypes.STRING(4),
+        type: DataTypes.STRING(64),
       },
       password: {
         allowNull: false,

@@ -26,7 +26,8 @@ exports.getEmployeeById = async (req, res, next) => {
 };
 
 exports.createEmployee = async (req, res, next) => {
-  const { username, firstname, lastname, safety_pin } = req.body;
+  const { username, firstname, lastname, safety_pin, emergency_contact } =
+    req.body;
   const role_id = +req.body.role_id;
   try {
     const isUsernameExisted = await employeeDrivers.existedEmployeeByUsername(
@@ -34,11 +35,12 @@ exports.createEmployee = async (req, res, next) => {
     );
     if (!isUsernameExisted) {
       const new_employee = await employeeDrivers.createEmployee(
+        role_id,
         username,
         firstname,
         lastname,
-        safety_pin,
-        role_id
+        emergency_contact,
+        safety_pin
       );
 
       if (new_employee) {

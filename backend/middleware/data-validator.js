@@ -5,6 +5,7 @@ const passwordRegex =
 
 const employeeUsernameRegex = /^[A-Za-z]+(?:[A-Za-z0-9]+)*$/;
 
+// Data Validator for the admin/company routes
 exports.companyValidator = async (req, res, next) => {
   await check("name")
     .notEmpty()
@@ -66,6 +67,7 @@ exports.companyValidator = async (req, res, next) => {
   }
 };
 
+// Data Validator for the admin/group routes
 exports.groupValidator = async (req, res, next) => {
   await check("name")
     .notEmpty()
@@ -100,6 +102,7 @@ exports.groupValidator = async (req, res, next) => {
   }
 };
 
+// Data Validator for the admin/role routes
 exports.roleValidator = async (req, res, next) => {
   if (req.method === "POST") {
     await check("group_id")
@@ -159,6 +162,7 @@ exports.roleValidator = async (req, res, next) => {
   }
 };
 
+// Data Validator for the admin/employee routes
 exports.employeeValidator = async (req, res, next) => {
   if (req.method === "POST") {
     await check("username")
@@ -230,6 +234,36 @@ exports.employeeValidator = async (req, res, next) => {
     next();
   }
 };
+
+// Data Validator of admin/off routes
+exports.offTypeValidator = async (req, res, next) => {
+  await check("name")
+    .notEmpty()
+    .withMessage("cannot be empty(include null and undefined).")
+    .bail()
+    .isLength({ min: 3, max: 64 })
+    .withMessage("must have length between 3 to 64")
+    .run(req);
+
+  await check("description")
+    .notEmpty()
+    .withMessage("cannot be empty(include null and undefined).")
+    .bail()
+    .isLength({ max: 256 })
+    .withMessage("cannot be longer that 256 characters.")
+    .run(req);
+
+  let results = validationResult(req);
+  if (!results.isEmpty()) {
+    return res
+      .status(400)
+      .json({ status: "invalid data", errors: results.array() });
+  } else {
+    next();
+  }
+};
+
+// Parameters validator: All parameter must be numeric
 exports.paramsValidator = (req, res, next) => {
   for (value of Object.values(req.params)) {
     let numericValue = +value;

@@ -236,6 +236,7 @@ router.get("/off/all", offController.getOffByCompany);
  */
 router.get(
   "/off/:off_id",
+  dataValidator.paramsValidator,
   adminRouteChecker.offTypeChecker,
   offController.getOffById
 );
@@ -244,7 +245,7 @@ router.get(
  * Create an off type info
  * POST ../api/admin/off/
  */
-router.post("/off", offController.createOff);
+router.post("/off", dataValidator.offTypeValidator, offController.createOff);
 
 /**
  * Update an off type info
@@ -252,7 +253,9 @@ router.post("/off", offController.createOff);
  */
 router.put(
   "/off/:off_id",
+  dataValidator.paramsValidator,
   adminRouteChecker.offTypeChecker,
+  dataValidator.offTypeValidator,
   offController.updateOff
 );
 

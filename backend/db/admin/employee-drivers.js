@@ -21,6 +21,7 @@ exports.getEmployeesByGroup = async (group_id) => {
         "username",
         "firstname",
         "lastname",
+        "emergency_contact",
         "activated",
         "roles.title",
         "roles.abbreviation",
@@ -44,7 +45,9 @@ exports.getEmployeesByGroup = async (group_id) => {
     });
 
     if (employees) {
-      return employees;
+      return {
+        ...employees,
+      };
     }
   } catch (error) {
     throw error;
@@ -65,6 +68,7 @@ exports.getEmployeeById = async (employee_id) => {
         username: employee.username,
         firstname: employee.firstname,
         lastname: employee.lastname,
+        emergency_contact: employee.emergency_contact,
         role_id: employee.role_id,
         activated: employee.activated,
       };
@@ -93,11 +97,12 @@ exports.existedEmployeeByUsername = async (username) => {
 };
 
 exports.createEmployee = async (
+  role_id,
   username,
   firstname,
   lastname,
-  safety_pin,
-  role_id
+  emergency_contact,
+  safety_pin
 ) => {
   try {
     let random_password = stringGenerator(8);
@@ -109,6 +114,7 @@ exports.createEmployee = async (
       lastname,
       safety_pin: hash_safety_pin,
       password: hash_password,
+      emergency_contact,
       role_id,
     });
 
@@ -125,6 +131,7 @@ exports.createEmployee = async (
         username: new_employee.username,
         firstname: new_employee.firstname,
         lastname: new_employee.lastname,
+        emergency_contact: emergency_contact,
         password: random_password,
         role_id: new_employee.role_id,
         title: role.title,

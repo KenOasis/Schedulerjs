@@ -35,7 +35,7 @@ module.exports = {
       },
       safety_pin: {
         allowNull: false,
-        type: Sequelize.STRING(4),
+        type: Sequelize.STRING(64),
       },
       emergency_contact: {
         allowNull: false,

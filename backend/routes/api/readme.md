@@ -473,7 +473,8 @@ body:
     "username": "jtan886",
     "firstname": "Jimmy",
     "lastname": "Tan",
-    "safety_pin": "1234"   // Safety pin should be last 4 digits of SSID
+    "emergency_contact": "415-888-8888",
+    "safety_pin": "1234"
 }
 ```
 
@@ -487,9 +488,10 @@ if success:
         "username": "jtan886",
         "firstname": "Jimmy",
         "lastname": "Tan",
-        "password": "U20r0vV2",
+        "emergency_contact": "415-888-8888",
+        "password": "R1hztF1I",
         "role_id": 1,
-        "title": "Store Manager 893",
+        "title": "Store Manager",
         "abbreviation": "STRM",
         "activated": false
     }
@@ -505,28 +507,30 @@ if success (group_id = 1):
 ```
 {
     "status": "success",
-    "employees": [
-        {
+    "employees": {
+        "0": {
             "employee_id": 1,
             "username": "jtan886",
             "firstname": "Jimmy",
             "lastname": "Tan",
+            "emergency_contact": "415-888-8888",
             "activated": false,
-            "title": "Store Manager 893",
+            "title": "Store Manager",
             "abbreviation": "STRM",
             "name": "Walgreen 00893"
         },
-        {
+        "1": {
             "employee_id": 2,
-            "username": "alin999",
-            "firstname": "Alin",
-            "lastname": "Huang",
+            "username": "abckk",
+            "firstname": "Jackson",
+            "lastname": "Jiang",
+            "emergency_contact": "415-666-6666",
             "activated": false,
-            "title": "Assitant Manager",
-            "abbreviation": "ASM",
+            "title": "Store Manager",
+            "abbreviation": "STRM",
             "name": "Walgreen 00893"
         }
-    ]
+    }
 }
 ```
 
@@ -544,6 +548,7 @@ if success (employee_id = 1):
         "username": "jtan886",
         "firstname": "Jimmy",
         "lastname": "Tan",
+        "emergency_contact": "415-888-8888",
         "role_id": 1,
         "activated": false
     }
@@ -558,10 +563,11 @@ body:
 
 ```
 {
-    "firstname": "Jimmy",
-    "lastname": "Tan",
-    "activated": true,
-    "role_id": 2
+    "firstname": "Jackson",
+    "lastname": "Jiang",
+    "activated": false,
+    "emergency_contact": "415-222-2222",
+    "role_id": "1"
 }
 ```
 
@@ -644,7 +650,7 @@ if success:
             "off_id": 2,
             "company_id": 1,
             "name": "Holiday",
-            "description": "Legal Holiday."
+            "description": "Holiday which required by law"
         }
     ]
 }
@@ -672,11 +678,39 @@ if success (off_id = 1):
 
 #### Update the off type info of given off_id
 
+off_id = 2,
 body:
 
 ```
 {
-    "name": "PTO SF",
-    "description": "Paid time off of San Francisco Area"
+    "name": "Holiday",
+    "description": "Holiday which required by law or local custom"
+}
+```
+
+# Validation errors
+
+### body validation error response
+
+```
+{
+    "status": "invalid data",
+    "errors": [
+        {
+            "value": "of",
+            "msg": "must have length between 3 to 64",
+            "param": "name",
+            "location": "body"
+        }
+        //...
+    ]
+}
+```
+
+### Invalid parameters (not numeric)
+
+```
+{
+    "status": "invalid params"
 }
 ```
