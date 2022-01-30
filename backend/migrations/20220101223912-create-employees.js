@@ -9,7 +9,7 @@ module.exports = {
       },
       username: {
         allowNull: false,
-        type: Sequelize.STRING(64),
+        type: Sequelize.STRING(16),
         unique: true,
       },
       firstname: {

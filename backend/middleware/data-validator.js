@@ -1,57 +1,152 @@
-const { check, validationResult } = require("express-validator");
+const { check, validationResult, checkSchema } = require("express-validator");
 
 const passwordRegex =
   /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,24}$/;
 
-exports.companySignupValidator = async (req, res, next) => {
+const employeeUsernameRegex = /^[A-Za-z]+(?:[A-Za-z0-9]+)*$/;
+
+exports.companyValidator = async (req, res, next) => {
   await check("name")
     .notEmpty()
-    .withMessage("The company name cannot be empty.")
+    .withMessage("cannot be empty(include null or undefined).")
     .bail()
     .isLength({ min: 3, max: 64 })
     .bail()
-    .withMessage("The company name must have length between 3 and 64")
+    .withMessage("must have length between 3 and 64.")
     .run(req);
 
   await check("address")
     .notEmpty()
-    .withMessage("The comapny address cannot be empty")
+    .withMessage("cannot be empty(include null or undefined).")
     .bail()
     .isLength({ min: 6, max: 256 })
-    .withMessage("The company address is between 6 to 256 characters long.")
-    .run(req);
-
-  await check("email")
-    .notEmpty()
-    .withMessage("The email cannot be empty")
-    .bail()
-    .isEmail()
-    .withMessage("Invalid email address")
+    .withMessage("must has length between 6 to 256.")
     .run(req);
 
   await check("phone")
     .notEmpty()
-    .withMessage("Phone number cannot be empty")
+    .withMessage("cannot be empty(include null or undefined).")
     .bail()
-    .isNumeric()
-    .withMessage("Phone number must be numeric number")
-    .bail()
-    .isLength({ min: 11, max: 11 })
-    .withMessage("Phone number must have the legnth 11")
+    .isMobilePhone(["en-US"])
+    .withMessage("is not a valid phone number")
     .run(req);
 
-  await check("password")
-    .matches(passwordRegex)
-    .withMessage(
-      "Must be length >= 8, contain number, letter and special character and max length as 24"
-    )
+  // If method === "POST", it is signup route, otherwise it is update route
+  if (req.method === "POST") {
+    await check("email")
+      .notEmpty()
+      .withMessage("cannot be empty(include null or undefined).")
+      .bail()
+      .isEmail()
+      .withMessage("is an invalid email address")
+      .run(req);
+
+    await check("password")
+      .matches(passwordRegex)
+      .withMessage(
+        "must have length between 8 to 24, and contains number, letter and special character."
+      )
+      .bail()
+      .custom((value, { req }) => {
+        if (value !== req.body.password_confirmation) {
+          throw new Error("is not match with password confirmation");
+        }
+        return true;
+      })
+      .run(req);
+  }
+
+  let results = validationResult(req);
+  if (!results.isEmpty()) {
+    return res
+      .status(400)
+      .json({ status: "invalid data", errors: results.array() });
+  } else {
+    next();
+  }
+};
+
+exports.groupValidator = async (req, res, next) => {
+  await check("name")
+    .notEmpty()
+    .withMessage("cannot be empty(include null or undefined)")
     .bail()
-    .custom((value, { req }) => {
-      if (value !== req.body.password_confirmation) {
-        throw new Error("Password confirmation is not match with password");
-      }
-      return true;
-    })
+    .isLength({ min: 3, max: 64 })
+    .withMessage("must have length between 3 to 64.")
+    .run(req);
+
+  await check("description")
+    .notEmpty()
+    .withMessage("cannot be empty(include null or undefined)")
+    .bail()
+    .isLength({ min: 1, max: 256 })
+    .withMessage("cannot be longer than 256 characters.")
+    .run(req);
+
+  if (req.method === "PUT") {
+    await check("activated")
+      .isBoolean()
+      .withMessage("must be boolean value")
+      .run(req);
+  }
+
+  let results = validationResult(req);
+  if (!results.isEmpty()) {
+    return res
+      .status(400)
+      .json({ status: "invalid data", errors: results.array() });
+  } else {
+    next();
+  }
+};
+
+exports.roleValidator = async (req, res, next) => {
+  if (req.method === "POST") {
+    await check("group_id")
+      .notEmpty()
+      .withMessage("cannot be empty(includ null or undefined).")
+      .bail()
+      .isInt({ min: 1 })
+      .withMessage("must be an integer >= 1")
+      .run(req);
+  }
+  await check("title")
+    .notEmpty()
+    .withMessage("cannot be empty(include null or undefined).")
+    .bail()
+    .isLength({ min: 3, max: 64 })
+    .withMessage("must have the length between 3 and 64.")
+    .run(req);
+
+  await check("abbreviation")
+    .notEmpty()
+    .withMessage("cannot be empty(include null or undefined.")
+    .bail()
+    .isLength({ min: 2, max: 8 })
+    .withMessage("must have length between 2 to 8")
+    .run(req);
+
+  await check("priority")
+    .notEmpty()
+    .withMessage("cannot be empty(include null or undefined")
+    .bail()
+    .isInt({ min: 1 })
+    .withMessage("must be an integer greater than 0")
+    .run(req);
+
+  await check("description")
+    .notEmpty()
+    .withMessage("cannot be empty(include null or undefined")
+    .bail()
+    .isLength({ max: 256 })
+    .withMessage("cannot be longer that 256 characters")
+    .run(req);
+
+  await check("actions").isArray().withMessage("must be an array").run(req);
+
+  await check("actions.*")
+    .isLength({ min: 2, max: 4 })
+    .withMessage("actions.key must be a string has length between 2 to 4.")
     .run(req);
 
   let results = validationResult(req);
@@ -64,33 +159,67 @@ exports.companySignupValidator = async (req, res, next) => {
   }
 };
 
-exports.companyUpdateValidator = async (req, res, next) => {
-  await check("name")
+exports.employeeValidator = async (req, res, next) => {
+  if (req.method === "POST") {
+    await check("username")
+      .notEmpty()
+      .withMessage("cannot be empty(include null or undefined).")
+      .bail()
+      .isLength({ min: 4, max: 16 })
+      .withMessage("must be have length between 4 and 16")
+      .bail()
+      .matches(employeeUsernameRegex)
+      .withMessage(
+        "must be start with a character and contains character and digits only."
+      )
+      .run(req);
+
+    await check("safety_pin")
+      .notEmpty()
+      .withMessage("cannot be empty(include null and undefined).")
+      .matches(/^[0-9]{4}$/)
+      .withMessage("must be a 4 digits number.")
+      .run(req);
+  }
+
+  await check("role_id")
     .notEmpty()
-    .withMessage("The company name cannot be empty")
+    .withMessage("cannot be empty(include null or undefined).")
     .bail()
-    .isLength({ min: 3, max: 64 })
-    .withMessage("The company name must have length between 3 and 64")
+    .isInt({ min: 1 })
+    .withMessage("must be an interger greater than 0")
     .run(req);
 
-  await check("address")
+  await check("firstname")
     .notEmpty()
-    .withMessage("The company address cannot be empty")
+    .withMessage("cannot be empty(include null or undefined).")
     .bail()
-    .isLength({ min: 6, max: 256 })
-    .withMessage("The company address is between 6 to 256 characters long.")
+    .isLength({ min: 1, max: 32 })
+    .withMessage("must have length between 1 to 32.")
     .run(req);
 
-  await check("phone")
+  await check("lastname")
     .notEmpty()
-    .withMessage("Phone number cannot be empty")
+    .withMessage("cannot be empty(include null or undefined).")
     .bail()
-    .isNumeric()
-    .withMessage("Phone number must be numeric number")
-    .bail()
-    .isLength({ min: 11, max: 11 })
-    .withMessage("Phone number must have the legnth 11")
+    .isLength({ min: 1, max: 32 })
+    .withMessage("must have length between 1 to 32.")
     .run(req);
+
+  await check("emergency_contact")
+    .notEmpty()
+    .withMessage("cannot be empty(include null or undefined).")
+    .bail()
+    .isMobilePhone(["en-US"])
+    .withMessage("is not a valid phone number")
+    .run(req);
+
+  if (req.method === "PUT") {
+    await check("activated")
+      .isBoolean()
+      .withMessage("must be boolean value")
+      .run(req);
+  }
 
   let results = validationResult(req);
   if (!results.isEmpty()) {
@@ -101,13 +230,14 @@ exports.companyUpdateValidator = async (req, res, next) => {
     next();
   }
 };
-
 exports.paramsValidator = (req, res, next) => {
-  for (key of Object.values(req.params)) {
-    let numericKey = +key;
-    if (isNaN(numericKey)) {
+  for (value of Object.values(req.params)) {
+    let numericValue = +value;
+    if (isNaN(numericValue)) {
       return res.status(400).json({ status: "invalid params" });
     }
   }
   next();
 };
+
+exports.body;

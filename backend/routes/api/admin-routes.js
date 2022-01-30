@@ -24,7 +24,7 @@ const adminRouteChecker = require("../../middleware/admin-route-checker");
  */
 router.post(
   "/signup",
-  dataValidator.companySignupValidator,
+  dataValidator.companyValidator,
   companyController.signup
 );
 
@@ -54,7 +54,7 @@ router.use(authChecker);
  *  phone
  * }
  */
-router.put("/", dataValidator.companyUpdateValidator, companyController.update);
+router.put("/", dataValidator.companyValidator, companyController.update);
 
 /**
  * Update password of company account
@@ -92,7 +92,7 @@ router.get(
  * Create a new group
  * POST ../api/admin/group/
  */
-router.post("/group", groupController.creatGroup);
+router.post("/group", dataValidator.groupValidator, groupController.creatGroup);
 
 /**
  * Update an existing group info
@@ -102,6 +102,7 @@ router.put(
   "/group/:group_id",
   dataValidator.paramsValidator,
   adminRouteChecker.groupChecker,
+  dataValidator.groupValidator,
   groupController.updateGroup
 );
 
@@ -115,8 +116,10 @@ router.get("/actions", roleController.getActions);
  * Get all the roles of a certain group
  * GET ../api/admin/role/all/:group_id
  */
+
 router.get(
   "/role/all/:group_id",
+  dataValidator.paramsValidator,
   adminRouteChecker.groupChecker,
   roleController.getRolesByGroup
 );
@@ -127,6 +130,7 @@ router.get(
  */
 router.get(
   "/role/:role_id",
+  dataValidator.paramsValidator,
   adminRouteChecker.roleChecker,
   roleController.getRolesById
 );
@@ -138,6 +142,7 @@ router.get(
 router.post(
   "/role/",
   adminRouteChecker.groupChecker,
+  dataValidator.roleValidator,
   roleController.createRole
 );
 
@@ -147,7 +152,10 @@ router.post(
  */
 router.put(
   "/role/:role_id",
+  dataValidator.paramsValidator,
+  dataValidator.roleValidator,
   adminRouteChecker.roleChecker,
+
   roleController.updateRole
 );
 
@@ -157,6 +165,7 @@ router.put(
  */
 router.delete(
   "/role/:role_id",
+  dataValidator.paramsValidator,
   adminRouteChecker.roleChecker,
   roleController.deleteRole
 );
@@ -167,6 +176,7 @@ router.delete(
  */
 router.get(
   "/employee/all/:group_id",
+  dataValidator.paramsValidator,
   adminRouteChecker.groupChecker,
   adminEmployeeController.getEmployeeByGroup
 );
@@ -176,6 +186,7 @@ router.get(
  */
 router.get(
   "/employee/:employee_id",
+  dataValidator.paramsValidator,
   adminRouteChecker.employeeChecker,
   adminEmployeeController.getEmployeeById
 );
@@ -186,6 +197,7 @@ router.get(
  */
 router.post(
   "/employee",
+  dataValidator.employeeValidator,
   adminRouteChecker.roleChecker,
   adminEmployeeController.createEmployee
 );
@@ -196,6 +208,8 @@ router.post(
  */
 router.put(
   "/employee/:employee_id",
+  dataValidator.paramsValidator,
+  dataValidator.employeeValidator,
   adminRouteChecker.employeeChecker,
   adminEmployeeController.updateEmployee
 );
@@ -206,6 +220,7 @@ router.put(
  */
 router.put(
   "/employee/reset_pw/:employee_id",
+  dataValidator.paramsValidator,
   adminRouteChecker.employeeChecker,
   adminEmployeeController.resetPassword
 );

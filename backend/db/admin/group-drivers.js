@@ -85,7 +85,10 @@ exports.updateGroup = async (group_id, name, description, activated) => {
           name,
         },
       });
-      if (is_group_name_existed) {
+      if (
+        is_group_name_existed &&
+        is_group_name_existed.group_id !== group_id
+      ) {
         return [false, `Group name: ${name} is already existed`];
       }
       group.name = name;

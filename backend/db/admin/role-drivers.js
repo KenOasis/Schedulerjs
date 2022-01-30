@@ -161,7 +161,7 @@ exports.updateRole = async (
       title,
     },
   });
-  if (existing_title) {
+  if (existing_title && existing_title.role_id !== role_id) {
     return [false, `title: ${title} is already existed in the group.`];
   }
 
@@ -171,7 +171,7 @@ exports.updateRole = async (
     },
   });
 
-  if (existing_abbreviation) {
+  if (existing_abbreviation && existing_abbreviation.role_id !== role_id) {
     return [
       false,
       `abbreviation: ${abbreviation} is already existed in the group`,
@@ -192,14 +192,20 @@ exports.updateRole = async (
       role_id,
     },
   });
-  for await (action_id of actions) {
+  for await (key of actions) {
+    let action = await Actions.findOne({
+      where: {
+        key,
+      },
+    });
     await Role_Actions.create({
       role_id: role_id,
-      action_id: action_id,
+      action_id: action.action_id,
     });
   }
-  return true;
+  return [true, ""];
 };
+
 exports.deleteRole = async (role_id) => {
   try {
     const isAssigned = await Employees.findOne({

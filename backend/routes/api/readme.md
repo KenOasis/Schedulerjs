@@ -10,7 +10,7 @@ body:
   "name": "Jimmy's Company",
   "address": "888 Broadway st. San Francisco CA. 94133",
   "email": "test@test.com",
-  "phone": "14151234567",
+  "phone": "415-888-8888",
   "password": "Abc12345#",
   "password_confirmation": "Abc12345#"
 }
@@ -26,7 +26,7 @@ IF success it will return json object:
     "name": "Jimmy's Company",
     "address": "888 Broadway st. San Francisco CA. 94133",
     "email": "test@test.com",
-    "phone": "14151234567"
+    "phone": "415-888-8888"
     }
 }
 ```
@@ -97,7 +97,7 @@ body:
 {
     "name": "My company",
     "address": "878 Jackson st. San Francisco CA. 94133",
-    "phone": "14158888888"
+    "phone": "415-888-8888"
 }
 ```
 
@@ -157,7 +157,7 @@ if success:
         "name": "My company",
         "email": "test@test.com",
         "address": "878 Jackson st. San Francisco CA. 94133",
-        "phone": "14158888888"
+        "phone": "415-888-888"
     }
 }
 ```
@@ -433,7 +433,7 @@ body:
     "abbreviation": "STRM",
     "description": "The management leadership of the store.",
     "priority": 1,
-    "actions": [1,2,3,4,5,6]
+    "actions": ["E1","E2","E3","M1","M2","M3","M4"]
 }
 ```
 
