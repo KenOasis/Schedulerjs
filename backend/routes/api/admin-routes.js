@@ -24,7 +24,7 @@ const adminRouteChecker = require("../../middleware/admin-route-checker");
  */
 router.post(
   "/signup",
-  dataValidator.companyValidator,
+  dataValidator.adminEmployeeValidator,
   companyController.signup
 );
 
@@ -43,7 +43,7 @@ router.post(
  */
 router.post("/login", companyController.login);
 
-router.use(authChecker);
+router.use(authChecker.admin);
 
 /**
  * Update basic company info
@@ -54,7 +54,7 @@ router.use(authChecker);
  *  phone
  * }
  */
-router.put("/", dataValidator.companyValidator, companyController.update);
+router.put("/", dataValidator.adminEmployeeValidator, companyController.update);
 
 /**
  * Update password of company account
@@ -92,7 +92,11 @@ router.get(
  * Create a new group
  * POST ../api/admin/group/
  */
-router.post("/group", dataValidator.groupValidator, groupController.creatGroup);
+router.post(
+  "/group",
+  dataValidator.adminGroupValidator,
+  groupController.creatGroup
+);
 
 /**
  * Update an existing group info
@@ -102,7 +106,7 @@ router.put(
   "/group/:group_id",
   dataValidator.paramsValidator,
   adminRouteChecker.groupChecker,
-  dataValidator.groupValidator,
+  dataValidator.adminGroupValidator,
   groupController.updateGroup
 );
 
@@ -142,7 +146,7 @@ router.get(
 router.post(
   "/role/",
   adminRouteChecker.groupChecker,
-  dataValidator.roleValidator,
+  dataValidator.adminRoleValidator,
   roleController.createRole
 );
 
@@ -153,7 +157,7 @@ router.post(
 router.put(
   "/role/:role_id",
   dataValidator.paramsValidator,
-  dataValidator.roleValidator,
+  dataValidator.adminRoleValidator,
   adminRouteChecker.roleChecker,
 
   roleController.updateRole
@@ -197,7 +201,7 @@ router.get(
  */
 router.post(
   "/employee",
-  dataValidator.employeeValidator,
+  dataValidator.adminEmployeeValidator,
   adminRouteChecker.roleChecker,
   adminEmployeeController.createEmployee
 );
@@ -209,7 +213,7 @@ router.post(
 router.put(
   "/employee/:employee_id",
   dataValidator.paramsValidator,
-  dataValidator.employeeValidator,
+  dataValidator.adminEmployeeValidator,
   adminRouteChecker.employeeChecker,
   adminEmployeeController.updateEmployee
 );

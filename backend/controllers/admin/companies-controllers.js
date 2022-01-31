@@ -83,14 +83,14 @@ exports.login = async (req, res, next) => {
   try {
     existing_user = await companyDrivers.emailExisted(email);
     if (existing_user === null) {
-      throw new ValidationError("The email is not existed", 401);
+      throw new ValidationError(`Email ${email} is not existed.`, 401);
     }
 
-    const isPasswordMatched = bcrypt.compareSync(
+    const is_password_matched = bcrypt.compareSync(
       password,
       existing_user.password
     );
-    if (isPasswordMatched) {
+    if (is_password_matched) {
       const token = jwt.sign(
         {
           company_id: existing_user.company_id,

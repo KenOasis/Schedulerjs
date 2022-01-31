@@ -6,7 +6,7 @@ const passwordRegex =
 const employeeUsernameRegex = /^[A-Za-z]+(?:[A-Za-z0-9]+)*$/;
 
 // Data Validator for the admin/company routes
-exports.companyValidator = async (req, res, next) => {
+exports.adminCompanyValidator = async (req, res, next) => {
   await check("name")
     .notEmpty()
     .withMessage("cannot be empty(include null or undefined).")
@@ -68,7 +68,7 @@ exports.companyValidator = async (req, res, next) => {
 };
 
 // Data Validator for the admin/group routes
-exports.groupValidator = async (req, res, next) => {
+exports.adminGroupValidator = async (req, res, next) => {
   await check("name")
     .notEmpty()
     .withMessage("cannot be empty(include null or undefined)")
@@ -103,7 +103,7 @@ exports.groupValidator = async (req, res, next) => {
 };
 
 // Data Validator for the admin/role routes
-exports.roleValidator = async (req, res, next) => {
+exports.adminRoleValidator = async (req, res, next) => {
   if (req.method === "POST") {
     await check("group_id")
       .notEmpty()
@@ -163,7 +163,7 @@ exports.roleValidator = async (req, res, next) => {
 };
 
 // Data Validator for the admin/employee routes
-exports.employeeValidator = async (req, res, next) => {
+exports.adminEmployeeValidator = async (req, res, next) => {
   if (req.method === "POST") {
     await check("username")
       .notEmpty()
