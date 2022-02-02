@@ -1,11 +1,11 @@
 "use strict";
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable("Available_Times", {
-      available_time_id: {
-        type: Sequelize.INTEGER,
-        primaryKey: true,
+    await queryInterface.createTable("Employee_Role_Records", {
+      id: {
         autoIncrement: true,
+        primaryKey: true,
+        type: Sequelize.INTEGER,
       },
       employee_id: {
         allowNull: false,
@@ -16,34 +16,33 @@ module.exports = {
         },
         onDelete: "CASCADE",
       },
-      day: {
-        allowNull: "false",
-        type: Sequelize.ENUM("SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"),
-      },
-      effected_start: {
+      role_id: {
         allowNull: false,
-        type: Sequelize.DATEONLY,
+        type: Sequelize.INTEGER,
+        references: {
+          model: "Roles",
+          key: "role_id",
+        },
+        onDelete: "CASCADE",
       },
-      effected_end: {
+      current: {
         allowNull: false,
-        type: Sequelize.DATEONLY,
+        type: Sequelize.BOOLEAN,
+        defaultValue: true,
       },
       starts_at: {
         allowNull: false,
-        type: Sequelize.TIME,
+        type: Sequelize.DATEONLY,
+        defaultValue: Sequelize.literal("NOW()"),
       },
       ends_at: {
         allowNull: false,
-        type: Sequelize.TIME,
-      },
-      created_at: {
-        allowNull: false,
-        type: Sequelize.DATE,
+        type: Sequelize.DATEONLY,
         defaultValue: Sequelize.literal("NOW()"),
       },
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable("Available_Times");
+    await queryInterface.dropTable("Employee_Role_Records");
   },
 };

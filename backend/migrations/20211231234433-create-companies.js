@@ -26,7 +26,7 @@ module.exports = {
       },
       password: {
         allowNull: false,
-        type: Sequelize.STRING(256),
+        type: Sequelize.STRING(64),
       },
     });
     await queryInterface.addConstraint("Companies", {

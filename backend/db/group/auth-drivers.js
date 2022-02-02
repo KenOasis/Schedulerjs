@@ -21,3 +21,19 @@ exports.existingEmployee = async (username) => {
     throw error;
   }
 };
+
+exports.isEmployeeActivated = async (employee_id) => {
+  try {
+    const employee = await Employees.findByPk(employee_id);
+    if (employee) {
+      return employee.activated;
+    } else {
+      throw new LogicalError(
+        `Employee id : ${employee_id} is not existed.`,
+        404
+      );
+    }
+  } catch (error) {
+    throw error;
+  }
+};

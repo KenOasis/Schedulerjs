@@ -42,11 +42,11 @@ module.exports = (sequelize, DataTypes) => {
       },
       starts_at: {
         allowNull: false,
-        type: DataTypes.DATE,
+        type: DataTypes.TIME,
       },
       ends_at: {
         allowNull: false,
-        type: DataTypes.DATE,
+        type: DataTypes.TIME,
       },
       created_at: {
         allowNull: false,

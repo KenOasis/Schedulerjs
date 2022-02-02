@@ -2,7 +2,7 @@
 const { Model } = require("sequelize");
 const Deferrable = require("sequelize").Deferrable;
 module.exports = (sequelize, DataTypes) => {
-  class Shifts extends Model {
+  class Employee_Role_Records extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -12,21 +12,12 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  Shifts.init(
+  Employee_Role_Records.init(
     {
-      shift_id: {
+      id: {
         autoIncrement: true,
         primaryKey: true,
         type: DataTypes.INTEGER,
-      },
-      schedule_id: {
-        allowNull: false,
-        type: DataTypes.INTEGER,
-        references: {
-          model: "Schedules",
-          key: "schedule_id",
-        },
-        deferrable: Deferrable.INITIALLY_IMMEDIATE,
       },
       employee_id: {
         allowNull: false,
@@ -37,29 +28,36 @@ module.exports = (sequelize, DataTypes) => {
         },
         deferrable: Deferrable.INITIALLY_IMMEDIATE,
       },
-      off_id: {
+      role_id: {
         allowNull: false,
         type: DataTypes.INTEGER,
         references: {
-          model: "Off_Types",
-          key: "off_id",
+          model: "Roles",
+          key: "role_id",
         },
         deferrable: Deferrable.INITIALLY_IMMEDIATE,
       },
+      current: {
+        allowNull: false,
+        type: DataTypes.BOOLEAN,
+        defaultValue: true,
+      },
       starts_at: {
         allowNull: false,
-        type: DataTypes.TIME,
+        type: DataTypes.DATEONLY,
+        defaultValue: sequelize.fn("NOW"),
       },
       ends_at: {
         allowNull: false,
-        type: DataTypes.TIME,
+        type: DataTypes.DATEONLY,
+        defaultValue: sequelize.fn("NOW"),
       },
     },
     {
       timestamps: false,
       sequelize,
-      modelName: "Shifts",
+      modelName: "Employee_Role_Records",
     }
   );
-  return Shifts;
+  return Employee_Role_Records;
 };

@@ -39,6 +39,14 @@ exports.login = async (req, res, next) => {
   }
 };
 
+exports.getEmployeeInfo = async (req, res, next) => {
+  const employee_id = req.userData.employee_id;
+  try {
+  } catch (error) {
+    next(error);
+  }
+};
+
 exports.updatePassword = async (req, res, next) => {
   const { password, new_password } = req.body;
   const username = req.userData.username;

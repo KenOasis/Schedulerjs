@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const authChecker = require("../../middleware/auth-checker");
 const employeeControllers = require("../../controllers/group/employee-controllers");
+const emplyeeActivationChecker = require("../../middleware/employee-activation-checker");
 /**
  * Employee Login
  * .../group/login  POST
@@ -9,22 +10,29 @@ const employeeControllers = require("../../controllers/group/employee-controller
 
 router.post("/login", employeeControllers.login);
 
-// TODO add middleware check activation status of the account
 // check login status
 router.use(authChecker.employee);
+
+/**
+ * Get Employee info
+ * .../group/employee_info  GET
+ */
+
+router.get("/employee_info");
 /**
  * Employee change their password
  * .../group/change_pw POST
  */
-
 router.post("/change_pw", employeeControllers.updatePassword);
 
 /**
- * Employee record timestamp
- * employee should be logout after this action
- * .../group/sign  POST
+ * Employee get a punch record of the given date
+ * .../group/punch/:year&:month&:day   GET
  */
-router.post("/sign");
+router.get("/punch/:year&:month&:day");
+
+// Middlerware to check employee's activation status
+router.use(emplyeeActivationChecker);
 
 /**
  * Employee get the schedule of the given timestamp
@@ -33,6 +41,14 @@ router.post("/sign");
 router.get("/schedule/:year&:month&:day");
 
 /**
+ * Employee record timestamp
+ * employee should be logout after this action
+ * .../group/sign  POST
+ */
+router.post("/sign");
+
+// Belowed is activated employee only
+/**
  * Employee set the available time of weekday/weekend
  * .../group/available/   POST
  */
@@ -40,22 +56,17 @@ router.post("/available");
 
 /**
  * Employee get the dayoff request records
- * .../group/dayoff   GET
+ * .../group/dayoff GET
  */
 router.get("/dayoff");
 
 /**
  * Employee request a day off
- * .../group/dayoff   POST
+ * .../group/dayoff POST
  */
 
 router.post("/dayoff");
 
-/**
- * Employee get a punch record of the given date
- * .../group/punch/:year&:month&:day   GET
- */
-router.get("/punch/:year&:month&:day");
 /*******************Above are routes that ONLY check activation status******************/
 
 // TODO add middleware to check role action status
@@ -94,5 +105,5 @@ router.put("/punch/:punch_record_id");
  * Employee approved a day off request
  * .../group/dayoff/:off_record_id  PUT
  */
-router.put("/dayoff/:punch_record_id");
+router.put("/dayoff/:off_record_id");
 module.exports = router;
