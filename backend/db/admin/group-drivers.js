@@ -21,6 +21,7 @@ exports.createGroup = async (company_id, name, description) => {
               group_id: group.group_id,
               name: group.name,
               description: group.description,
+              activated: group.activated,
             },
           },
         ];

@@ -45,12 +45,12 @@ module.exports = (sequelize, DataTypes) => {
       starts_at: {
         allowNull: false,
         type: DataTypes.DATEONLY,
-        defaultValue: sequelize.fn("NOW"),
+        defaultValue: new Date(),
       },
       ends_at: {
         allowNull: false,
         type: DataTypes.DATEONLY,
-        defaultValue: sequelize.fn("NOW"),
+        defaultValue: new Date(),
       },
     },
     {

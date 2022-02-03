@@ -3,6 +3,7 @@ const db = require("../../models");
 const Employees = db["Employees"];
 const Roles = db["Roles"];
 const Groups = db["Groups"];
+const Employee_Role_Records = db["Employee_Role_Records"];
 Roles.belongsTo(Groups, { as: "groups", foreignKey: "group_id" });
 Employees.belongsTo(Roles, { as: "roles", foreignKey: "role_id" });
 
@@ -126,6 +127,10 @@ exports.createEmployee = async (
     });
 
     if (new_employee) {
+      await Employee_Role_Records.create({
+        employee_id: new_employee.employee_id,
+        role_id: new_employee.role_id,
+      });
       return {
         employee_id: new_employee.employee_id,
         username: new_employee.username,
@@ -155,6 +160,23 @@ exports.updateEmployee = async (
     const employee = await Employees.findByPk(employee_id);
 
     if (employee) {
+      if (employee.role_id !== role_id) {
+        const employee_role_record = await Employee_Role_Records.findOne({
+          where: {
+            employee_id: employee_id,
+            current: true,
+          },
+        });
+        employee_role_record.current = false;
+        let today = new Date();
+        employee_role_record.ends_at = today;
+        await employee_role_record.save();
+        await Employee_Role_Records.create({
+          employee_id: employee_id,
+          role_id: role_id,
+        });
+      }
+
       employee.firstname = firstname;
       employee.lastname = lastname;
       employee.role_id = role_id;

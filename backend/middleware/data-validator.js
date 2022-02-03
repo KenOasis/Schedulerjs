@@ -263,6 +263,68 @@ exports.offTypeValidator = async (req, res, next) => {
   }
 };
 
+exports.adminLoginValidator = async (req, res, next) => {
+  await check("email")
+    .notEmpty()
+    .withMessage("email cannot be empty(includes null or undefined)")
+    .run(req);
+
+  await check("password")
+    .notEmpty()
+    .withMessage("password cannot be empty(includes null or undefined)")
+    .run(req);
+
+  let results = validationResult(req);
+  if (!results.isEmpty()) {
+    return res
+      .status(400)
+      .json({ status: "invalid data", errors: results.array() });
+  } else {
+    next();
+  }
+};
+
+exports.employeeLoginValidator = async (req, res, next) => {
+  await check("username")
+    .notEmpty()
+    .withMessage("username cannot be empty(includes null or undefined)")
+    .run(req);
+
+  await check("password")
+    .notEmpty()
+    .withMessage("password cannot be empty(includes null or undefined)")
+    .run(req);
+
+  let results = validationResult(req);
+  if (!results.isEmpty()) {
+    return res
+      .status(400)
+      .json({ status: "invalid data", errors: results.array() });
+  } else {
+    next();
+  }
+};
+
+exports.emergencyContactValidator = async (req, res, next) => {
+  console.log(req.body);
+  await check("emergency_contact")
+    .notEmpty()
+    .withMessage("cannot be empty(include null or undefined).")
+    .bail()
+    .isMobilePhone(["en-US"])
+    .withMessage("is not a valid phone number")
+    .run(req);
+
+  let results = validationResult(req);
+  if (!results.isEmpty()) {
+    return res
+      .status(400)
+      .json({ status: "invalid data", errors: results.array() });
+  } else {
+    next();
+  }
+};
+
 // Parameters validator: All parameter must be numeric
 exports.paramsValidator = (req, res, next) => {
   for (value of Object.values(req.params)) {

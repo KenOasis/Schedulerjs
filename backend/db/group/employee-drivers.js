@@ -24,3 +24,24 @@ exports.getEmployeeInfo = async (employee_id) => {
     throw error;
   }
 };
+
+exports.updateEmergencyContact = async (employee_id, emergency_contact) => {
+  try {
+    const employee = await Employees.findByPk(employee_id);
+
+    if (employee) {
+      if (employee.emergency_contact !== emergency_contact) {
+        employee.emergency_contact = emergency_contact;
+        await employee.save();
+      }
+      return true;
+    } else {
+      throw new LogicalError(
+        `Employee id: ${employee_id} is not existed.`,
+        404
+      );
+    }
+  } catch (error) {
+    throw error;
+  }
+};

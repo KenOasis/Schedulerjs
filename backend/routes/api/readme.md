@@ -185,12 +185,13 @@ if success:
     "new_group": {
         "group_id": 1,
         "name": "Walmart",
-        "description": "A Walmart store in Bay Area."
+        "description": "A Walmart store in Bay Area.",
+        "activated": false
     }
 }
 ```
 
-if failed by confilct group name:
+if failed by conflict group name:
 
 ```
 {
@@ -468,14 +469,14 @@ if failed by conflict with employee assigned
 body:
 
 ```
-{
-    "role_id": 1,
-    "username": "jtan886",
-    "firstname": "Jimmy",
-    "lastname": "Tan",
-    "emergency_contact": "415-888-8888",
-    "safety_pin": "1234"
-}
+  {
+      "role_id": 1,
+      "username": "jtan886",
+      "firstname": "Jimmy",
+      "lastname": "Tan",
+      "emergency_contact": "415-888-8888",
+      "safety_pin": "1234"
+  }
 ```
 
 if success:

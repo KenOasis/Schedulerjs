@@ -3,12 +3,17 @@ const router = express.Router();
 const authChecker = require("../../middleware/auth-checker");
 const employeeControllers = require("../../controllers/group/employee-controllers");
 const emplyeeActivationChecker = require("../../middleware/employee-activation-checker");
+const dataValidator = require("../../middleware/data-validator");
 /**
  * Employee Login
  * .../group/login  POST
  */
 
-router.post("/login", employeeControllers.login);
+router.post(
+  "/login",
+  dataValidator.employeeLoginValidator,
+  employeeControllers.login
+);
 
 // check login status
 router.use(authChecker.employee);
@@ -17,8 +22,18 @@ router.use(authChecker.employee);
  * Get Employee info
  * .../group/employee_info  GET
  */
+router.get("/employee_info", employeeControllers.getEmployeeInfo);
 
-router.get("/employee_info");
+/**
+ * Update employee's emergency_contact
+ * .../group/emergency_contact PUT
+ */
+router.put(
+  "/emergency_contact",
+  dataValidator.emergencyContactValidator,
+  employeeControllers.updateEmergencyContact
+);
+
 /**
  * Employee change their password
  * .../group/change_pw POST
@@ -29,6 +44,7 @@ router.post("/change_pw", employeeControllers.updatePassword);
  * Employee get a punch record of the given date
  * .../group/punch/:year&:month&:day   GET
  */
+//// TODO ////
 router.get("/punch/:year&:month&:day");
 
 // Middlerware to check employee's activation status

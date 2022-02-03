@@ -24,7 +24,7 @@ const adminRouteChecker = require("../../middleware/admin-route-checker");
  */
 router.post(
   "/signup",
-  dataValidator.adminEmployeeValidator,
+  dataValidator.adminCompanyValidator,
   companyController.signup
 );
 
@@ -41,7 +41,11 @@ router.post(
  *    token: token
  * }
  */
-router.post("/login", companyController.login);
+router.post(
+  "/login",
+  dataValidator.adminLoginValidator,
+  companyController.login
+);
 
 router.use(authChecker.admin);
 
@@ -54,7 +58,7 @@ router.use(authChecker.admin);
  *  phone
  * }
  */
-router.put("/", dataValidator.adminEmployeeValidator, companyController.update);
+router.put("/", dataValidator.adminCompanyValidator, companyController.update);
 
 /**
  * Update password of company account

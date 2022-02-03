@@ -3,7 +3,7 @@ const ValidationError = require("../../error/validation-error");
 const salt = bcrypt.genSaltSync(10);
 const jwt = require("jsonwebtoken");
 const authDrivers = require("../../db/group/auth-drivers");
-
+const employeeDrivers = require("../../db/group/employee-drivers");
 exports.login = async (req, res, next) => {
   const { username, password } = req.body;
   try {
@@ -42,6 +42,11 @@ exports.login = async (req, res, next) => {
 exports.getEmployeeInfo = async (req, res, next) => {
   const employee_id = req.userData.employee_id;
   try {
+    const employee = await employeeDrivers.getEmployeeInfo(employee_id);
+
+    if (employee) {
+      return res.status(400).json({ status: "success", employee: employee });
+    }
   } catch (error) {
     next(error);
   }
@@ -68,6 +73,23 @@ exports.updatePassword = async (req, res, next) => {
           401
         );
       }
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.updateEmergencyContact = async (req, res, next) => {
+  const { emergency_contact } = req.body;
+  const employee_id = req.userData.employee_id;
+  try {
+    const is_updated_success = await employeeDrivers.updateEmergencyContact(
+      employee_id,
+      emergency_contact
+    );
+
+    if (is_updated_success) {
+      res.status(200).json({ status: "success" });
     }
   } catch (error) {
     next(error);
