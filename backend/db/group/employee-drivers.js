@@ -1,5 +1,4 @@
 const LogicalError = require("../../error/logical-error");
-const { employee } = require("../../middleware/auth-checker");
 const db = require("../../models");
 const Employees = db["Employees"];
 const Roles = db["Roles"];
@@ -41,6 +40,72 @@ exports.updateEmergencyContact = async (employee_id, emergency_contact) => {
         404
       );
     }
+  } catch (error) {
+    throw error;
+  }
+};
+
+exports.getEmployeesOfGroup = async (employee_id) => {
+  try {
+    const employee = await Employees.findOne({
+      raw: true,
+      attributes: ["employee_id", "role.group_id"],
+      where: {
+        employee_id,
+      },
+      include: {
+        model: Roles,
+        as: "role",
+        attributes: [],
+        required: true,
+      },
+    });
+
+    if (!employee) {
+      throw new LogicalError(
+        `Employee id: ${employee_id} is not existed.`,
+        404
+      );
+    }
+
+    const employees = await Employees.findAll({
+      raw: true,
+      attributes: [
+        "employee_id",
+        "firstname",
+        "lastname",
+        "role.title",
+        "role.group_id",
+      ],
+      include: {
+        model: Roles,
+        as: "role",
+        attributes: [],
+        required: true,
+        include: {
+          model: Groups,
+          as: "group",
+          where: {
+            group_id: employee.group_id,
+          },
+          attributes: [],
+          required: true,
+        },
+      },
+    });
+
+    if (!employees || employees.length === 0) {
+      throw new LogicalError("DB error", 500);
+    }
+
+    return employees.map((employee) => {
+      return {
+        employee_id: employee.employee_id,
+        firstname: employee.firstname,
+        lastname: employee.lastname,
+        title: employee.title,
+      };
+    });
   } catch (error) {
     throw error;
   }

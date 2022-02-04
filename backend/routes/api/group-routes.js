@@ -4,6 +4,7 @@ const authChecker = require("../../middleware/auth-checker");
 const employeeControllers = require("../../controllers/group/employee-controllers");
 const emplyeeActivationChecker = require("../../middleware/employee-activation-checker");
 const dataValidator = require("../../middleware/data-validator");
+const employeeActionChecker = require("../../middleware/employee-action-checker");
 /**
  * Employee Login
  * .../group/login  POST
@@ -85,8 +86,18 @@ router.post("/dayoff");
 
 /*******************Above are routes that ONLY check activation status******************/
 
-// TODO add middleware to check role action status
+//middleware to check role action status
 
+/**
+ * Get the all employees' info of the group
+ * .../group/employee_info
+ */
+
+router.get(
+  "/employee_info/all",
+  employeeActionChecker("M1"),
+  employeeControllers.getEmployees
+);
 /**
  * Employee make a schedule
  * .../group/schedule/   POST

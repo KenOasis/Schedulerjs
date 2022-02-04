@@ -4,8 +4,6 @@ const Employees = db["Employees"];
 const Roles = db["Roles"];
 const Groups = db["Groups"];
 const Employee_Role_Records = db["Employee_Role_Records"];
-Roles.belongsTo(Groups, { as: "groups", foreignKey: "group_id" });
-Employees.belongsTo(Roles, { as: "roles", foreignKey: "role_id" });
 
 const stringGenerator = require("../../util/random-string-generator");
 
@@ -24,18 +22,18 @@ exports.getEmployeesByGroup = async (group_id) => {
         "lastname",
         "emergency_contact",
         "activated",
-        "roles.title",
-        "roles.abbreviation",
-        "roles->groups.name",
+        "role.title",
+        "role.abbreviation",
+        "role->group.name",
       ],
       include: {
         model: Roles,
-        as: "roles",
+        as: "role",
         attributes: [],
         required: true,
         include: {
           model: Groups,
-          as: "groups",
+          as: "group",
           attributes: [],
           required: true,
           where: {

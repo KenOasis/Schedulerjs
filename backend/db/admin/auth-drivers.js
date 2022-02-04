@@ -5,11 +5,8 @@ const Roles = db["Roles"];
 const Groups = db["Groups"];
 const Companies = db["Companies"];
 const Off_Types = db["Off_Types"];
+require("../association");
 
-Groups.belongsTo(Companies, { as: "company", foreignKey: "company_id" });
-Roles.belongsTo(Groups, { as: "group", foreignKey: "group_id" });
-Employees.belongsTo(Roles, { as: "role", foreignKey: "role_id" });
-Off_Types.belongsTo(Companies, { as: "off", foreignKey: "company_id" });
 exports.checkGroup = async (group_id, company_id) => {
   try {
     const group = await Groups.findByPk(group_id);

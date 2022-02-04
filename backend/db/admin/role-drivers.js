@@ -3,7 +3,6 @@ const Actions = db["Actions"];
 const Roles = db["Roles"];
 const Role_Actions = db["Role_Actions"];
 const Employees = db["Employees"];
-Role_Actions.hasMany(Actions, { foreignKey: "action_id" });
 const LogicalError = require("../../error/logical-error");
 exports.getActions = async () => {
   try {

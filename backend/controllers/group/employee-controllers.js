@@ -95,3 +95,15 @@ exports.updateEmergencyContact = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.getEmployees = async (req, res, next) => {
+  const employee_id = req.userData.employee_id;
+  try {
+    const employees = await employeeDrivers.getEmployeesOfGroup(employee_id);
+    if (employees) {
+      return res.status(200).json({ status: "success", employees: employees });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
