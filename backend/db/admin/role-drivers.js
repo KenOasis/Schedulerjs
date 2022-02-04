@@ -117,13 +117,15 @@ exports.getRolesById = async (role_id) => {
       attributes: [
         "role_id",
         "action_id",
-        "Actions.key",
-        "Actions.name",
-        "Actions.description",
+        "action.key",
+        "action.name",
+        "action.description",
       ],
       include: {
         model: Actions,
+        as: "action",
         attributes: [],
+        required: true,
       },
     });
     if (role && actions) {

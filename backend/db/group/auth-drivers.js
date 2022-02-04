@@ -43,24 +43,43 @@ exports.isEmployeeActivated = async (employee_id) => {
 
 exports.checkEmployeeAction = async (employee_id, action_key) => {
   try {
-    const employee = await Employees.findByPk(employee_id);
-    const action = await Actions.findOne({
+    const employee = await Employees.findOne({
+      raw: true,
+      attributes: [
+        "employee_id",
+        "role.role_id",
+        "role->role_action->action.action_id",
+        "role->role_action->action.key",
+      ],
       where: {
-        key: action_key,
+        employee_id,
+      },
+      include: {
+        model: Roles,
+        as: "role",
+        attributes: [],
+        required: true,
+        include: {
+          model: Role_Actions,
+          as: "role_action",
+          attributes: [],
+          required: true,
+          include: {
+            model: Actions,
+            as: "action",
+            attributes: [],
+            where: {
+              key: action_key,
+            },
+            required: true,
+          },
+        },
       },
     });
-    if (employee && action) {
-      const role_action = await Role_Actions.findOne({
-        where: {
-          role_id: employee.role_id,
-          action_id: action.action_id,
-        },
-      });
-      if (role_action) {
-        return true;
-      }
+    console.log(employee);
+    if (employee) {
+      return true;
     }
-    return false;
     return false;
   } catch (error) {
     throw error;

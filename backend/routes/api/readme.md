@@ -508,30 +508,41 @@ if success (group_id = 1):
 ```
 {
     "status": "success",
-    "employees": {
-        "0": {
-            "employee_id": 1,
-            "username": "jtan886",
-            "firstname": "Jimmy",
-            "lastname": "Tan",
+    "employees": [
+        {
+            "employee_id": 2,
+            "username": "jd231",
+            "firstname": "John",
+            "lastname": "DOe",
+            "emergency_contact": "415-888-8888",
+            "activated": true,
+            "title": "Clerk",
+            "abbreviation": "CLK",
+            "name": "Walmart"
+        },
+        {
+            "employee_id": 3,
+            "username": "zh666",
+            "firstname": "Z",
+            "lastname": "Huang",
             "emergency_contact": "415-888-8888",
             "activated": false,
             "title": "Store Manager",
             "abbreviation": "STRM",
-            "name": "Walgreen 00893"
+            "name": "Walmart"
         },
-        "1": {
-            "employee_id": 2,
-            "username": "abckk",
-            "firstname": "Jackson",
-            "lastname": "Jiang",
-            "emergency_contact": "415-666-6666",
-            "activated": false,
-            "title": "Store Manager",
-            "abbreviation": "STRM",
-            "name": "Walgreen 00893"
+        {
+            "employee_id": 1,
+            "username": "jtan886",
+            "firstname": "Jimmy",
+            "lastname": "Tan",
+            "emergency_contact": "415-888-1234",
+            "activated": true,
+            "title": "Assitant Manager",
+            "abbreviation": "ASM",
+            "name": "Walmart"
         }
-    }
+    ]
 }
 ```
 

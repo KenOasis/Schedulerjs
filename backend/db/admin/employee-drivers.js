@@ -9,6 +9,7 @@ const stringGenerator = require("../../util/random-string-generator");
 
 const bcrypt = require("bcryptjs");
 const ValidationError = require("../../error/validation-error");
+const { employee } = require("../../middleware/auth-checker");
 const salt = bcrypt.genSaltSync(10);
 
 exports.getEmployeesByGroup = async (group_id) => {
@@ -44,9 +45,9 @@ exports.getEmployeesByGroup = async (group_id) => {
     });
 
     if (employees) {
-      return {
-        ...employees,
-      };
+      return employees.map((employee) => {
+        return { ...employee };
+      });
     }
   } catch (error) {
     throw error;
