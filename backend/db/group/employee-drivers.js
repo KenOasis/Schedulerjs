@@ -5,7 +5,9 @@ const Roles = db["Roles"];
 const Groups = db["Groups"];
 const Companies = db["Companies"];
 const Off_Types = db["Off_Types"];
-
+const Available_Time = db["Available_Time"];
+const { Op } = require("sequelize");
+const e = require("express");
 exports.getEmployeeInfo = async (employee_id) => {
   try {
     const employee = await Employees.findByPk(employee_id);
@@ -106,6 +108,106 @@ exports.getEmployeesOfGroup = async (employee_id) => {
         title: employee.title,
       };
     });
+  } catch (error) {
+    throw error;
+  }
+};
+
+exports.setAvailableTime = async (
+  employee_id,
+  day,
+  effected_start,
+  effected_end,
+  starts_at,
+  ends_at
+) => {
+  try {
+    const available_time = await Available_Time.create({
+      employee_id,
+      day,
+      effected_start,
+      effected_end,
+      starts_at,
+      ends_at,
+    });
+
+    if (available_time) {
+      return true;
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+
+exports.getAvailableTime = async (employee_id, year, month, day) => {
+  const days_of_week = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+  const available_time = [];
+
+  try {
+    if (day) {
+      const dateObj = new Date(year, month - 1, day);
+      const day_of_week = days_of_week[dateObj.getDay()];
+      let time = await Available_Time.findAll({
+        where: {
+          employee_id: employee_id,
+          day: days_of_week,
+          effected_start: {
+            [Op.lte]: dateObj,
+          },
+          effected_end: {
+            [Op.gte]: dateObj,
+          },
+        },
+        order: [["created_at", "DESC"]],
+        limit: 1,
+      });
+      if (time.length) {
+        available_time.push({
+          year: year,
+          month: month,
+          day: day,
+          day_of_week: day_of_week,
+          starts_at: time[0].starts_at,
+          ends_at: time[0].ends_at,
+        });
+      }
+      return available_time;
+    } else {
+      const month_end = new Date(year, month, 0);
+      const days = [];
+      for (let i = 1; i <= month_end.getDate(); ++i) {
+        days.push(i);
+      }
+      for await (day of days) {
+        const dateObj = new Date(year, month - 1, day);
+        const day_of_week = days_of_week[dateObj.getDay()];
+        let time = await Available_Time.findAll({
+          where: {
+            employee_id: employee_id,
+            day: day_of_week,
+            effected_start: {
+              [Op.lte]: dateObj,
+            },
+            effected_end: {
+              [Op.gte]: dateObj,
+            },
+          },
+          order: [["created_at", "DESC"]],
+          limit: 1,
+        });
+        if (time.length) {
+          available_time.push({
+            year: year,
+            month: month,
+            day: day,
+            day_of_week: day_of_week,
+            starts_at: time[0].starts_at,
+            ends_at: time[0].ends_at,
+          });
+        }
+      }
+      return available_time;
+    }
   } catch (error) {
     throw error;
   }

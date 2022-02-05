@@ -39,7 +39,11 @@ router.put(
  * Employee change their password
  * .../group/change_pw POST
  */
-router.post("/change_pw", employeeControllers.updatePassword);
+router.put(
+  "/change_pw",
+  dataValidator.employeePasswordValidator,
+  employeeControllers.updatePassword
+);
 
 /**
  * Employee get a punch record of the given date
@@ -67,10 +71,18 @@ router.post("/sign");
 // Belowed is activated employee only
 /**
  * Employee set the available time of weekday/weekend
- * .../group/available/   POST
+ * .../group/available  POST
  */
-router.post("/available");
+router.post("/available", employeeControllers.setAvailableTime);
 
+/**
+ * Get logged-in employee availabel time for a specific time period
+ * .../group/available    GET
+ */
+router.get(
+  "/available/:year&:month&:day",
+  employeeControllers.getAvailableTime
+);
 /**
  * Employee get the dayoff request records
  * .../group/dayoff GET

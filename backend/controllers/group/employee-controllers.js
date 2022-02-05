@@ -4,6 +4,7 @@ const salt = bcrypt.genSaltSync(10);
 const jwt = require("jsonwebtoken");
 const authDrivers = require("../../db/group/auth-drivers");
 const employeeDrivers = require("../../db/group/employee-drivers");
+const scheduleDrivers = require("../../db/group/schedule-drivers");
 exports.login = async (req, res, next) => {
   const { username, password } = req.body;
   try {
@@ -45,7 +46,7 @@ exports.getEmployeeInfo = async (req, res, next) => {
     const employee = await employeeDrivers.getEmployeeInfo(employee_id);
 
     if (employee) {
-      return res.status(400).json({ status: "success", employee: employee });
+      return res.status(200).json({ status: "success", employee: employee });
     }
   } catch (error) {
     next(error);
@@ -102,6 +103,48 @@ exports.getEmployees = async (req, res, next) => {
     const employees = await employeeDrivers.getEmployeesOfGroup(employee_id);
     if (employees) {
       return res.status(200).json({ status: "success", employees: employees });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.setAvailableTime = async (req, res, next) => {
+  const employee_id = req.userData.employee_id;
+  const { day, effected_start, effected_end, starts_at, ends_at } = req.body;
+  try {
+    const is_success = await employeeDrivers.setAvailableTime(
+      employee_id,
+      day,
+      effected_start,
+      effected_end,
+      starts_at,
+      ends_at
+    );
+    if (is_success) {
+      return res.status(200).json({ status: "success" });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.getAvailableTime = async (req, res, next) => {
+  const employee_id = req.userData.employee_id;
+  const year = +req.params.year;
+  const month = +req.params.month;
+  const day = +req.params.day;
+  try {
+    const available_time = await employeeDrivers.getAvailableTime(
+      employee_id,
+      year,
+      month,
+      day
+    );
+    if (available_time) {
+      return res
+        .status(200)
+        .json({ status: "success", available_times: available_time });
     }
   } catch (error) {
     next(error);

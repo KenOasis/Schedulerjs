@@ -263,6 +263,7 @@ exports.offTypeValidator = async (req, res, next) => {
   }
 };
 
+// Data validator for admin/login routes
 exports.adminLoginValidator = async (req, res, next) => {
   await check("email")
     .notEmpty()
@@ -284,6 +285,7 @@ exports.adminLoginValidator = async (req, res, next) => {
   }
 };
 
+// Data validator for group/login routes
 exports.employeeLoginValidator = async (req, res, next) => {
   await check("username")
     .notEmpty()
@@ -305,6 +307,7 @@ exports.employeeLoginValidator = async (req, res, next) => {
   }
 };
 
+// Data validator for group/emergency_contact routes
 exports.emergencyContactValidator = async (req, res, next) => {
   console.log(req.body);
   await check("emergency_contact")
@@ -325,6 +328,29 @@ exports.emergencyContactValidator = async (req, res, next) => {
   }
 };
 
+// Data validator for group/change_pw routes
+exports.employeePasswordValidator = async (req, res, next) => {
+  await check("password")
+    .notEmpty()
+    .withMessage("cannot be empty(include null and undefined)")
+    .run(req);
+
+  await check("new_password")
+    .matches(passwordRegex)
+    .withMessage(
+      "must have length between 8 to 24, and contains number, letter and special character."
+    )
+    .run(req);
+
+  let results = validationResult(req);
+  if (!results.isEmpty()) {
+    return res
+      .status(400)
+      .json({ status: "invalid data", errors: results.array() });
+  } else {
+    next();
+  }
+};
 // Parameters validator: All parameter must be numeric
 exports.paramsValidator = (req, res, next) => {
   for (value of Object.values(req.params)) {

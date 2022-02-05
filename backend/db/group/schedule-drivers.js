@@ -9,7 +9,7 @@ const Groups = db["Groups"];
 const Companies = db["Companies"];
 const Off_Types = db["Off_Types"];
 const Schedules = db["Schedules"];
-
+const Available_Time = db["Available_Time"];
 exports.getScheduleByEmployee = async (employee_id, year, month, day) => {
   try {
   } catch (error) {

@@ -4,7 +4,9 @@ const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 const numset = "0123456789";
 
-const allset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+const specialset = "@$!%*#?&";
+const allset =
+  "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@$!%*#?&";
 
 const generator = (size) => {
   if (size <= 1) {
@@ -16,6 +18,8 @@ const generator = (size) => {
       str += charset.charAt(crypto.randomInt(charset.length));
     } else if (i === 1) {
       str += numset.charAt(crypto.randomInt(numset.length));
+    } else if (i == 3) {
+      str += specialset.charAt(crypto.randomInt(specialset.length));
     } else {
       str += allset.charAt(crypto.randomInt(allset.length));
     }
