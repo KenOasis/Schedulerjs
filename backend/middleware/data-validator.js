@@ -5,11 +5,15 @@ const passwordRegex =
 
 const employeeUsernameRegex = /^[A-Za-z]+(?:[A-Za-z0-9]+)*$/;
 
+const notNullMessage = "cannot be empty(include null or undefined)";
+
+const days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+
 // Data Validator for the admin/company routes
 exports.adminCompanyValidator = async (req, res, next) => {
   await check("name")
     .notEmpty()
-    .withMessage("cannot be empty(include null or undefined).")
+    .withMessage(notNullMessage)
     .bail()
     .isLength({ min: 3, max: 64 })
     .bail()
@@ -18,7 +22,7 @@ exports.adminCompanyValidator = async (req, res, next) => {
 
   await check("address")
     .notEmpty()
-    .withMessage("cannot be empty(include null or undefined).")
+    .withMessage(notNullMessage)
     .bail()
     .isLength({ min: 6, max: 256 })
     .withMessage("must has length between 6 to 256.")
@@ -26,7 +30,7 @@ exports.adminCompanyValidator = async (req, res, next) => {
 
   await check("phone")
     .notEmpty()
-    .withMessage("cannot be empty(include null or undefined).")
+    .withMessage(notNullMessage)
     .bail()
     .isMobilePhone(["en-US"])
     .withMessage("is not a valid phone number")
@@ -36,7 +40,7 @@ exports.adminCompanyValidator = async (req, res, next) => {
   if (req.method === "POST") {
     await check("email")
       .notEmpty()
-      .withMessage("cannot be empty(include null or undefined).")
+      .withMessage(notNullMessage)
       .bail()
       .isEmail()
       .withMessage("is an invalid email address")
@@ -71,7 +75,7 @@ exports.adminCompanyValidator = async (req, res, next) => {
 exports.adminGroupValidator = async (req, res, next) => {
   await check("name")
     .notEmpty()
-    .withMessage("cannot be empty(include null or undefined)")
+    .withMessage(notNullMessage)
     .bail()
     .isLength({ min: 3, max: 64 })
     .withMessage("must have length between 3 to 64.")
@@ -79,7 +83,7 @@ exports.adminGroupValidator = async (req, res, next) => {
 
   await check("description")
     .notEmpty()
-    .withMessage("cannot be empty(include null or undefined)")
+    .withMessage(notNullMessage)
     .bail()
     .isLength({ min: 1, max: 256 })
     .withMessage("cannot be longer than 256 characters.")
@@ -107,7 +111,7 @@ exports.adminRoleValidator = async (req, res, next) => {
   if (req.method === "POST") {
     await check("group_id")
       .notEmpty()
-      .withMessage("cannot be empty(includ null or undefined).")
+      .withMessage(notNullMessage)
       .bail()
       .isInt({ min: 1 })
       .withMessage("must be an integer >= 1")
@@ -115,7 +119,7 @@ exports.adminRoleValidator = async (req, res, next) => {
   }
   await check("title")
     .notEmpty()
-    .withMessage("cannot be empty(include null or undefined).")
+    .withMessage(notNullMessage)
     .bail()
     .isLength({ min: 3, max: 64 })
     .withMessage("must have the length between 3 and 64.")
@@ -123,7 +127,7 @@ exports.adminRoleValidator = async (req, res, next) => {
 
   await check("abbreviation")
     .notEmpty()
-    .withMessage("cannot be empty(include null or undefined.")
+    .withMessage(notNullMessage)
     .bail()
     .isLength({ min: 2, max: 8 })
     .withMessage("must have length between 2 to 8")
@@ -131,7 +135,7 @@ exports.adminRoleValidator = async (req, res, next) => {
 
   await check("priority")
     .notEmpty()
-    .withMessage("cannot be empty(include null or undefined")
+    .withMessage(notNullMessage)
     .bail()
     .isInt({ min: 1 })
     .withMessage("must be an integer greater than 0")
@@ -139,7 +143,7 @@ exports.adminRoleValidator = async (req, res, next) => {
 
   await check("description")
     .notEmpty()
-    .withMessage("cannot be empty(include null or undefined")
+    .withMessage(notNullMessage)
     .bail()
     .isLength({ max: 256 })
     .withMessage("cannot be longer that 256 characters")
@@ -167,7 +171,7 @@ exports.adminEmployeeValidator = async (req, res, next) => {
   if (req.method === "POST") {
     await check("username")
       .notEmpty()
-      .withMessage("cannot be empty(include null or undefined).")
+      .withMessage(notNullMessage)
       .bail()
       .isLength({ min: 4, max: 16 })
       .withMessage("must be have length between 4 and 16")
@@ -180,7 +184,7 @@ exports.adminEmployeeValidator = async (req, res, next) => {
 
     await check("safety_pin")
       .notEmpty()
-      .withMessage("cannot be empty(include null and undefined).")
+      .withMessage(notNullMessage)
       .matches(/^[0-9]{4}$/)
       .withMessage("must be a 4 digits number.")
       .run(req);
@@ -188,7 +192,7 @@ exports.adminEmployeeValidator = async (req, res, next) => {
 
   await check("role_id")
     .notEmpty()
-    .withMessage("cannot be empty(include null or undefined).")
+    .withMessage(notNullMessage)
     .bail()
     .isInt({ min: 1 })
     .withMessage("must be an interger greater than 0")
@@ -196,7 +200,7 @@ exports.adminEmployeeValidator = async (req, res, next) => {
 
   await check("firstname")
     .notEmpty()
-    .withMessage("cannot be empty(include null or undefined).")
+    .withMessage(notNullMessage)
     .bail()
     .isLength({ min: 1, max: 32 })
     .withMessage("must have length between 1 to 32.")
@@ -204,7 +208,7 @@ exports.adminEmployeeValidator = async (req, res, next) => {
 
   await check("lastname")
     .notEmpty()
-    .withMessage("cannot be empty(include null or undefined).")
+    .withMessage(notNullMessage)
     .bail()
     .isLength({ min: 1, max: 32 })
     .withMessage("must have length between 1 to 32.")
@@ -212,7 +216,7 @@ exports.adminEmployeeValidator = async (req, res, next) => {
 
   await check("emergency_contact")
     .notEmpty()
-    .withMessage("cannot be empty(include null or undefined).")
+    .withMessage(notNullMessage)
     .bail()
     .isMobilePhone(["en-US"])
     .withMessage("is not a valid phone number")
@@ -239,7 +243,7 @@ exports.adminEmployeeValidator = async (req, res, next) => {
 exports.offTypeValidator = async (req, res, next) => {
   await check("name")
     .notEmpty()
-    .withMessage("cannot be empty(include null and undefined).")
+    .withMessage(notNullMessage)
     .bail()
     .isLength({ min: 3, max: 64 })
     .withMessage("must have length between 3 to 64")
@@ -247,7 +251,7 @@ exports.offTypeValidator = async (req, res, next) => {
 
   await check("description")
     .notEmpty()
-    .withMessage("cannot be empty(include null and undefined).")
+    .withMessage(notNullMessage)
     .bail()
     .isLength({ max: 256 })
     .withMessage("cannot be longer that 256 characters.")
@@ -265,15 +269,9 @@ exports.offTypeValidator = async (req, res, next) => {
 
 // Data validator for admin/login routes
 exports.adminLoginValidator = async (req, res, next) => {
-  await check("email")
-    .notEmpty()
-    .withMessage("email cannot be empty(includes null or undefined)")
-    .run(req);
+  await check("email").notEmpty().withMessage(notNullMessage).run(req);
 
-  await check("password")
-    .notEmpty()
-    .withMessage("password cannot be empty(includes null or undefined)")
-    .run(req);
+  await check("password").notEmpty().withMessage(notNullMessage).run(req);
 
   let results = validationResult(req);
   if (!results.isEmpty()) {
@@ -287,15 +285,9 @@ exports.adminLoginValidator = async (req, res, next) => {
 
 // Data validator for group/login routes
 exports.employeeLoginValidator = async (req, res, next) => {
-  await check("username")
-    .notEmpty()
-    .withMessage("username cannot be empty(includes null or undefined)")
-    .run(req);
+  await check("username").notEmpty().withMessage(notNullMessage).run(req);
 
-  await check("password")
-    .notEmpty()
-    .withMessage("password cannot be empty(includes null or undefined)")
-    .run(req);
+  await check("password").notEmpty().withMessage(notNullMessage).run(req);
 
   let results = validationResult(req);
   if (!results.isEmpty()) {
@@ -330,10 +322,7 @@ exports.emergencyContactValidator = async (req, res, next) => {
 
 // Data validator for group/change_pw routes
 exports.employeePasswordValidator = async (req, res, next) => {
-  await check("password")
-    .notEmpty()
-    .withMessage("cannot be empty(include null and undefined)")
-    .run(req);
+  await check("password").notEmpty().withMessage(notNullMessage).run(req);
 
   await check("new_password")
     .matches(passwordRegex)
@@ -342,6 +331,27 @@ exports.employeePasswordValidator = async (req, res, next) => {
     )
     .run(req);
 
+  let results = validationResult(req);
+  if (!results.isEmpty()) {
+    return res
+      .status(400)
+      .json({ status: "invalid data", errors: results.array() });
+  } else {
+    next();
+  }
+};
+
+// Data validator for /group/available  POST
+exports.employeeSetAvailableValidator = async (req, res, next) => {
+  await check("day")
+    .notEmpty()
+    .withMessage(notNullMessage)
+    .bail()
+    .custom((value, { req }) => days.includes(value))
+    .withMessage("not a valid day type")
+    .run(req);
+
+  await check("effected_start").notEmpty().withMessage(notNullMessage).bail();
   let results = validationResult(req);
   if (!results.isEmpty()) {
     return res
