@@ -111,15 +111,13 @@ exports.getEmployees = async (req, res, next) => {
 
 exports.setAvailableTime = async (req, res, next) => {
   const employee_id = req.userData.employee_id;
-  const { day, effected_start, effected_end, starts_at, ends_at } = req.body;
+  const { effected_start, effected_end, available } = req.body;
   try {
     const is_success = await employeeDrivers.setAvailableTime(
       employee_id,
-      day,
       effected_start,
       effected_end,
-      starts_at,
-      ends_at
+      available
     );
     if (is_success) {
       return res.status(200).json({ status: "success" });

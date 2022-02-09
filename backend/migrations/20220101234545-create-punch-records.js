@@ -18,8 +18,7 @@ module.exports = {
       },
       recorded_time: {
         allowNull: false,
-        type: Sequelize.DATE,
-        defaultValue: Sequelize.literal("NOW()"),
+        type: Sequelize.TIME,
       },
     });
   },

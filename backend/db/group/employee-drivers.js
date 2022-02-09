@@ -115,23 +115,27 @@ exports.getEmployeesOfGroup = async (employee_id) => {
 
 exports.setAvailableTime = async (
   employee_id,
-  day,
   effected_start,
   effected_end,
-  starts_at,
-  ends_at
+  available
 ) => {
+  const available_time = [];
   try {
-    const available_time = await Available_Time.create({
-      employee_id,
-      day,
-      effected_start,
-      effected_end,
-      starts_at,
-      ends_at,
-    });
-
-    if (available_time) {
+    for await (day of available) {
+      console.log(day.starts_at);
+      const time = await Available_Time.create({
+        employee_id,
+        day: day.day,
+        effected_start,
+        effected_end,
+        starts_at: day.starts_at,
+        ends_at: day.ends_at,
+      });
+      if (time) {
+        available_time.push(time);
+      }
+    }
+    if (available_time.length === available.length) {
       return true;
     }
   } catch (error) {
@@ -142,7 +146,6 @@ exports.setAvailableTime = async (
 exports.getAvailableTime = async (employee_id, year, month, day) => {
   const days_of_week = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
   const available_time = [];
-
   try {
     if (day) {
       const dateObj = new Date(year, month - 1, day);
@@ -150,7 +153,7 @@ exports.getAvailableTime = async (employee_id, year, month, day) => {
       let time = await Available_Time.findAll({
         where: {
           employee_id: employee_id,
-          day: days_of_week,
+          day: day_of_week,
           effected_start: {
             [Op.lte]: dateObj,
           },

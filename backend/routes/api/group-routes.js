@@ -73,7 +73,11 @@ router.post("/sign");
  * Employee set the available time of weekday/weekend
  * .../group/available  POST
  */
-router.post("/available", employeeControllers.setAvailableTime);
+router.post(
+  "/available",
+  dataValidator.employeeSetAvailableValidator,
+  employeeControllers.setAvailableTime
+);
 
 /**
  * Get logged-in employee availabel time for a specific time period
@@ -81,6 +85,7 @@ router.post("/available", employeeControllers.setAvailableTime);
  */
 router.get(
   "/available/:year&:month&:day",
+  dataValidator.paramsValidator,
   employeeControllers.getAvailableTime
 );
 /**

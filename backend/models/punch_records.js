@@ -30,8 +30,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       recorded_time: {
         allowNull: false,
-        type: DataTypes.DATE,
-        defaultValue: sequelize.fn("NOW"),
+        type: DataTypes.TIME,
       },
     },
     {

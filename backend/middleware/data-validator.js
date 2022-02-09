@@ -10,6 +10,12 @@ const passwordRegex =
 
 const employeeUsernameRegex = /^[A-Za-z]+(?:[A-Za-z0-9]+)*$/;
 
+// YYYY-MM-DD
+const dateRegex = /^\d{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$/;
+
+// HH:MM:SS
+const timeFormat = /(?:[01]\d|2[0-3]):(?:[0-5]\d):(?:[0-5]\d)/;
+
 const notNullMessage = "cannot be empty(include null or undefined)";
 
 const days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
@@ -348,15 +354,56 @@ exports.employeePasswordValidator = async (req, res, next) => {
 
 // Data validator for /group/available  POST
 exports.employeeSetAvailableValidator = async (req, res, next) => {
-  await check("day")
+  await check("effected_start")
     .notEmpty()
     .withMessage(notNullMessage)
     .bail()
-    .custom((value, { req }) => days.includes(value))
-    .withMessage("not a valid day type")
+    .matches(dateRegex)
+    .withMessage("date format should be YYYY-MM-DD.")
     .run(req);
 
-  await check("effected_start").notEmpty().withMessage(notNullMessage).bail();
+  await check("effected_end")
+    .notEmpty()
+    .withMessage(notNullMessage)
+    .bail()
+    .matches(dateRegex)
+    .withMessage("date format should be YYYY-MM-DD")
+    .run(req);
+
+  await check("available")
+    .isArray({ max: 7 })
+    .withMessage(
+      "wrong parameter type, should be an array not longer than 7 days"
+    )
+    .run(req);
+
+  await check("available.*.day")
+    .notEmpty()
+    .withMessage(notNullMessage)
+    .bail()
+    .custom((value, { req }) => {
+      if (!days.includes(value)) {
+        throw new Error("type error.");
+      }
+      return true;
+    })
+    .run(req);
+
+  await check("available.*.starts_at")
+    .notEmpty()
+    .withMessage(notNullMessage)
+    .bail()
+    .matches(timeFormat)
+    .withMessage("time format should be HH:MM:SS")
+    .run(req);
+
+  await check("available.*.ends_at")
+    .notEmpty()
+    .withMessage(notNullMessage)
+    .bail()
+    .matches(timeFormat)
+    .withMessage("time format should be HH:MM:SS")
+    .run(req);
 
   let results = validationResult(req);
   if (!results.isEmpty()) {
@@ -364,10 +411,11 @@ exports.employeeSetAvailableValidator = async (req, res, next) => {
       .status(400)
       .json({ status: "invalid data", errors: results.array() });
   } else {
+    console.log("run valid");
     next();
   }
 };
-// Parameters validator: All parameter must be numeric
+// Parameters validator: All parameter must be numeric int
 exports.paramsValidator = async (req, res, next) => {
   await param("*")
     .notEmpty()
