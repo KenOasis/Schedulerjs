@@ -1,11 +1,71 @@
+# General response style (special one will be list in the route)
+
+### Success: Return json obj as
+
+```
+  {
+    status: "success"
+  }
+```
+
+### Wrong credential(username/email, password/safety_pin...): (for login or change_pw route, check server terminal to see more detail about the error/exception)
+
+### It can be also jwt expired.
+
+```
+  {
+    status: "Unauthorized",
+    message: "Wrong credential"
+  }
+```
+
+### Data Error (illegal data which not existed in database):
+
+```
+  {
+    status: "error",
+    message: "Internal Data Error. Please contact admin.",
+  }
+```
+
+### 500 internal (Server side error/crashed):
+
+```
+  {
+    status: "failed",
+    message: "Internal Server Error",
+  }
+```
+
+### Data Validation Error (body/param):
+
+```
+{
+    "status": "invalid data",
+    "errors": [
+        {
+            "value": "415-888-888",
+            "msg": "is not a valid phone number",
+            "param": "phone",
+            "location": "body"
+        },
+        {
+          // error2
+        },
+        ...
+    ]
+}
+```
+
 # Admin-Company Routes
 
 ## .../api/admin/signup POST
 
 #### Create a new company account
 
-```
 body:
+
+```
 {
   "name": "Jimmy's Company",
   "address": "888 Broadway st. San Francisco CA. 94133",
@@ -78,15 +138,6 @@ if success:
 // Bearer + space + token
 ```
 
-if failed:
-
-```
-{
-    "status": "Unauthorized",
-    "message": "Wrong Credential!"
-}
-```
-
 ## .../api/admin PUT
 
 #### Update basic info of company account
@@ -101,26 +152,6 @@ body:
 }
 ```
 
-if success:
-
-```
-{
-    "status": "success"
-}
-// For the following example: the "success" request will be the same as this if not specified.
-```
-
-otherwise:
-
-```
-{
-    "status": "failed",
-    "message": "Internal Server Error"
-}
-
-// For the following example: the failure request will be the same as this if not specified.
-```
-
 ## .../api/admin/change_pw PUT
 
 #### change the password of the company_account
@@ -131,15 +162,6 @@ body:
 {
     "password": "Abc12345#",
     "new_password": "Abc12345$$"
-}
-```
-
-if failed:
-
-```
-{
-    "status": "Unauthorized",
-    "message": "Wrong Credential!"
 }
 ```
 
@@ -191,7 +213,7 @@ if success:
 }
 ```
 
-if failed by conflict group name:
+if failed by conflict group name(unique):
 
 ```
 {
@@ -212,14 +234,14 @@ if success:
     "groups": [
         {
             "group_id": 2,
-            "name": "Walgreen 0502",
-            "description": "A Walgreen store in San Francisco Bay Area.",
+            "name": "Walgreen 00893",
+            "description": "A Walgreen store in Bay Area.",
             "activated": false
         },
         {
             "group_id": 1,
-            "name": "Walgreen 893",
-            "description": "A Walgreen store in San Francisco Bay Area.",
+            "name": "Walmart",
+            "description": "A Walmart store in Bay Area.",
             "activated": false
         }
     ]
@@ -230,7 +252,7 @@ if success:
 
 #### Get group info of given group_id
 
-if success (group_id = 1):
+if success (group_id = 2):
 
 ```
 {
@@ -248,6 +270,7 @@ if success (group_id = 1):
 
 #### Updated group info of given group_id
 
+group_id = 2,
 body
 
 ```
@@ -257,6 +280,8 @@ body
     "activated": true
 }
 ```
+
+#### it will be failed also if the name conflict with other group
 
 # Admin-Role Routes
 
@@ -272,42 +297,30 @@ if success:
     "actions": [
         {
             "action_id": 1,
-            "key": "E1",
-            "name": "Record Timestamp",
-            "description": "Record the timestamp when starting/ending shift/break."
+            "key": "M0",
+            "name": "General management functionality",
+            "description": "General management functionality which all management role should have and do not need to be assigned to"
         },
         {
             "action_id": 2,
-            "key": "E2",
-            "name": "Setting available working time",
-            "description": "Setting up the available working time frame for every weekday/weekend."
-        },
-        {
-            "action_id": 3,
-            "key": "E3",
-            "name": "Request day off",
-            "description": "Request day off or vacation for future"
-        },
-        {
-            "action_id": 4,
             "key": "M1",
             "name": "Reset Team member's password",
             "description": "Reset all group members' password. This should be the group leader's action."
         },
         {
-            "action_id": 5,
+            "action_id": 3,
             "key": "M2",
             "name": "Manage the day off request",
             "description": "Approved/Declined day off request  for the future."
         },
         {
-            "action_id": 6,
+            "action_id": 4,
             "key": "M3",
             "name": "Manage punch records",
             "description": "Adjusting the timestamp for the finished shift."
         },
         {
-            "action_id": 7,
+            "action_id": 5,
             "key": "M4",
             "name": "Manage Schedule",
             "description": "Creating, modifying, publishing, or deleting the unpublished incoming sheduled. This should be the group leader's action."
@@ -329,7 +342,7 @@ body:
     "abbreviation": "STRM",
     "description": "The management leadership of the store.",
     "priority": 1,
-    "actions": ["E1","E2","E3","M1","M2","M3","M4"]
+    "actions": ["M0","M1","M2","M3","M4"]
 }
 ```
 
@@ -353,12 +366,12 @@ if success (group_id = 1):
     "status": "success",
     "roles": [
         {
-            "role_id": 6,
+            "role_id": 2,
             "tilte": "Assitant Manager",
             "abbreviation": "ASM"
         },
         {
-            "role_id": 5,
+            "role_id": 1,
             "tilte": "Store Manager",
             "abbreviation": "STRM"
         }
@@ -370,31 +383,21 @@ if success (group_id = 1):
 
 #### Get the role info of the given role_id
 
-if success (role_id = 5):
+if success (role_id = 1):
 
 ```
 {
     "status": "success",
     "role": {
-        "role_id": 5,
+        "role_id": 1,
         "abbreviation": "STRM",
         "description": "The management leadership of the store.",
         "priority": 1,
         "actions": [
             {
-                "key": "E1",
-                "name": "Record Timestamp",
-                "description": "Record the timestamp when starting/ending shift/break."
-            },
-            {
-                "key": "E2",
-                "name": "Setting available working time",
-                "description": "Setting up the available working time frame for every weekday/weekend."
-            },
-            {
-                "key": "E3",
-                "name": "Request day off",
-                "description": "Request day off or vacation for future"
+                "key": "M0",
+                "name": "General management functionality",
+                "description": "General management functionality which all management role should have and do not need to be assigned to"
             },
             {
                 "key": "M1",
@@ -425,27 +428,20 @@ if success (role_id = 5):
 
 #### Updated role info of the given role_id
 
-now role_id = 5 (check example above)
+now role_id = 1 (check example above)
 body:
 
 ```
 {
-    "title": "Store Manager 893",
+    "title": "Store Manager",
     "abbreviation": "STRM",
-    "description": "The management leadership of the store.",
+    "description": "The assitant management leadership of the store.",
     "priority": 1,
-    "actions": ["E1","E2","E3","M1","M2","M3","M4"]
+    "actions": ["M0","M1","M2","M3","M4"]
 }
 ```
 
-if failed by conflict title or abbreviation:
-
-```
-{
-    "status": "conflict",
-    "message": "title: Store Manager 893 is already existed in the group."
-}
-```
+#### It will failed too if it has conflicted title/abbreviation
 
 ## .../api/admin/role/:role_id DELETE
 
@@ -510,21 +506,10 @@ if success (group_id = 1):
     "status": "success",
     "employees": [
         {
-            "employee_id": 2,
-            "username": "jd231",
-            "firstname": "John",
-            "lastname": "DOe",
-            "emergency_contact": "415-888-8888",
-            "activated": true,
-            "title": "Clerk",
-            "abbreviation": "CLK",
-            "name": "Walmart"
-        },
-        {
-            "employee_id": 3,
-            "username": "zh666",
-            "firstname": "Z",
-            "lastname": "Huang",
+            "employee_id": 1,
+            "username": "jtan886",
+            "firstname": "Jimmy",
+            "lastname": "Tan",
             "emergency_contact": "415-888-8888",
             "activated": false,
             "title": "Store Manager",
@@ -532,14 +517,25 @@ if success (group_id = 1):
             "name": "Walmart"
         },
         {
-            "employee_id": 1,
-            "username": "jtan886",
-            "firstname": "Jimmy",
-            "lastname": "Tan",
-            "emergency_contact": "415-888-1234",
-            "activated": true,
+            "employee_id": 2,
+            "username": "jd123",
+            "firstname": "John",
+            "lastname": "Doe",
+            "emergency_contact": "415-888-8888",
+            "activated": false,
             "title": "Assitant Manager",
             "abbreviation": "ASM",
+            "name": "Walmart"
+        },
+        {
+            "employee_id": 3,
+            "username": "jd234",
+            "firstname": "Jane",
+            "lastname": "Doe",
+            "emergency_contact": "415-888-8888",
+            "activated": false,
+            "title": "CLERK",
+            "abbreviation": "CLK",
             "name": "Walmart"
         }
     ]
@@ -575,11 +571,11 @@ body:
 
 ```
 {
-    "firstname": "Jackson",
-    "lastname": "Jiang",
+    "firstname": "John",
+    "lastname": "Doe",
+    "emergency_contact": "415-888-8888",
     "activated": false,
-    "emergency_contact": "415-222-2222",
-    "role_id": "1"
+    "role_id": 2
 }
 ```
 
@@ -604,15 +600,6 @@ if success (employee_id = 1):
 }
 ```
 
-if failed (wrong safety_pin):
-
-```
-{
-"status": "Unauthorized",
-"message": "Wrong Credential!"
-}
-```
-
 # Admin-Off Routes
 
 ## .../api/admin/off POST
@@ -623,8 +610,8 @@ body:
 
 ```
 {
-    "name": "PTO",
-    "description": "Paid time off of San Francisco Area."
+    "name": "Regular day off",
+    "description": "Unpaid day off."
 }
 ```
 
@@ -636,8 +623,8 @@ if success:
     "off": {
         "off_id": 1,
         "company_id": 1,
-        "name": "PTO",
-        "description": "Paid time off of San Francisco Area."
+        "name": "Regular day off",
+        "description": "Unpaid day off."
     }
 }
 ```
@@ -655,14 +642,20 @@ if success:
         {
             "off_id": 1,
             "company_id": 1,
-            "name": "PTO",
-            "description": "Paid time off of San Francisco Area."
+            "name": "Regular day off",
+            "description": "Unpaid day off."
         },
         {
             "off_id": 2,
             "company_id": 1,
+            "name": "PTO",
+            "description": "Paid time off in San Francisco County"
+        },
+        {
+            "off_id": 3,
+            "company_id": 1,
             "name": "Holiday",
-            "description": "Holiday which required by law"
+            "description": "Holidy by law or local charts"
         }
     ]
 }
@@ -680,8 +673,8 @@ if success (off_id = 1):
     "off": {
         "off_id": 1,
         "company_id": 1,
-        "name": "PTO",
-        "description": "Paid time off of San Francisco Area."
+        "name": "Regular day off",
+        "description": "Unpaid day off."
     }
 }
 ```
@@ -690,39 +683,12 @@ if success (off_id = 1):
 
 #### Update the off type info of given off_id
 
-off_id = 2,
+off_id = 3,
 body:
 
 ```
 {
     "name": "Holiday",
     "description": "Holiday which required by law or local custom"
-}
-```
-
-# Validation errors
-
-### body validation error response
-
-```
-{
-    "status": "invalid data",
-    "errors": [
-        {
-            "value": "of",
-            "msg": "must have length between 3 to 64",
-            "param": "name",
-            "location": "body"
-        }
-        //...
-    ]
-}
-```
-
-### Invalid parameters (not numeric)
-
-```
-{
-    "status": "invalid params"
 }
 ```

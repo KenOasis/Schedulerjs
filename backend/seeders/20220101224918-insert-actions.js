@@ -2,20 +2,10 @@
 
 const actions = [
   {
-    key: "E1",
-    name: "Record Timestamp",
-    description: "Record the timestamp when starting/ending shift/break.",
-  },
-  {
-    key: "E2",
-    name: "Setting available working time",
+    key: "M0",
+    name: "General management functionality",
     description:
-      "Setting up the available working time frame for every weekday/weekend.",
-  },
-  {
-    key: "E3",
-    name: "Request day off",
-    description: "Request day off or vacation for future",
+      "General management functionality which all management role should have and do not need to be assigned to",
   },
   {
     key: "M1",
@@ -23,7 +13,6 @@ const actions = [
     description:
       "Reset all group members' password. This should be the group leader's action.",
   },
-
   {
     key: "M2",
     name: "Manage the day off request",

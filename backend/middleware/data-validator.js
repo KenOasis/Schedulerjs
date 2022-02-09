@@ -1,4 +1,9 @@
-const { check, validationResult, checkSchema } = require("express-validator");
+const {
+  check,
+  param,
+  validationResult,
+  checkSchema,
+} = require("express-validator");
 
 const passwordRegex =
   /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,24}$/;
@@ -352,6 +357,7 @@ exports.employeeSetAvailableValidator = async (req, res, next) => {
     .run(req);
 
   await check("effected_start").notEmpty().withMessage(notNullMessage).bail();
+
   let results = validationResult(req);
   if (!results.isEmpty()) {
     return res
@@ -362,14 +368,22 @@ exports.employeeSetAvailableValidator = async (req, res, next) => {
   }
 };
 // Parameters validator: All parameter must be numeric
-exports.paramsValidator = (req, res, next) => {
-  for (value of Object.values(req.params)) {
-    let numericValue = +value;
-    if (isNaN(numericValue)) {
-      return res.status(400).json({ status: "invalid params" });
-    }
+exports.paramsValidator = async (req, res, next) => {
+  await param("*")
+    .notEmpty()
+    .withMessage(notNullMessage)
+    .bail()
+    .isInt()
+    .withMessage("Invalid params")
+    .run(req);
+  let results = validationResult(req);
+  if (!results.isEmpty()) {
+    return res
+      .status(400)
+      .json({ status: "invalid params", errors: results.array() });
+  } else {
+    next();
   }
-  next();
 };
 
 exports.body;
