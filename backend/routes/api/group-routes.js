@@ -100,7 +100,7 @@ router.get("/dayoff");
  * .../group/dayoff POST
  */
 
-router.post("/dayoff");
+router.post("/dayoff", employeeControllers.creatOffRecord);
 
 /*******************Above are routes that ONLY check activation status******************/
 

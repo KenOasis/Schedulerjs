@@ -7,7 +7,7 @@ const Companies = db["Companies"];
 const Off_Types = db["Off_Types"];
 const Available_Time = db["Available_Time"];
 const { Op } = require("sequelize");
-const e = require("express");
+const Off_Records = db["Off_Records"];
 exports.getEmployeeInfo = async (employee_id) => {
   try {
     const employee = await Employees.findByPk(employee_id);
@@ -250,6 +250,61 @@ exports.setOffRecord = async (
 ) => {
   try {
     // const off_record = await
+  } catch (error) {
+    throw error;
+  }
+};
+
+exports.createOffRecord = async (
+  employee_id,
+  requested_at,
+  off_id,
+  starts_at,
+  ends_at,
+  reason
+) => {
+  try {
+    const off_record = await Off_Records.create({
+      employee_id,
+      requested_at,
+      off_id,
+      starts_at,
+      ends_at,
+      reason,
+    });
+    if (off_record) {
+      return {
+        off_record_id: off_record.off_record_id,
+        employee_id: off_record.employee_id,
+        off_id: off_record.off_id,
+        starts_at: off_record.starts_at,
+        ends_at: off_record.ends_at,
+        reason: off_record.reason,
+        approved: off_record.approved,
+        approved_by: off_record.approved_by,
+        comment: off_record.comment,
+      };
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+
+exports.getOffRecordOfGroup = async (employee_id) => {
+  try {
+  } catch (error) {
+    throw error;
+  }
+};
+
+exports.getOffRecord = async (employee_id) => {
+  try {
+  } catch (error) {
+    throw error;
+  }
+};
+exports.reviewOffRecord = async (off_record_id, approved, approved_by) => {
+  try {
   } catch (error) {
     throw error;
   }

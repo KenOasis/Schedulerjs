@@ -161,23 +161,34 @@ exports.getAvailableTimeOfGroup = async (req, res, next) => {
       month,
       day
     );
-    return res
-      .status(200)
-      .json({
-        status: "success",
-        date: `${year}-${month}-${day}`,
-        available: available,
-      });
+    return res.status(200).json({
+      status: "success",
+      date: `${year}-${month}-${day}`,
+      available: available,
+    });
   } catch (error) {
     next(error);
   }
 };
 
-exports.setOffRecord = async (req, res, next) => {
+exports.creatOffRecord = async (req, res, next) => {
   const employee_id = req.userData.employee_id;
-  const { requested_at, off_id, starts_at, ends_at, approved, reason } =
-    req.body;
+  const { requested_at, off_id, starts_at, ends_at, reason } = req.body;
   try {
+    const off_record = await employeeDrivers.createOffRecord(
+      employee_id,
+      requested_at,
+      off_id,
+      starts_at,
+      ends_at,
+      reason
+    );
+
+    if (off_record) {
+      return res
+        .status(200)
+        .json({ status: "success", off_record: off_record });
+    }
   } catch (error) {
     next(error);
   }
