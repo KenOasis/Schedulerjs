@@ -22,7 +22,6 @@ module.exports = (sequelize, DataTypes) => {
       requested_at: {
         allowNull: false,
         type: DataTypes.DATE,
-        defaultValue: sequelize.fn("NOW"),
       },
       off_id: {
         allowNull: false,
@@ -51,9 +50,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.DATEONLY,
       },
       approved: {
-        allowNull: false,
         type: DataTypes.BOOLEAN,
-        defaultValue: false,
       },
       reason: {
         allowNull: false,
@@ -68,7 +65,6 @@ module.exports = (sequelize, DataTypes) => {
         deferrable: Deferrable.INITIALLY_IMMEDIATE,
       },
       comment: {
-        allowNull: false,
         type: DataTypes.STRING(256),
       },
     },

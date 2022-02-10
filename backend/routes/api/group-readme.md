@@ -158,10 +158,156 @@ body:
 
 ## .../api/group/available/:year&:month&:day GET
 
+#### Get the available time of the logged-in employee
+
+if day == 0 it will return all available time in that month
+year = 2022, month = 2, day = 0,
+
+```
+{
+    "status": "success",
+    "available": [
+        {
+            "year": 2022,
+            "month": 2,
+            "day": 8,
+            "day_of_week": "TUE",
+            "starts_at": "08:00:00",
+            "ends_at": "20:00:00"
+        },
+        {
+            "year": 2022,
+            "month": 2,
+            "day": 13,
+            "day_of_week": "SUN",
+            "starts_at": "08:00:00",
+            "ends_at": "20:00:00"
+        },
+        {
+            "year": 2022,
+            "month": 2,
+            "day": 14,
+            "day_of_week": "MON",
+            "starts_at": "08:00:00",
+            "ends_at": "20:00:00"
+        },
+        {
+            "year": 2022,
+            "month": 2,
+            "day": 15,
+            "day_of_week": "TUE",
+            "starts_at": "08:00:00",
+            "ends_at": "20:00:00"
+        },
+        {
+            "year": 2022,
+            "month": 2,
+            "day": 20,
+            "day_of_week": "SUN",
+            "starts_at": "08:00:00",
+            "ends_at": "20:00:00"
+        },
+        {
+            "year": 2022,
+            "month": 2,
+            "day": 21,
+            "day_of_week": "MON",
+            "starts_at": "08:00:00",
+            "ends_at": "20:00:00"
+        },
+        {
+            "year": 2022,
+            "month": 2,
+            "day": 22,
+            "day_of_week": "TUE",
+            "starts_at": "08:00:00",
+            "ends_at": "20:00:00"
+        },
+        {
+            "year": 2022,
+            "month": 2,
+            "day": 27,
+            "day_of_week": "SUN",
+            "starts_at": "08:00:00",
+            "ends_at": "20:00:00"
+        },
+        {
+            "year": 2022,
+            "month": 2,
+            "day": 28,
+            "day_of_week": "MON",
+            "starts_at": "08:00:00",
+            "ends_at": "20:00:00"
+        }
+    ]
+}
+```
+
+if day !== 0, it will return the available time of that day:
+year = 2022, month = 2, day = 28,
+
+```
+{
+    "status": "success",
+    "available": [
+        {
+            "year": 2022,
+            "month": 2,
+            "day": 28,
+            "day_of_week": "MON",
+            "starts_at": "08:00:00",
+            "ends_at": "20:00:00"
+        }
+    ]
+}
+```
+
+## .../api/group/available/all/:year&:month&:day
+
+#### get all the available time of all group members at the given date (M0)
+
+year = 2022, month = 2, day = 8
+
 if success:
 
 ```
-
+{
+    "status": "success",
+    "date": "2022-2-8",
+    "available": [
+        {
+            "employee_id": 2,
+            "firstname": "John",
+            "lastname": "Doe",
+            "title": "Assitant Manager",
+            "abbreviation": "ASM",
+            "available": []
+        },
+        {
+            "employee_id": 1,
+            "firstname": "Jimmy",
+            "lastname": "Tan",
+            "title": "Store Manager",
+            "abbreviation": "STRM",
+            "available": [
+                {
+                    "year": 2022,
+                    "month": 2,
+                    "day": 8,
+                    "day_of_week": "TUE",
+                    "starts_at": "08:00:00",
+                    "ends_at": "20:00:00"
+                }
+            ]
+        },
+        {
+            "employee_id": 3,
+            "firstname": "Jane",
+            "lastname": "Doe",
+            "title": "CLERK",
+            "abbreviation": "CLK",
+            "available": []
+        }
+    ]
+}
 ```
-
-#### Get the available time of the logged-in employee

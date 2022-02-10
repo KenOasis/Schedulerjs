@@ -76,7 +76,6 @@ exports.checkEmployeeAction = async (employee_id, action_key) => {
         },
       },
     });
-    console.log(employee);
     if (employee) {
       return true;
     }

@@ -39,9 +39,7 @@ module.exports = {
         type: Sequelize.DATEONLY,
       },
       approved: {
-        allowNull: false,
         type: Sequelize.BOOLEAN,
-        defaultValue: false,
       },
       reason: {
         allowNull: false,
@@ -56,7 +54,6 @@ module.exports = {
         onDelete: "CASCADE",
       },
       comment: {
-        allowNull: false,
         type: Sequelize.STRING(256),
       },
     });

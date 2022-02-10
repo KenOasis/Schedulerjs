@@ -92,6 +92,7 @@ router.get(
  * Employee get the dayoff request records
  * .../group/dayoff GET
  */
+
 router.get("/dayoff");
 
 /**
@@ -112,26 +113,19 @@ router.post("/dayoff");
 
 router.get(
   "/employee_info/all",
-  employeeActionChecker("M1"),
+  employeeActionChecker("M0"),
   employeeControllers.getEmployees
 );
 
 /**
- * Get all the "available" employees at a given day
- *    It contains two part:
- *        1)an array with people have available
- *        2)an array with people have no available but no day off
- * .../group/available/all/:year&month&day GET
+ * Get all the available time of the group members in a special day
+ * .../group/available/all/:year&:month:&day
  */
-router.get("/available/all/:year&:month&:day");
 
-/**
- * Check the whether schedule make at certain day for a certain employee
- * matches the available record
- * .../group/available/check/:year&:month&:day&:employee_id&:start_at&:ends_at  GET
- */
 router.get(
-  "/available/check/:year&:month&:day&:employee_id&:start_at&:ends_at"
+  "/available/all/:year&:month&:day",
+  employeeActionChecker("M0"),
+  employeeControllers.getAvailableTimeOfGroup
 );
 
 /**
@@ -169,4 +163,5 @@ router.put("/punch/:punch_record_id");
  * .../group/dayoff/:off_record_id  PUT
  */
 router.put("/dayoff/:off_record_id");
+
 module.exports = router;

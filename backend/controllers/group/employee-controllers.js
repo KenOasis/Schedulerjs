@@ -142,8 +142,42 @@ exports.getAvailableTime = async (req, res, next) => {
     if (available_time) {
       return res
         .status(200)
-        .json({ status: "success", available_times: available_time });
+        .json({ status: "success", available: available_time });
     }
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.getAvailableTimeOfGroup = async (req, res, next) => {
+  const employee_id = req.userData.employee_id;
+  const year = +req.params.year;
+  const month = +req.params.month;
+  const day = +req.params.day;
+  try {
+    const available = await employeeDrivers.getAvailableTimeByGroup(
+      employee_id,
+      year,
+      month,
+      day
+    );
+    return res
+      .status(200)
+      .json({
+        status: "success",
+        date: `${year}-${month}-${day}`,
+        available: available,
+      });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.setOffRecord = async (req, res, next) => {
+  const employee_id = req.userData.employee_id;
+  const { requested_at, off_id, starts_at, ends_at, approved, reason } =
+    req.body;
+  try {
   } catch (error) {
     next(error);
   }

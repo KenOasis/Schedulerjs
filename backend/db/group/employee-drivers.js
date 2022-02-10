@@ -77,6 +77,7 @@ exports.getEmployeesOfGroup = async (employee_id) => {
         "firstname",
         "lastname",
         "role.title",
+        "role.abbreviation",
         "role.group_id",
       ],
       include: {
@@ -106,6 +107,7 @@ exports.getEmployeesOfGroup = async (employee_id) => {
         firstname: employee.firstname,
         lastname: employee.lastname,
         title: employee.title,
+        abbreviation: employee.abbreviation,
       };
     });
   } catch (error) {
@@ -122,7 +124,6 @@ exports.setAvailableTime = async (
   const available_time = [];
   try {
     for await (day of available) {
-      console.log(day.starts_at);
       const time = await Available_Time.create({
         employee_id,
         day: day.day,
@@ -149,6 +150,10 @@ exports.getAvailableTime = async (employee_id, year, month, day) => {
   try {
     if (day) {
       const dateObj = new Date(year, month - 1, day);
+      // Check wheter the day is the legal day of the month in the year
+      if (month !== dateObj.getMonth() + 1) {
+        return available_time;
+      }
       const day_of_week = days_of_week[dateObj.getDay()];
       let time = await Available_Time.findAll({
         where: {
@@ -211,6 +216,40 @@ exports.getAvailableTime = async (employee_id, year, month, day) => {
       }
       return available_time;
     }
+  } catch (error) {
+    throw error;
+  }
+};
+
+exports.getAvailableTimeByGroup = async (employee_id, year, month, day) => {
+  try {
+    const employees = await this.getEmployeesOfGroup(employee_id);
+    for await (employee of employees) {
+      let available_time = await this.getAvailableTime(
+        employee.employee_id,
+        year,
+        month,
+        day
+      );
+      employee.available = available_time;
+    }
+    return employees;
+  } catch (error) {
+    throw error;
+  }
+};
+
+exports.setOffRecord = async (
+  employee_id,
+  requested_at,
+  off_id,
+  starts_at,
+  ends_at,
+  approved,
+  reason
+) => {
+  try {
+    // const off_record = await
   } catch (error) {
     throw error;
   }

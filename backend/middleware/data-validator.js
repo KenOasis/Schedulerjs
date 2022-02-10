@@ -1,9 +1,4 @@
-const {
-  check,
-  param,
-  validationResult,
-  checkSchema,
-} = require("express-validator");
+const { check, param, validationResult } = require("express-validator");
 
 const passwordRegex =
   /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,24}$/;
@@ -411,10 +406,10 @@ exports.employeeSetAvailableValidator = async (req, res, next) => {
       .status(400)
       .json({ status: "invalid data", errors: results.array() });
   } else {
-    console.log("run valid");
     next();
   }
 };
+
 // Parameters validator: All parameter must be numeric int
 exports.paramsValidator = async (req, res, next) => {
   await param("*")
@@ -424,6 +419,7 @@ exports.paramsValidator = async (req, res, next) => {
     .isInt()
     .withMessage("Invalid params")
     .run(req);
+
   let results = validationResult(req);
   if (!results.isEmpty()) {
     return res
