@@ -188,6 +188,11 @@ exports.creatOffRecord = async (req, res, next) => {
       return res
         .status(200)
         .json({ status: "success", off_record: off_record });
+    } else if (off_record === false) {
+      return res.status(409).json({
+        status: "conflict",
+        message: `You already request day off between ${starts_at} and ${ends_at}`,
+      });
     }
   } catch (error) {
     next(error);

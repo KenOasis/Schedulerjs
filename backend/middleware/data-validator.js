@@ -9,7 +9,7 @@ const employeeUsernameRegex = /^[A-Za-z]+(?:[A-Za-z0-9]+)*$/;
 const dateRegex = /^\d{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$/;
 
 // HH:MM:SS
-const timeFormat = /(?:[01]\d|2[0-3]):(?:[0-5]\d):(?:[0-5]\d)/;
+const timeRegex = /(?:[01]\d|2[0-3]):(?:[0-5]\d):(?:[0-5]\d)/;
 
 const notNullMessage = "cannot be empty(include null or undefined)";
 
@@ -388,7 +388,7 @@ exports.employeeSetAvailableValidator = async (req, res, next) => {
     .notEmpty()
     .withMessage(notNullMessage)
     .bail()
-    .matches(timeFormat)
+    .matches(timeRegex)
     .withMessage("time format should be HH:MM:SS")
     .run(req);
 
@@ -396,8 +396,73 @@ exports.employeeSetAvailableValidator = async (req, res, next) => {
     .notEmpty()
     .withMessage(notNullMessage)
     .bail()
-    .matches(timeFormat)
+    .matches(timeRegex)
     .withMessage("time format should be HH:MM:SS")
+    .run(req);
+
+  let results = validationResult(req);
+  if (!results.isEmpty()) {
+    return res
+      .status(400)
+      .json({ status: "invalid data", errors: results.array() });
+  } else {
+    next();
+  }
+};
+
+exports.createOffRecordsValidator = async (req, res, next) => {
+  await check("requested_at")
+    .notEmpty()
+    .withMessage(notNullMessage)
+    .bail()
+    .custom((value, { req }) => {
+      let date = value.split(" ")[0];
+      let time = value.split(" ")[1];
+      if (!date.match(dateRegex) || !time.match(timeRegex)) {
+        throw new Error("incorrect format");
+      }
+      return true;
+    })
+    .run(req);
+
+  await check("off_id")
+    .notEmpty()
+    .withMessage(notNullMessage)
+    .bail()
+    .isInt()
+    .withMessage("invalid type")
+    .run(req);
+
+  await check("starts_at")
+    .notEmpty()
+    .withMessage(notNullMessage)
+    .bail()
+    .matches(dateRegex)
+    .withMessage("invalid date format.")
+    .run(req);
+
+  await check("ends_at")
+    .notEmpty()
+    .withMessage(notNullMessage)
+    .bail()
+    .matches(dateRegex)
+    .withMessage("invalid date format.")
+    .custom((value, { req }) => {
+      let starts_at = new Date(req.body.starts_at);
+      let ends_at = new Date(value);
+      if (starts_at > ends_at) {
+        throw new Error("starts_at cannot greater than ends at.");
+      }
+      return true;
+    })
+    .run(req);
+
+  await check("reason")
+    .notEmpty()
+    .withMessage(notNullMessage)
+    .bail()
+    .isLength({ min: 3, max: 256 })
+    .withMessage("must be the string with length between 3 to 256.")
     .run(req);
 
   let results = validationResult(req);

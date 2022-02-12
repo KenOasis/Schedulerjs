@@ -264,6 +264,26 @@ exports.createOffRecord = async (
   reason
 ) => {
   try {
+    const confilict_records = await Off_Records.findOne({
+      where: {
+        [Op.or]: [
+          {
+            starts_at: {
+              [Op.between]: [starts_at, ends_at],
+            },
+          },
+          {
+            ends_at: {
+              [Op.between]: [starts_at, ends_at],
+            },
+          },
+        ],
+      },
+    });
+    console.log(confilict_records);
+    if (confilict_records) {
+      return false;
+    }
     const off_record = await Off_Records.create({
       employee_id,
       requested_at,
