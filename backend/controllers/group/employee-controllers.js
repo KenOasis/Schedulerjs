@@ -4,7 +4,6 @@ const salt = bcrypt.genSaltSync(10);
 const jwt = require("jsonwebtoken");
 const authDrivers = require("../../db/group/auth-drivers");
 const employeeDrivers = require("../../db/group/employee-drivers");
-const scheduleDrivers = require("../../db/group/schedule-drivers");
 exports.login = async (req, res, next) => {
   const { username, password } = req.body;
   try {
@@ -97,18 +96,6 @@ exports.updateEmergencyContact = async (req, res, next) => {
   }
 };
 
-exports.getEmployees = async (req, res, next) => {
-  const employee_id = req.userData.employee_id;
-  try {
-    const employees = await employeeDrivers.getEmployeesOfGroup(employee_id);
-    if (employees) {
-      return res.status(200).json({ status: "success", employees: employees });
-    }
-  } catch (error) {
-    next(error);
-  }
-};
-
 exports.setAvailableTime = async (req, res, next) => {
   const employee_id = req.userData.employee_id;
   const { effected_start, effected_end, available } = req.body;
@@ -149,28 +136,6 @@ exports.getAvailableTime = async (req, res, next) => {
   }
 };
 
-exports.getAvailableTimeOfGroup = async (req, res, next) => {
-  const employee_id = req.userData.employee_id;
-  const year = +req.params.year;
-  const month = +req.params.month;
-  const day = +req.params.day;
-  try {
-    const available = await employeeDrivers.getAvailableTimeByGroup(
-      employee_id,
-      year,
-      month,
-      day
-    );
-    return res.status(200).json({
-      status: "success",
-      date: `${year}-${month}-${day}`,
-      available: available,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
 exports.creatOffRecord = async (req, res, next) => {
   const employee_id = req.userData.employee_id;
   const { requested_at, off_id, starts_at, ends_at, reason } = req.body;
@@ -191,9 +156,22 @@ exports.creatOffRecord = async (req, res, next) => {
     } else if (off_record === false) {
       return res.status(409).json({
         status: "conflict",
-        message: `You already request day off between ${starts_at} and ${ends_at}`,
+        message: `You already request day off between (inclusive) ${starts_at} and ${ends_at}`,
       });
     }
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.getOffRecord = async (req, res, next) => {
+  const employee_id = req.userData.employee_id;
+  try {
+    const off_records = await employeeDrivers.getOffRecord(employee_id);
+
+    return res
+      .status(200)
+      .json({ status: "success", off_records: off_records });
   } catch (error) {
     next(error);
   }

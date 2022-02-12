@@ -370,6 +370,22 @@ exports.employeeSetAvailableValidator = async (req, res, next) => {
     .withMessage(
       "wrong parameter type, should be an array not longer than 7 days"
     )
+    .custom((value, { req }) => {
+      value.forEach((available) => {
+        let starts_at = new Date(
+          req.body.effected_start + " " + available.starts_at
+        );
+        let ends_at = new Date(
+          req.body.effected_start + " " + available.ends_at
+        );
+        if (starts_at >= ends_at) {
+          throw new Error(
+            `For ${available.day}, starts_at cannot greater or equal than ends_at time`
+          );
+        }
+      });
+      return true;
+    })
     .run(req);
 
   await check("available.*.day")

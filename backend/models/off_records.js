@@ -39,7 +39,7 @@ module.exports = (sequelize, DataTypes) => {
           model: "Employees",
           key: "employee_id",
         },
-        onDelete: "CASCADE",
+        deferrable: Deferrable.INITIALLY_IMMEDIATE,
       },
       starts_at: {
         allowNull: false,

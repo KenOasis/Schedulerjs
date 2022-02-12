@@ -19,14 +19,18 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
         type: DataTypes.INTEGER,
       },
-      shift_id: {
+      employee_id: {
         allowNull: false,
         type: DataTypes.INTEGER,
         references: {
-          model: "Shifts",
-          key: "shift_id",
+          model: "Employees",
+          key: "employee_id",
         },
         deferrable: Deferrable.INITIALLY_IMMEDIATE,
+      },
+      recorded_date: {
+        allowNull: false,
+        type: DataTypes.DATEONLY,
       },
       recorded_time: {
         allowNull: false,

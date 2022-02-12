@@ -262,7 +262,7 @@ year = 2022, month = 2, day = 28,
 }
 ```
 
-## .../api/group/available/all/:year&:month&:day
+## .../api/group/manage/available/all/:year&:month&:day
 
 #### get all the available time of all group members at the given date (M0)
 
@@ -309,5 +309,172 @@ if success:
             "available": []
         }
     ]
+}
+```
+
+## .../api/group/dayoff POST
+
+#### create a day off request for the logged-in employee
+
+body
+
+```
+{
+    "requested_at": "2022-02-09 20:01:46",
+    "off_id": "1",
+    "starts_at": "2022-02-23",
+    "ends_at": "2022-02-25",
+    "reason": "sicked"
+}
+```
+
+if success:
+
+```
+{
+    "requested_at": "2022-02-09 20:01:46",
+    "off_id": "1",
+    "starts_at": "2022-02-23",
+    "ends_at": "2022-02-25",
+    "reason": "sicked"
+}
+```
+
+if conflict with other day off request:
+
+```
+{
+    "status": "conflict",
+    "message": "You already request day off between (inclusive) 2022-02-23 and 2022-02-25"
+}
+```
+
+## .../api/group/dayoff/ GET
+
+#### get the day off requests for the logged-in employee
+
+if success:
+
+```
+{
+    "status": "success",
+    "off_records": [
+        {
+            "off_record_id": 1,
+            "requested_at": "2022-02-10T04:01:46.000Z",
+            "off_id": 1,
+            "employee_id": 1,
+            "starts_at": "2022-02-10",
+            "ends_at": "2022-02-18",
+            "approved": null,
+            "reason": "Road trip day",
+            "approved_by": null,
+            "comment": null
+        },
+        {
+            "off_record_id": 7,
+            "requested_at": "2022-02-10T04:01:46.000Z",
+            "off_id": 1,
+            "employee_id": 1,
+            "starts_at": "2022-02-19",
+            "ends_at": "2022-02-19",
+            "approved": null,
+            "reason": "Road trip day",
+            "approved_by": null,
+            "comment": null
+        },
+        {
+            "off_record_id": 8,
+            "requested_at": "2022-02-10T04:01:46.000Z",
+            "off_id": 1,
+            "employee_id": 1,
+            "starts_at": "2022-02-20",
+            "ends_at": "2022-02-22",
+            "approved": null,
+            "reason": "Road trip day",
+            "approved_by": null,
+            "comment": null
+        },
+        {
+            "off_record_id": 9,
+            "requested_at": "2022-02-10T04:01:46.000Z",
+            "off_id": 1,
+            "employee_id": 1,
+            "starts_at": "2022-02-23",
+            "ends_at": "2022-02-25",
+            "approved": null,
+            "reason": "sicked",
+            "approved_by": null,
+            "comment": null
+        }
+    ]
+}
+```
+
+## .../api/group/manage/dayoff/all
+
+#### get all the day off requests of the group
+
+if success:
+
+```
+{
+    "status": "success",
+    "off_records": [
+        {
+            "off_record_id": 1,
+            "employee_id": 1,
+            "firstname": "Jimmy",
+            "lastname": "Tan",
+            "approved": null
+        },
+        {
+            "off_record_id": 7,
+            "employee_id": 1,
+            "firstname": "Jimmy",
+            "lastname": "Tan",
+            "approved": null
+        },
+        {
+            "off_record_id": 8,
+            "employee_id": 1,
+            "firstname": "Jimmy",
+            "lastname": "Tan",
+            "approved": null
+        },
+        {
+            "off_record_id": 9,
+            "employee_id": 1,
+            "firstname": "Jimmy",
+            "lastname": "Tan",
+            "approved": null
+        }
+    ]
+}
+```
+
+#### .../api/group/manage/dayoff/:off_record_id
+
+## get the day off record by the off_record_id
+
+off_record_id = 1
+
+if success:
+
+```
+{
+    "status": "success",
+    "off_record": {
+        "off_record_id": 1,
+        "requested_at": "2022-02-10T04:01:46.000Z",
+        "off_id": 1,
+        "employee_id": 1,
+        "starts_at": "2022-02-10",
+        "ends_at": "2022-02-18",
+        "approved": null,
+        "reason": "Road trip day",
+        "approved_by": null,
+        "comment": null
+    }
 }
 ```

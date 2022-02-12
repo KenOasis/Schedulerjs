@@ -5,9 +5,10 @@ const employeeControllers = require("../../controllers/group/employee-controller
 const emplyeeActivationChecker = require("../../middleware/employee-activation-checker");
 const dataValidator = require("../../middleware/data-validator");
 const employeeActionChecker = require("../../middleware/employee-action-checker");
+const managerControllers = require("../../controllers/group/manager-controllers");
 /**
  * Employee Login
- * .../group/login  POST
+ * .../api/group/login  POST
  */
 
 router.post(
@@ -21,13 +22,13 @@ router.use(authChecker.employee);
 
 /**
  * Get Employee info
- * .../group/employee_info  GET
+ * .../api/group/employee_info  GET
  */
 router.get("/employee_info", employeeControllers.getEmployeeInfo);
 
 /**
  * Update employee's emergency_contact
- * .../group/emergency_contact PUT
+ * .../api/group/emergency_contact PUT
  */
 router.put(
   "/emergency_contact",
@@ -37,7 +38,7 @@ router.put(
 
 /**
  * Employee change their password
- * .../group/change_pw POST
+ * .../api/group/change_pw POST
  */
 router.put(
   "/change_pw",
@@ -47,7 +48,7 @@ router.put(
 
 /**
  * Employee get a punch record of the given date
- * .../group/punch/:year&:month&:day   GET
+ * .../api/group/punch/:year&:month&:day   GET
  */
 //// TODO ////
 router.get("/punch/:year&:month&:day");
@@ -57,21 +58,21 @@ router.use(emplyeeActivationChecker);
 
 /**
  * Employee get the schedule of the given timestamp
- * .../group/schedule/:year&:month&:day  GET
+ * .../api/group/schedule/:year&:month&:day  GET
  */
 router.get("/schedule/:year&:month&:day");
 
 /**
  * Employee record timestamp
  * employee should be logout after this action
- * .../group/sign  POST
+ * .../api/group/sign  POST
  */
 router.post("/sign");
 
 // Belowed is activated employee only
 /**
  * Employee set the available time of weekday/weekend
- * .../group/available  POST
+ * .../api/group/available  POST
  */
 router.post(
   "/available",
@@ -81,7 +82,7 @@ router.post(
 
 /**
  * Get logged-in employee availabel time for a specific time period
- * .../group/available    GET
+ * .../api/group/available    GET
  */
 router.get(
   "/available/:year&:month&:day",
@@ -90,14 +91,14 @@ router.get(
 );
 /**
  * Employee get the dayoff request records
- * .../group/dayoff GET
+ * .../api/group/dayoff GET
  */
 
-router.get("/dayoff");
+router.get("/dayoff", employeeControllers.getOffRecord);
 
 /**
  * Employee request a day off
- * .../group/dayoff POST
+ * .../api/group/dayoff POST
  */
 
 router.post(
@@ -106,31 +107,62 @@ router.post(
   employeeControllers.creatOffRecord
 );
 
+/**
+ * Employee update a un-reviwed day off
+ * .../api/group/dayoff/
+ */
+
 /*******************Above are routes that ONLY check activation status******************/
 
 //middleware to check role action status
 
 /**
  * Get the all employees' info of the group
- * .../group/employee_info
+ * .../group/manage/employee_info
  */
 
 router.get(
-  "/employee_info/all",
+  "/manage/employee_info/all",
   employeeActionChecker("M0"),
-  employeeControllers.getEmployees
+  managerControllers.getEmployees
 );
 
 /**
  * Get all the available time of the group members in a special day
- * .../group/available/all/:year&:month:&day
+ * .../group/manage/available/all/:year&:month:&day
  */
 
 router.get(
-  "/available/all/:year&:month&:day",
+  "/manage/available/all/:year&:month&:day",
   employeeActionChecker("M0"),
-  employeeControllers.getAvailableTimeOfGroup
+  managerControllers.getAvailableTimeOfGroup
 );
+
+/**
+ * Get all the dayoff records of the group
+ * .../group/manage/dayoff/all
+ */
+router.get(
+  "/manage/dayoff/all/",
+  employeeActionChecker("M0"),
+  managerControllers.getOffRecordsOfGroup
+);
+
+/**
+ * Get the specific dayoff records of the group
+ * .../group/manage/dayoff/:off_records_id
+ */
+router.get(
+  "/manage/dayoff/:off_record_id",
+  employeeActionChecker("M0"),
+  managerControllers.getOffRecordsById
+);
+
+/**
+ * Employee approved/decline a day off request
+ * .../group/dayoff/:off_record_id  PUT
+ */
+router.put("/dayoff/review/:off_record_id");
 
 /**
  * Employee make a schedule
@@ -155,17 +187,5 @@ router.put("/schedule/publish/:schedule_id");
  * .../empoyee/punch/all/:year&:month&:day  GET
  */
 router.get("/punch/:year&:month&:day");
-
-/**
- * Employee modified a punch record
- * .../group/punch/:punch_record_id  PUT
- */
-router.put("/punch/:punch_record_id");
-
-/**
- * Employee approved a day off request
- * .../group/dayoff/:off_record_id  PUT
- */
-router.put("/dayoff/:off_record_id");
 
 module.exports = router;

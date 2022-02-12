@@ -7,14 +7,18 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      shift_id: {
+      employee_id: {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
-          model: "Shifts",
-          key: "shift_id",
+          model: "Employees",
+          key: "employee_id",
         },
         onDelete: "CASCADE",
+      },
+      recorded_date: {
+        allowNull: false,
+        type: Sequelize.DATEONLY,
       },
       recorded_time: {
         allowNull: false,
