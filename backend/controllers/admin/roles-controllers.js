@@ -89,7 +89,8 @@ exports.deleteRole = async (req, res, next) => {
     } else {
       return res.status(409).json({
         status: "conflict",
-        message: "Cannot delete role which has assigned to some employees.",
+        message:
+          "Cannot delete role which has been assigned to some employees.",
       });
     }
   } catch (error) {

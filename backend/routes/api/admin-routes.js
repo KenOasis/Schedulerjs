@@ -8,7 +8,7 @@ const offController = require("../../controllers/admin/offs-controllers");
 
 const dataValidator = require("../../middleware/data-validator");
 const authChecker = require("../../middleware/auth-checker");
-const adminRouteChecker = require("../../middleware/admin-route-checker");
+const adminIntegrityChecker = require("../../middleware/admin-integrity-checker");
 /**
  * Sign up a new company account
  * POST ../api/admin/signup
@@ -87,7 +87,7 @@ router.get("/group/all", groupController.getGroupsByCompany);
 
 router.get(
   "/group/:group_id",
-  adminRouteChecker.groupChecker,
+  adminIntegrityChecker.groupChecker,
   dataValidator.paramsValidator,
   groupController.getGroupById
 );
@@ -109,7 +109,7 @@ router.post(
 router.put(
   "/group/:group_id",
   dataValidator.paramsValidator,
-  adminRouteChecker.groupChecker,
+  adminIntegrityChecker.groupChecker,
   dataValidator.adminGroupValidator,
   groupController.updateGroup
 );
@@ -128,7 +128,7 @@ router.get("/actions", roleController.getActions);
 router.get(
   "/role/all/:group_id",
   dataValidator.paramsValidator,
-  adminRouteChecker.groupChecker,
+  adminIntegrityChecker.groupChecker,
   roleController.getRolesByGroup
 );
 
@@ -139,7 +139,7 @@ router.get(
 router.get(
   "/role/:role_id",
   dataValidator.paramsValidator,
-  adminRouteChecker.roleChecker,
+  adminIntegrityChecker.roleChecker,
   roleController.getRolesById
 );
 
@@ -149,7 +149,7 @@ router.get(
  */
 router.post(
   "/role/",
-  adminRouteChecker.groupChecker,
+  adminIntegrityChecker.groupChecker,
   dataValidator.adminRoleValidator,
   roleController.createRole
 );
@@ -162,7 +162,7 @@ router.put(
   "/role/:role_id",
   dataValidator.paramsValidator,
   dataValidator.adminRoleValidator,
-  adminRouteChecker.roleChecker,
+  adminIntegrityChecker.roleChecker,
 
   roleController.updateRole
 );
@@ -174,7 +174,7 @@ router.put(
 router.delete(
   "/role/:role_id",
   dataValidator.paramsValidator,
-  adminRouteChecker.roleChecker,
+  adminIntegrityChecker.roleChecker,
   roleController.deleteRole
 );
 
@@ -185,7 +185,7 @@ router.delete(
 router.get(
   "/employee/all/:group_id",
   dataValidator.paramsValidator,
-  adminRouteChecker.groupChecker,
+  adminIntegrityChecker.groupChecker,
   adminEmployeeController.getEmployeeByGroup
 );
 /**
@@ -195,7 +195,7 @@ router.get(
 router.get(
   "/employee/:employee_id",
   dataValidator.paramsValidator,
-  adminRouteChecker.employeeChecker,
+  adminIntegrityChecker.employeeChecker,
   adminEmployeeController.getEmployeeById
 );
 
@@ -206,7 +206,7 @@ router.get(
 router.post(
   "/employee",
   dataValidator.adminEmployeeValidator,
-  adminRouteChecker.roleChecker,
+  adminIntegrityChecker.roleChecker,
   adminEmployeeController.createEmployee
 );
 
@@ -218,7 +218,7 @@ router.put(
   "/employee/:employee_id",
   dataValidator.paramsValidator,
   dataValidator.adminEmployeeValidator,
-  adminRouteChecker.employeeChecker,
+  adminIntegrityChecker.employeeChecker,
   adminEmployeeController.updateEmployee
 );
 
@@ -229,9 +229,22 @@ router.put(
 router.put(
   "/employee/reset_pw/:employee_id",
   dataValidator.paramsValidator,
-  adminRouteChecker.employeeChecker,
+  adminIntegrityChecker.employeeChecker,
   adminEmployeeController.resetPassword
 );
+
+/**
+ * Set the new safety_pin for an employee by given employee_id
+ * PUT .../api/admin/employee/set_sp/:employee_id
+ */
+router.put(
+  "/employee/set_sp/:employee_id",
+  dataValidator.paramsValidator,
+  dataValidator.adminEmployeeSetSafetyPinValidator,
+  adminIntegrityChecker.employeeChecker,
+  adminEmployeeController.setSafetyPin
+);
+
 /**
  * Get all the off type of current company
  * GET ../api/admin/off/all
@@ -245,7 +258,7 @@ router.get("/off/all", offController.getOffByCompany);
 router.get(
   "/off/:off_id",
   dataValidator.paramsValidator,
-  adminRouteChecker.offTypeChecker,
+  adminIntegrityChecker.offTypeChecker,
   offController.getOffById
 );
 
@@ -262,7 +275,7 @@ router.post("/off", dataValidator.offTypeValidator, offController.createOff);
 router.put(
   "/off/:off_id",
   dataValidator.paramsValidator,
-  adminRouteChecker.offTypeChecker,
+  adminIntegrityChecker.offTypeChecker,
   dataValidator.offTypeValidator,
   offController.updateOff
 );

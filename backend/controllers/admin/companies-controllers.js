@@ -34,18 +34,14 @@ exports.update = async (req, res, next) => {
   const company_id = req.userData.company_id;
   const { name, address, phone } = req.body;
   try {
-    if (typeof company_id === "number") {
-      const updatedResult = await companyDrivers.update(
-        company_id,
-        name,
-        address,
-        phone
-      );
-      if (updatedResult) {
-        return res.status(200).json({ status: "success" });
-      }
-    } else {
-      throw new Error("Wrong parameters.");
+    const updatedResult = await companyDrivers.update(
+      company_id,
+      name,
+      address,
+      phone
+    );
+    if (updatedResult) {
+      return res.status(200).json({ status: "success" });
     }
   } catch (error) {
     next(error);

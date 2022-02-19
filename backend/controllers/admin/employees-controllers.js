@@ -82,16 +82,31 @@ exports.updateEmployee = async (req, res, next) => {
 
 exports.resetPassword = async (req, res, next) => {
   const employee_id = +req.params.employee_id;
-  const safety_pin = req.body.safety_pin;
   try {
-    const reset_password = await employeeDrivers.resetPassword(
-      safety_pin,
-      employee_id
-    );
+    const reset_password = await employeeDrivers.resetPassword(employee_id);
     if (reset_password) {
       return res
         .status(200)
         .json({ status: "success", password: reset_password });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.setSafetyPin = async (req, res, next) => {
+  const employee_id = +req.params.employee_id;
+  const { safety_pin } = req.body;
+  try {
+    const is_updated_success = await employeeDrivers.setSafetyPin(
+      employee_id,
+      safety_pin
+    );
+    if (is_updated_success) {
+      return res.status(200).json({
+        status: "success",
+        message: `Employee with employee id ${employee_id} has set the new safety_pin as ${safety_pin}`,
+      });
     }
   } catch (error) {
     next(error);

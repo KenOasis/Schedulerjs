@@ -2,6 +2,23 @@ const LogicalError = require("../../error/logical-error");
 const db = require("../../models");
 const Off_Types = db["Off_Types"];
 
+exports.existedOff = async (name) => {
+  try {
+    const existed_off = await Off_Types.findOne({
+      where: {
+        name,
+      },
+    });
+
+    if (existed_off) {
+      return existed_off;
+    } else {
+      return null;
+    }
+  } catch (error) {
+    throw error;
+  }
+};
 exports.getOffsByCompany = async (company_id) => {
   try {
     const offs = await Off_Types.findAll({
@@ -14,7 +31,6 @@ exports.getOffsByCompany = async (company_id) => {
       results = offs.map((off) => {
         return {
           off_id: off.off_id,
-          company_id: off.company_id,
           name: off.name,
           description: off.description,
         };
@@ -54,11 +70,9 @@ exports.createOff = async (company_id, name, description) => {
       name,
       description,
     });
-
     if (new_off) {
       return {
         off_id: new_off.off_id,
-        company_id: new_off.company_id,
         name: new_off.name,
         description: new_off.description,
       };
@@ -71,7 +85,6 @@ exports.createOff = async (company_id, name, description) => {
 exports.updateOff = async (off_id, name, description) => {
   try {
     const off = await Off_Types.findByPk(off_id);
-
     if (off) {
       off.name = name;
       off.description = description;

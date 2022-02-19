@@ -112,7 +112,7 @@ exports.adminGroupValidator = async (req, res, next) => {
   }
 };
 
-// Data Validator for the admin/role routes
+// Data Validator for the admin/role create/update routes
 exports.adminRoleValidator = async (req, res, next) => {
   if (req.method === "POST") {
     await check("group_id")
@@ -172,7 +172,7 @@ exports.adminRoleValidator = async (req, res, next) => {
   }
 };
 
-// Data Validator for the admin/employee routes
+// Data Validator for the admin/employee create/update routes
 exports.adminEmployeeValidator = async (req, res, next) => {
   if (req.method === "POST") {
     await check("username")
@@ -245,6 +245,24 @@ exports.adminEmployeeValidator = async (req, res, next) => {
   }
 };
 
+// Data Validator for the admin/employee/set_sp route
+exports.adminEmployeeSetSafetyPinValidator = async (req, res, next) => {
+  await check("safety_pin")
+    .notEmpty()
+    .withMessage(notNullMessage)
+    .matches(/^[0-9]{4}$/)
+    .withMessage("must be a 4 digits number.")
+    .run(req);
+
+  let results = validationResult(req);
+  if (!results.isEmpty()) {
+    return res
+      .status(400)
+      .json({ status: "invalid data", errors: results.array() });
+  } else {
+    next();
+  }
+};
 // Data Validator of admin/off routes
 exports.offTypeValidator = async (req, res, next) => {
   await check("name")

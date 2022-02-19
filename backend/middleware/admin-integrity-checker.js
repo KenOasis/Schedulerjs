@@ -1,4 +1,4 @@
-// This checker ensure that the current logined company account could only modified their own data
+// This checker ensure that the current logined company account could only accessed/modfied their own data (data integrity)
 
 const authDrivers = require("../db/admin/auth-drivers");
 const ValidationError = require("../error/validation-error");
@@ -108,4 +108,3 @@ exports.offTypeChecker = async (req, res, next) => {
     return next();
   }
 };
-å

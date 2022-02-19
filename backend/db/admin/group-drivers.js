@@ -66,7 +66,6 @@ exports.getGroupsByCompany = async (company_id) => {
         return {
           group_id: group.group_id,
           name: group.name,
-          description: group.description,
           activated: group.activated,
         };
       });

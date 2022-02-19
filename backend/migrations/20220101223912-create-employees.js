@@ -44,7 +44,7 @@ module.exports = {
       activated: {
         allowNull: false,
         type: Sequelize.BOOLEAN,
-        defaultValue: false,
+        defaultValue: true,
       },
     });
   },

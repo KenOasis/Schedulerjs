@@ -53,7 +53,7 @@
           // error2
         },
         ...
-    ]
+·    ]
 }
 ```
 
@@ -233,15 +233,18 @@ if success:
     "status": "Success!",
     "groups": [
         {
-            "group_id": 2,
-            "name": "Walgreen 00893",
-            "description": "A Walgreen store in Bay Area.",
+            "group_id": 1,
+            "name": "Walmart",
             "activated": false
         },
         {
-            "group_id": 1,
-            "name": "Walmart",
-            "description": "A Walmart store in Bay Area.",
+            "group_id": 2,
+            "name": "Walmart 2",
+            "activated": false
+        },
+        {
+            "group_id": 3,
+            "name": "Walmart deactivated",
             "activated": false
         }
     ]
@@ -452,7 +455,7 @@ if failed by conflict with employee assigned
 ```
 {
     "status": "conflict",
-    "message": "Cannot delete role which has assigned to some employees.",
+    "message": "Cannot delete role which has been assigned to some employees.",
 }
 ```
 
@@ -490,7 +493,8 @@ if success:
         "role_id": 1,
         "title": "Store Manager",
         "abbreviation": "STRM",
-        "activated": false
+        "activated": true,
+        "group_name": "Walmart"
     }
 }
 ```
@@ -510,33 +514,24 @@ if success (group_id = 1):
             "username": "jtan886",
             "firstname": "Jimmy",
             "lastname": "Tan",
-            "emergency_contact": "415-888-8888",
-            "activated": false,
-            "title": "Store Manager",
-            "abbreviation": "STRM",
-            "name": "Walmart"
+            "activated": true,
+            "title": "Store Manager"
         },
         {
-            "employee_id": 2,
-            "username": "jd123",
+            "employee_id": 4,
+            "username": "jd111",
             "firstname": "John",
             "lastname": "Doe",
-            "emergency_contact": "415-888-8888",
-            "activated": false,
-            "title": "Assitant Manager",
-            "abbreviation": "ASM",
-            "name": "Walmart"
+            "activated": true,
+            "title": "Assitant Manager"
         },
         {
-            "employee_id": 3,
-            "username": "jd234",
-            "firstname": "Jane",
+            "employee_id": 5,
+            "username": "jd222",
+            "firstname": "John",
             "lastname": "Doe",
-            "emergency_contact": "415-888-8888",
-            "activated": false,
-            "title": "CLERK",
-            "abbreviation": "CLK",
-            "name": "Walmart"
+            "activated": true,
+            "title": "Clerk"
         }
     ]
 }
@@ -558,7 +553,8 @@ if success (employee_id = 1):
         "lastname": "Tan",
         "emergency_contact": "415-888-8888",
         "role_id": 1,
-        "activated": false
+        "group_id": 1,
+        "activated": true
     }
 }
 ```
@@ -579,24 +575,28 @@ body:
 }
 ```
 
-## .../api/admin/employee/reset_pw/employee_id PUT
+## .../api/admin/employee/reset_pw/:employee_id PUT
 
 #### Reset the password of an employee account of given employee_id
-
-body:
-
-```
-{
-    "safety_pin": "1234",
-}
-```
 
 if success (employee_id = 1):
 
 ```
 {
     "status": "success",
-    "password": "l5wxfvML"  // new password
+    "password": "l5wxfvML"  // new random password
+}
+```
+
+## .../api/admin/employee/set_sp/:employee_id PUT
+
+#### (re)Set the safety_pin of an employee account of given employee_id
+
+body:
+
+```
+{
+    "safety_pin": "8888"
 }
 ```
 
@@ -629,6 +629,15 @@ if success:
 }
 ```
 
+if conflict with name (must be unique):
+
+```
+{
+    "status": "conflict",
+    "message": "Off type with name Regular day off is already existed!"
+}
+```
+
 ## .../api/admin/off/all POST
 
 #### Get all the off type of current company
@@ -641,21 +650,18 @@ if success:
     "offs": [
         {
             "off_id": 1,
-            "company_id": 1,
             "name": "Regular day off",
             "description": "Unpaid day off."
         },
         {
             "off_id": 2,
-            "company_id": 1,
             "name": "PTO",
             "description": "Paid time off in San Francisco County"
         },
         {
             "off_id": 3,
-            "company_id": 1,
             "name": "Holiday",
-            "description": "Holidy by law or local charts"
+            "description": "Holiday by law or local charts"
         }
     ]
 }
@@ -690,5 +696,14 @@ body:
 {
     "name": "Holiday",
     "description": "Holiday which required by law or local custom"
+}
+```
+
+if conflict with name (must be unique):
+
+```
+{
+    "status": "conflict",
+    "message": "Off type with name Holiday is already existed!"
 }
 ```

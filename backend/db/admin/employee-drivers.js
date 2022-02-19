@@ -21,11 +21,8 @@ exports.getEmployeesByGroup = async (group_id) => {
         "username",
         "firstname",
         "lastname",
-        "emergency_contact",
         "activated",
         "role.title",
-        "role.abbreviation",
-        "role->group.name",
       ],
       include: {
         model: Roles,
@@ -63,6 +60,7 @@ exports.getEmployeeById = async (employee_id) => {
     });
 
     if (employee) {
+      const role = await Roles.findByPk(employee.role_id);
       return {
         employee_id: employee.employee_id,
         username: employee.username,
@@ -70,6 +68,7 @@ exports.getEmployeeById = async (employee_id) => {
         lastname: employee.lastname,
         emergency_contact: employee.emergency_contact,
         role_id: employee.role_id,
+        group_id: role.group_id,
         activated: employee.activated,
       };
     }
@@ -122,7 +121,13 @@ exports.createEmployee = async (
       where: {
         role_id,
       },
-      attributes: ["role_id", "title", "abbreviation"],
+      attributes: ["role_id", "title", "abbreviation", "group_id"],
+    });
+
+    const group = await Groups.findOne({
+      where: {
+        group_id: role.group_id,
+      },
     });
 
     if (new_employee) {
@@ -141,6 +146,7 @@ exports.createEmployee = async (
         title: role.title,
         abbreviation: role.abbreviation,
         activated: new_employee.activated,
+        group_name: group.name,
       };
     }
   } catch (error) {
@@ -193,23 +199,33 @@ exports.updateEmployee = async (
   }
 };
 
-exports.resetPassword = async (safety_pin, employee_id) => {
+exports.resetPassword = async (employee_id) => {
   try {
     const employee = await Employees.findByPk(employee_id);
     if (employee) {
-      let is_safety_pin_matched = bcrypt.compareSync(
-        safety_pin,
-        employee.safety_pin
+      let new_randown_password = stringGenerator(8);
+      let hash_password = bcrypt.hashSync(new_randown_password, salt);
+      employee.password = hash_password;
+      await employee.save();
+      return new_randown_password;
+    } else {
+      throw new LogicalError(
+        `Employee with employee_id:${employee_id} is not existed.`,
+        404
       );
-      if (is_safety_pin_matched) {
-        let new_randown_password = stringGenerator(8);
-        let hash_password = bcrypt.hashSync(new_randown_password, salt);
-        employee.password = hash_password;
-        await employee.save();
-        return new_randown_password;
-      } else {
-        throw new ValidationError("Wrong safety pin.", 403);
-      }
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+
+exports.setSafetyPin = async (employee_id, safety_pin) => {
+  try {
+    const employee = await Employees.findByPk(employee_id);
+    if (employee) {
+      employee.safety_pin = safety_pin;
+      await employee.save();
+      return true;
     } else {
       throw new LogicalError(
         `Employee with employee_id:${employee_id} is not existed.`,

@@ -37,15 +37,6 @@ module.exports = (sequelize, DataTypes) => {
         },
         deferrable: Deferrable.INITIALLY_IMMEDIATE,
       },
-      off_id: {
-        allowNull: false,
-        type: DataTypes.INTEGER,
-        references: {
-          model: "Off_Types",
-          key: "off_id",
-        },
-        deferrable: Deferrable.INITIALLY_IMMEDIATE,
-      },
       starts_at: {
         allowNull: false,
         type: DataTypes.TIME,

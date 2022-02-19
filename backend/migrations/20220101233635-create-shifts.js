@@ -25,15 +25,6 @@ module.exports = {
         },
         onDelete: "CASCADE",
       },
-      off_id: {
-        allowNull: false,
-        type: Sequelize.INTEGER,
-        references: {
-          model: "Off_Types",
-          key: "off_id",
-        },
-        onDelete: "CASCADE",
-      },
       starts_at: {
         allowNull: false,
         type: Sequelize.TIME,
