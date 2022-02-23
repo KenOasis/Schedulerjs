@@ -55,6 +55,8 @@ exports.employee = (req, res, next) => {
     req.userData = {
       employee_id: decodedToken.employee_id,
       username: decodedToken.username,
+      role_id: decodedToken.role_id,
+      group_id: decodedToken.group_id,
     };
     return next();
   } catch (error) {

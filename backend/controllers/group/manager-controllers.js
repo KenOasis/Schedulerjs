@@ -1,9 +1,11 @@
-const managerDrivers = require("../../db/group/manager-drivers");
+const offRecordsDrivers = require("../../db/group/off-records-drivers");
+const employeeDrivers = require("../../db/group/employee-drivers");
+const availableTimeDrivers = require("../../db/group/available-time-drivers");
 
 exports.getEmployees = async (req, res, next) => {
-  const employee_id = req.userData.employee_id;
+  const group_id = req.userData.group_id;
   try {
-    const employees = await managerDrivers.getEmployeesOfGroup(employee_id);
+    const employees = await employeeDrivers.getEmployeesOfGroup(group_id);
     if (employees) {
       return res.status(200).json({ status: "success", employees: employees });
     }
@@ -13,13 +15,13 @@ exports.getEmployees = async (req, res, next) => {
 };
 
 exports.getAvailableTimeOfGroup = async (req, res, next) => {
-  const employee_id = req.userData.employee_id;
+  const group_id = req.userData.group_id;
   const year = +req.params.year;
   const month = +req.params.month;
   const day = +req.params.day;
   try {
-    const available = await managerDrivers.getAvailableTimeByGroup(
-      employee_id,
+    const available = await availableTimeDrivers.getAvailableTimeByGroup(
+      group_id,
       year,
       month,
       day
@@ -35,9 +37,9 @@ exports.getAvailableTimeOfGroup = async (req, res, next) => {
 };
 
 exports.getOffRecordsOfGroup = async (req, res, next) => {
-  const employee_id = req.userData.employee_id;
+  const group_id = req.userData.group_id;
   try {
-    const off_records = await managerDrivers.getOffRecordOfGroup(employee_id);
+    const off_records = await offRecordsDrivers.getOffRecordOfGroup(group_id);
 
     return res
       .status(200)
@@ -51,7 +53,7 @@ exports.getOffRecordsById = async (req, res, next) => {
   const off_record_id = +req.params.off_record_id;
   console.log(off_record_id);
   try {
-    const off_record = await managerDrivers.getOffRecordById(off_record_id);
+    const off_record = await offRecordsDrivers.getOffRecordById(off_record_id);
 
     if (off_record) {
       return res

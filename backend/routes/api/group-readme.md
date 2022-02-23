@@ -276,17 +276,10 @@ if success:
     "date": "2022-2-8",
     "available": [
         {
-            "employee_id": 2,
-            "firstname": "John",
-            "lastname": "Doe",
-            "title": "Assitant Manager",
-            "abbreviation": "ASM",
-            "available": []
-        },
-        {
             "employee_id": 1,
             "firstname": "Jimmy",
             "lastname": "Tan",
+            "activated": true,
             "title": "Store Manager",
             "abbreviation": "STRM",
             "available": [
@@ -301,10 +294,20 @@ if success:
             ]
         },
         {
-            "employee_id": 3,
-            "firstname": "Jane",
+            "employee_id": 4,
+            "firstname": "John",
             "lastname": "Doe",
-            "title": "CLERK",
+            "activated": true,
+            "title": "Assitant Manager",
+            "abbreviation": "ASM",
+            "available": []
+        },
+        {
+            "employee_id": 5,
+            "firstname": "John",
+            "lastname": "Doe",
+            "activated": true,
+            "title": "Clerk",
             "abbreviation": "CLK",
             "available": []
         }
@@ -320,7 +323,6 @@ body
 
 ```
 {
-    "requested_at": "2022-02-09 20:01:46",
     "off_id": "1",
     "starts_at": "2022-02-23",
     "ends_at": "2022-02-25",
@@ -332,11 +334,18 @@ if success:
 
 ```
 {
-    "requested_at": "2022-02-09 20:01:46",
-    "off_id": "1",
-    "starts_at": "2022-02-23",
-    "ends_at": "2022-02-25",
-    "reason": "sicked"
+    "status": "success",
+    "off_record": {
+        "off_record_id": 2,
+        "requested_at": "2022-02-23T15:36:19.579Z",
+        "off_id": 3,
+        "starts_at": "2022-02-23",
+        "ends_at": "2022-02-25",
+        "reason": "sicked",
+        "approved": null,
+        "approved_by": null,
+        "comment": null
+    }
 }
 ```
 
@@ -349,7 +358,7 @@ if conflict with other day off request:
 }
 ```
 
-## .../api/group/dayoff/ GET
+## .../api/group/dayoff/all GET
 
 #### get the day off requests for the logged-in employee
 
@@ -360,52 +369,16 @@ if success:
     "status": "success",
     "off_records": [
         {
-            "off_record_id": 1,
-            "requested_at": "2022-02-10T04:01:46.000Z",
-            "off_id": 1,
-            "employee_id": 1,
-            "starts_at": "2022-02-10",
-            "ends_at": "2022-02-18",
-            "approved": null,
-            "reason": "Road trip day",
-            "approved_by": null,
-            "comment": null
-        },
-        {
-            "off_record_id": 7,
-            "requested_at": "2022-02-10T04:01:46.000Z",
-            "off_id": 1,
-            "employee_id": 1,
-            "starts_at": "2022-02-19",
-            "ends_at": "2022-02-19",
-            "approved": null,
-            "reason": "Road trip day",
-            "approved_by": null,
-            "comment": null
-        },
-        {
-            "off_record_id": 8,
-            "requested_at": "2022-02-10T04:01:46.000Z",
-            "off_id": 1,
-            "employee_id": 1,
-            "starts_at": "2022-02-20",
-            "ends_at": "2022-02-22",
-            "approved": null,
-            "reason": "Road trip day",
-            "approved_by": null,
-            "comment": null
-        },
-        {
-            "off_record_id": 9,
-            "requested_at": "2022-02-10T04:01:46.000Z",
-            "off_id": 1,
-            "employee_id": 1,
+            "off_record_id": 2,
             "starts_at": "2022-02-23",
             "ends_at": "2022-02-25",
-            "approved": null,
-            "reason": "sicked",
-            "approved_by": null,
-            "comment": null
+            "approved": null
+        },
+        {
+            "off_record_id": 3,
+            "starts_at": "2022-03-05",
+            "ends_at": "2022-03-12",
+            "approved": null
         }
     ]
 }
@@ -476,5 +449,81 @@ if success:
         "approved_by": null,
         "comment": null
     }
+}
+```
+
+## .../api/group/punch/record_time POST
+
+#### record a punch record of the current employee
+
+body
+
+```
+{
+    "recorded_date": "2022-02-11",
+    "recorded_time": "19:30:00"
+}
+```
+
+## .../api/group/punch/:year&:month&:day GET
+
+#### get the punch records of the current employee
+
+if day !== 0, then return the punch_records of the date
+year = 2022, month = 2, day = 8,
+it returns
+
+```
+{
+    "status": "success",
+    "punch_records": [
+        {
+            "year": 2022,
+            "month": 2,
+            "day": 8,
+            "day_of_week": "TUE",
+            "recorded_time": [
+                "08:00:00",
+                "12:00:00",
+                "12:30:00",
+                "04:30:00"
+            ]
+        }
+    ]
+}
+```
+
+if day = 0, it will return the punch_records of the whole month
+year = 2022, month = 2, day = 0
+it returns
+
+```
+{
+    "status": "success",
+    "punch_records": [
+        {
+            "year": 2022,
+            "month": 2,
+            "day": 8,
+            "day_of_week": "TUE",
+            "recorded_time": [
+                "08:00:00",
+                "12:00:00",
+                "12:30:00",
+                "04:30:00"
+            ]
+        },
+        {
+            "year": 2022,
+            "month": 2,
+            "day": 11,
+            "day_of_week": "FRI",
+            "recorded_time": [
+                "12:30:00",
+                "15:30:00",
+                "19:30:00"
+            ]
+        }
+    ]
 }
 ```

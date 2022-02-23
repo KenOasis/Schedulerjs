@@ -445,20 +445,6 @@ exports.employeeSetAvailableValidator = async (req, res, next) => {
 };
 
 exports.createOffRecordsValidator = async (req, res, next) => {
-  await check("requested_at")
-    .notEmpty()
-    .withMessage(notNullMessage)
-    .bail()
-    .custom((value, { req }) => {
-      let date = value.split(" ")[0];
-      let time = value.split(" ")[1];
-      if (!date.match(dateRegex) || !time.match(timeRegex)) {
-        throw new Error("incorrect format");
-      }
-      return true;
-    })
-    .run(req);
-
   await check("off_id")
     .notEmpty()
     .withMessage(notNullMessage)
@@ -497,6 +483,33 @@ exports.createOffRecordsValidator = async (req, res, next) => {
     .bail()
     .isLength({ min: 3, max: 256 })
     .withMessage("must be the string with length between 3 to 256.")
+    .run(req);
+
+  let results = validationResult(req);
+  if (!results.isEmpty()) {
+    return res
+      .status(400)
+      .json({ status: "invalid data", errors: results.array() });
+  } else {
+    next();
+  }
+};
+
+exports.recordedPunchTimeValidator = async (req, res, next) => {
+  await check("recorded_date")
+    .notEmpty()
+    .withMessage(notNullMessage)
+    .bail()
+    .matches(dateRegex)
+    .withMessage("date format should be YYYY-MM-DD")
+    .run(req);
+
+  await check("recorded_time")
+    .notEmpty()
+    .withMessage(notNullMessage)
+    .bail()
+    .matches(timeRegex)
+    .withMessage("time format should be HH:MM:SS")
     .run(req);
 
   let results = validationResult(req);

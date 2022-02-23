@@ -50,8 +50,11 @@ router.put(
  * Employee get a punch record of the given date
  * .../api/group/punch/:year&:month&:day   GET
  */
-//// TODO ////
-router.get("/punch/:year&:month&:day");
+router.get(
+  "/punch/:year&:month&:day",
+  dataValidator.paramsValidator,
+  employeeControllers.getPunchRecordsByDate
+);
 
 // Middlerware to check employee's activation status
 router.use(emplyeeActivationChecker);
@@ -65,9 +68,13 @@ router.get("/schedule/:year&:month&:day");
 /**
  * Employee record timestamp
  * employee should be logout after this action
- * .../api/group/sign  POST
+ * .../api/group/record_time  POST
  */
-router.post("/sign");
+router.post(
+  "/punch/record_time",
+  dataValidator.recordedPunchTimeValidator,
+  employeeControllers.recordedTimestamp
+);
 
 // Belowed is activated employee only
 /**
@@ -90,11 +97,17 @@ router.get(
   employeeControllers.getAvailableTime
 );
 /**
- * Employee get the dayoff request records
+ * Employee get all the dayoff request records of current employee
  * .../api/group/dayoff GET
  */
 
-router.get("/dayoff", employeeControllers.getOffRecord);
+router.get("/dayoff/all", employeeControllers.getOffRecords);
+
+/**
+ * Employee get the dayoff request record
+ * .../api/group/dayoff/:off_record_id  GET
+ */
+router.get("/dayoff/:off_record_id", employeeControllers.getOffRecordById);
 
 /**
  * Employee request a day off
@@ -121,11 +134,14 @@ router.post(
  * .../group/manage/employee_info
  */
 
+// TOFIX  (return obj properties)
 router.get(
   "/manage/employee_info/all",
   employeeActionChecker("M0"),
   managerControllers.getEmployees
 );
+
+router.get("/manage/employee_info/:employee_id");
 
 /**
  * Get all the available time of the group members in a special day
@@ -142,6 +158,8 @@ router.get(
  * Get all the dayoff records of the group
  * .../group/manage/dayoff/all
  */
+
+// TOFIX (return obj properties)
 router.get(
   "/manage/dayoff/all/",
   employeeActionChecker("M0"),
@@ -152,6 +170,7 @@ router.get(
  * Get the specific dayoff records of the group
  * .../group/manage/dayoff/:off_records_id
  */
+
 router.get(
   "/manage/dayoff/:off_record_id",
   employeeActionChecker("M0"),
@@ -164,6 +183,7 @@ router.get(
  */
 router.put("/dayoff/review/:off_record_id");
 
+//  Not checked routes
 /**
  * Employee make a schedule
  * .../group/schedule/   POST
@@ -186,6 +206,6 @@ router.put("/schedule/publish/:schedule_id");
  * Employee get all punch records of the group of give date
  * .../empoyee/punch/all/:year&:month&:day  GET
  */
-router.get("/punch/:year&:month&:day");
+router.get("/manage/punch/:year&:month&:day");
 
 module.exports = router;

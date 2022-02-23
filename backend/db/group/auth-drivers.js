@@ -84,3 +84,31 @@ exports.checkEmployeeAction = async (employee_id, action_key) => {
     throw error;
   }
 };
+
+exports.getAuthInfo = async (employee_id) => {
+  try {
+    const employee = await Employees.findOne({
+      raw: true,
+      where: {
+        employee_id,
+      },
+      attributes: ["employee_id", "role.role_id", "role.group_id"],
+      include: {
+        model: Roles,
+        as: "role",
+        attributes: [],
+        required: true,
+      },
+    });
+    if (employee) {
+      return [employee.role_id, employee.group_id];
+    } else {
+      throw new LogicalError(
+        `Employee id : ${employee_id} is not existed.`,
+        404
+      );
+    }
+  } catch (error) {
+    throw error;
+  }
+};

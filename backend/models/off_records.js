@@ -22,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
       requested_at: {
         allowNull: false,
         type: DataTypes.DATE,
+        defaultValue: sequelize.fn("NOW"),
       },
       off_id: {
         allowNull: false,
