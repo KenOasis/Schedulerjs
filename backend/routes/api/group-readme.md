@@ -262,59 +262,6 @@ year = 2022, month = 2, day = 28,
 }
 ```
 
-## .../api/group/manage/available/all/:year&:month&:day
-
-#### get all the available time of all group members at the given date (M0)
-
-year = 2022, month = 2, day = 8
-
-if success:
-
-```
-{
-    "status": "success",
-    "date": "2022-2-8",
-    "available": [
-        {
-            "employee_id": 1,
-            "firstname": "Jimmy",
-            "lastname": "Tan",
-            "activated": true,
-            "title": "Store Manager",
-            "abbreviation": "STRM",
-            "available": [
-                {
-                    "year": 2022,
-                    "month": 2,
-                    "day": 8,
-                    "day_of_week": "TUE",
-                    "starts_at": "08:00:00",
-                    "ends_at": "20:00:00"
-                }
-            ]
-        },
-        {
-            "employee_id": 4,
-            "firstname": "John",
-            "lastname": "Doe",
-            "activated": true,
-            "title": "Assitant Manager",
-            "abbreviation": "ASM",
-            "available": []
-        },
-        {
-            "employee_id": 5,
-            "firstname": "John",
-            "lastname": "Doe",
-            "activated": true,
-            "title": "Clerk",
-            "abbreviation": "CLK",
-            "available": []
-        }
-    ]
-}
-```
-
 ## .../api/group/dayoff POST
 
 #### create a day off request for the logged-in employee
@@ -384,71 +331,38 @@ if success:
 }
 ```
 
-## .../api/group/manage/dayoff/all
+## .../api/group/dayoff/:off_record_id PUT
 
-#### get all the day off requests of the group
+#### Employee update a un-reviwed day off
 
-if success:
+off_record_id = 3
+
+body:
 
 ```
 {
-    "status": "success",
-    "off_records": [
-        {
-            "off_record_id": 1,
-            "employee_id": 1,
-            "firstname": "Jimmy",
-            "lastname": "Tan",
-            "approved": null
-        },
-        {
-            "off_record_id": 7,
-            "employee_id": 1,
-            "firstname": "Jimmy",
-            "lastname": "Tan",
-            "approved": null
-        },
-        {
-            "off_record_id": 8,
-            "employee_id": 1,
-            "firstname": "Jimmy",
-            "lastname": "Tan",
-            "approved": null
-        },
-        {
-            "off_record_id": 9,
-            "employee_id": 1,
-            "firstname": "Jimmy",
-            "lastname": "Tan",
-            "approved": null
-        }
-    ]
+    "off_id": "1",
+    "starts_at": "2022-03-05",
+    "ends_at": "2022-03-15",
+    "reason": "I am tired of this job!"
 }
 ```
 
-#### .../api/group/manage/dayoff/:off_record_id
-
-## get the day off record by the off_record_id
-
-off_record_id = 1
-
-if success:
+if conflict with other day off request:
 
 ```
 {
-    "status": "success",
-    "off_record": {
-        "off_record_id": 1,
-        "requested_at": "2022-02-10T04:01:46.000Z",
-        "off_id": 1,
-        "employee_id": 1,
-        "starts_at": "2022-02-10",
-        "ends_at": "2022-02-18",
-        "approved": null,
-        "reason": "Road trip day",
-        "approved_by": null,
-        "comment": null
-    }
+    "status": "conflict",
+    "message": "You already request day off between (inclusive) 2022-03-05 and 2022-03-15"
+}
+```
+
+if the record has been reviewed
+
+```
+{
+    "status": "forbidden",
+    "message": "Cannot updated the reviewed record"
 }
 ```
 
@@ -523,6 +437,192 @@ it returns
                 "15:30:00",
                 "19:30:00"
             ]
+        }
+    ]
+}
+```
+
+## .../api/group/manage/group/employee_info/all
+
+#### Get the employee_info of the current group
+
+if success
+
+```
+{
+    "status": "success",
+    "employees": [
+        {
+            "employee_id": 1,
+            "firstname": "Jimmy",
+            "lastname": "Tan",
+            "activated": true,
+            "title": "Store Manager",
+            "abbreviation": "STRM"
+        },
+        {
+            "employee_id": 4,
+            "firstname": "John",
+            "lastname": "Doe",
+            "activated": true,
+            "title": "Assitant Manager",
+            "abbreviation": "ASM"
+        },
+        {
+            "employee_id": 5,
+            "firstname": "John",
+            "lastname": "Doe",
+            "activated": true,
+            "title": "Clerk",
+            "abbreviation": "CLK"
+        }
+    ]
+}
+```
+
+## .../api/group/manage/employee_info/:employee_id
+
+#### Get the employee_info by the given employee_id
+
+employee_id = 1
+
+if success:
+
+```
+{
+    "status": "success",
+    "employee": {
+        "username": "jtan886",
+        "firstname": "Jimmy",
+        "lastname": "Tan",
+        "emergency_contact": "415-888-8888",
+        "title": "Store Manager",
+        "activated": true
+    }
+}
+```
+
+## .../api/group/manage/dayoff/all
+
+#### get all the day off requests of the ACTIVATED group members
+
+if success:
+
+```
+{
+    "status": "success",
+    "off_records": [
+        {
+            "employee_id": 1,
+            "firstname": "Jimmy",
+            "lastname": "Tan",
+            "off_record_id": 2,
+            "starts_at": "2022-02-23",
+            "ends_at": "2022-02-25",
+            "approved": null
+        },
+        {
+            "employee_id": 1,
+            "firstname": "Jimmy",
+            "lastname": "Tan",
+            "off_record_id": 3,
+            "starts_at": "2022-03-05",
+            "ends_at": "2022-03-12",
+            "approved": null
+        }
+    ]
+}
+```
+
+## .../api/group/manage/dayoff/:off_record_id
+
+#### get the day off record by the off_record_id
+
+off_record_id = 1
+
+if success:
+
+```
+{
+    "status": "success",
+    "off_record": {
+        "off_record_id": 1,
+        "requested_at": "2022-02-10T04:01:46.000Z",
+        "off_id": 1,
+        "employee_id": 1,
+        "starts_at": "2022-02-10",
+        "ends_at": "2022-02-18",
+        "approved": null,
+        "reason": "Road trip day",
+        "approved_by": null,
+        "comment": null
+    }
+}
+```
+
+## .../api/group/manage/dayoff/review/:off_record_id
+
+#### Review a dayoff records
+
+off_record_id = 1
+
+body:
+
+```
+{
+    "approved": "true",
+    "comment": "Approved, Have a nice day off!"
+}
+```
+
+## .../api/group/manage/available/all/:year&:month&:day
+
+#### get all the available time of all ACTIVATED group members at the given date (M0)
+
+year = 2022, month = 2, day = 8
+
+if success:
+
+```
+{
+    "status": "success",
+    "date": "2022-2-8",
+    "available": [
+        {
+            "employee_id": 1,
+            "firstname": "Jimmy",
+            "lastname": "Tan",
+            "activated": true,
+            "title": "Store Manager",
+            "abbreviation": "STRM",
+            "available": [
+                {
+                    "year": 2022,
+                    "month": 2,
+                    "day": 8,
+                    "day_of_week": "TUE",
+                    "starts_at": "08:00:00",
+                    "ends_at": "20:00:00"
+                }
+            ]
+        },
+        {
+            "employee_id": 4,
+            "firstname": "John",
+            "lastname": "Doe",
+            "activated": true,
+            "title": "Assitant Manager",
+            "abbreviation": "ASM",
+            "available": []
+        },
+        {
+            "employee_id": 5,
+            "firstname": "John",
+            "lastname": "Doe",
+            "activated": true,
+            "title": "Clerk",
+            "abbreviation": "CLK",
+            "available": []
         }
     ]
 }

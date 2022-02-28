@@ -113,17 +113,19 @@ exports.getAvailableTime = async (employee_id, year, month, day) => {
 
 exports.getAvailableTimeByGroup = async (group_id, year, month, day) => {
   try {
-    let employees = await employeeDrivers.getEmployeesOfGroup(group_id);
+    const employees = await employeeDrivers.getEmployeesOfGroup(group_id);
     for await (employee of employees) {
-      let available_time = await this.getAvailableTime(
-        employee.employee_id,
-        year,
-        month,
-        day
-      );
-      employee.available = available_time;
+      if (employee.activated) {
+        let available_time = await this.getAvailableTime(
+          employee.employee_id,
+          year,
+          month,
+          day
+        );
+        employee.available = available_time;
+      }
     }
-    return employees;
+    return employees.filter((employee) => employee.activated);
   } catch (error) {
     throw error;
   }

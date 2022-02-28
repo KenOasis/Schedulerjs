@@ -495,6 +495,32 @@ exports.createOffRecordsValidator = async (req, res, next) => {
   }
 };
 
+exports.reviewOffRecordValidator = async (req, res, next) => {
+  await check("approved")
+    .notEmpty()
+    .withMessage(notNullMessage)
+    .bail()
+    .isBoolean()
+    .withMessage("must be boolean value.")
+    .run(req);
+
+  await check("comment")
+    .notEmpty()
+    .withMessage(notNullMessage)
+    .bail()
+    .isLength({ max: 256 })
+    .withMessage("the max length is 256 character")
+    .run(req);
+
+  let results = validationResult(req);
+  if (!results.isEmpty()) {
+    return res
+      .status(400)
+      .json({ status: "invalid data", errors: results.array() });
+  } else {
+    next();
+  }
+};
 exports.recordedPunchTimeValidator = async (req, res, next) => {
   await check("recorded_date")
     .notEmpty()

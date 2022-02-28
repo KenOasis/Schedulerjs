@@ -8,18 +8,30 @@ const Off_Types = db["Off_Types"];
 const { Op } = require("sequelize");
 const Off_Records = db["Off_Records"];
 
-exports.getEmployeeInfo = async (employee_id) => {
+exports.getEmployeeInfo = async (employee_id, mode = 0) => {
   try {
     const employee = await Employees.findByPk(employee_id);
     if (employee) {
       const role = await Roles.findByPk(employee.role_id);
-      return {
-        username: employee.username,
-        firstname: employee.firstname,
-        lastname: employee.lastname,
-        title: role.title,
-        emergency_contact: employee.emergency_contact,
-      };
+      if (mode === 0) {
+        return {
+          username: employee.username,
+          firstname: employee.firstname,
+          lastname: employee.lastname,
+          title: role.title,
+          activated: employee.activated,
+        };
+      } else {
+        return {
+          username: employee.username,
+          firstname: employee.firstname,
+          lastname: employee.lastname,
+          emergency_contact: employee.emergency_contact,
+          title: role.title,
+          emergency_contact: employee.emergency_contact,
+          activated: employee.activated,
+        };
+      }
     }
   } catch (error) {
     throw error;
@@ -92,87 +104,6 @@ exports.getEmployeesOfGroup = async (group_id) => {
         abbreviation: employee.abbreviation,
       };
     });
-  } catch (error) {
-    throw error;
-  }
-};
-
-exports.createOffRecord = async (
-  employee_id,
-  off_id,
-  starts_at,
-  ends_at,
-  reason
-) => {
-  try {
-    const confilict_records = await Off_Records.findOne({
-      where: {
-        [Op.or]: [
-          {
-            starts_at: {
-              [Op.between]: [starts_at, ends_at],
-            },
-          },
-          {
-            ends_at: {
-              [Op.between]: [starts_at, ends_at],
-            },
-          },
-        ],
-      },
-    });
-    if (confilict_records) {
-      return false;
-    }
-    const off_record = await Off_Records.create({
-      employee_id,
-      off_id,
-      starts_at,
-      ends_at,
-      reason,
-    });
-    if (off_record) {
-      return {
-        off_record_id: off_record.off_record_id,
-        requested_at: off_record.requested_at,
-        off_id: off_record.off_id,
-        starts_at: off_record.starts_at,
-        ends_at: off_record.ends_at,
-        reason: off_record.reason,
-        approved: off_record.approved,
-        approved_by: off_record.approved_by,
-        comment: off_record.comment,
-      };
-    }
-  } catch (error) {
-    throw error;
-  }
-};
-
-exports.getOffRecords = async (employee_id) => {
-  try {
-    const off_records = await Off_Records.findAll({
-      raw: true,
-      where: {
-        employee_id,
-      },
-    });
-
-    return off_records.map((record) => {
-      return {
-        off_record_id: record.off_record_id,
-        starts_at: record.starts_at,
-        ends_at: record.ends_at,
-        approved: record.approved,
-      };
-    });
-  } catch (error) {
-    throw error;
-  }
-};
-
-exports.reviewOffRecord = async (off_record_id, approved, approved_by) => {
-  try {
   } catch (error) {
     throw error;
   }

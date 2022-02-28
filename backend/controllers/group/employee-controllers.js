@@ -148,7 +148,7 @@ exports.creatOffRecord = async (req, res, next) => {
   const employee_id = req.userData.employee_id;
   const { off_id, starts_at, ends_at, reason } = req.body;
   try {
-    const off_record = await employeeDrivers.createOffRecord(
+    const off_record = await offRecordDrivers.createOffRecord(
       employee_id,
       off_id,
       starts_at,
@@ -172,9 +172,9 @@ exports.creatOffRecord = async (req, res, next) => {
 };
 
 exports.getOffRecords = async (req, res, next) => {
-  const employee_id = req.userData.employee_id;
+  const group_id = req.userData.group_id;
   try {
-    const off_records = await employeeDrivers.getOffRecords(employee_id);
+    const off_records = await offRecordDrivers.getOffRecordsOfGroup(group_id);
 
     return res
       .status(200)
@@ -192,6 +192,31 @@ exports.getOffRecordById = async (req, res, next) => {
       return res
         .status(200)
         .json({ status: "success", off_record: off_record });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.updateOffRecord = async (req, res, next) => {
+  const off_record_id = +req.params.off_record_id;
+  const { off_id, starts_at, ends_at, reason } = req.body;
+  try {
+    const [is_updated_success, message] =
+      await offRecordDrivers.updateOffRecord(
+        off_record_id,
+        off_id,
+        starts_at,
+        ends_at,
+        reason
+      );
+    if (is_updated_success) {
+      return res.status(200).json({ status: "success" });
+    } else {
+      return res.status(403).json({
+        status: "forbidden",
+        message: message,
+      });
     }
   } catch (error) {
     next(error);

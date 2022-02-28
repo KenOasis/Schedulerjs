@@ -107,7 +107,11 @@ router.get("/dayoff/all", employeeControllers.getOffRecords);
  * Employee get the dayoff request record
  * .../api/group/dayoff/:off_record_id  GET
  */
-router.get("/dayoff/:off_record_id", employeeControllers.getOffRecordById);
+router.get(
+  "/dayoff/:off_record_id",
+  dataValidator.paramsValidator,
+  employeeControllers.getOffRecordById
+);
 
 /**
  * Employee request a day off
@@ -122,8 +126,15 @@ router.post(
 
 /**
  * Employee update a un-reviwed day off
- * .../api/group/dayoff/
+ * .../api/group/dayoff/:off_record_id
  */
+
+router.put(
+  "/dayoff/:off_record_id",
+  dataValidator.paramsValidator,
+  dataValidator.createOffRecordsValidator,
+  employeeControllers.updateOffRecord
+);
 
 /*******************Above are routes that ONLY check activation status******************/
 
@@ -134,32 +145,40 @@ router.post(
  * .../group/manage/employee_info
  */
 
-// TOFIX  (return obj properties)
 router.get(
   "/manage/employee_info/all",
   employeeActionChecker("M0"),
-  managerControllers.getEmployees
+  managerControllers.getEmployeesByGroup
 );
 
-router.get("/manage/employee_info/:employee_id");
+/**
+ * Get the employees info of the given employee_id
+ * .../group/manage/employee_info/:employee_id
+ */
+router.get(
+  "/manage/employee_info/:employee_id",
+  employeeActionChecker("M0"),
+  dataValidator.adminCompanyValidator,
+  managerControllers.getEmployeeById
+);
 
 /**
- * Get all the available time of the group members in a special day
+ * Get all the available time of the ACTIVATED group members in a special day
  * .../group/manage/available/all/:year&:month:&day
  */
 
 router.get(
   "/manage/available/all/:year&:month&:day",
   employeeActionChecker("M0"),
+  dataValidator.paramsValidator,
   managerControllers.getAvailableTimeOfGroup
 );
 
 /**
- * Get all the dayoff records of the group
+ * Get all the dayoff records of the ACTIVATED group members
  * .../group/manage/dayoff/all
  */
 
-// TOFIX (return obj properties)
 router.get(
   "/manage/dayoff/all/",
   employeeActionChecker("M0"),
@@ -174,6 +193,7 @@ router.get(
 router.get(
   "/manage/dayoff/:off_record_id",
   employeeActionChecker("M0"),
+  dataValidator.paramsValidator,
   managerControllers.getOffRecordsById
 );
 
@@ -181,7 +201,13 @@ router.get(
  * Employee approved/decline a day off request
  * .../group/dayoff/:off_record_id  PUT
  */
-router.put("/dayoff/review/:off_record_id");
+router.put(
+  "/manage/dayoff/review/:off_record_id",
+  employeeActionChecker("M2"),
+  dataValidator.paramsValidator,
+  dataValidator.reviewOffRecordValidator,
+  managerControllers.reviewOffRecords
+);
 
 //  Not checked routes
 /**
