@@ -38,11 +38,6 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.DATE,
         defaultValue: sequelize.fn("NOW"),
       },
-      published: {
-        allowNull: false,
-        type: DataTypes.BOOLEAN,
-        defaultValue: false,
-      },
     },
     {
       timestamps: false,

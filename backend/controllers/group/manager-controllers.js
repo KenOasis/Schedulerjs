@@ -123,3 +123,19 @@ exports.createSchedule = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.updateSchedule = async (req, res, next) => {
+  const schedule_id = +req.params.schedule_id;
+  const { shifts } = req.body;
+  try {
+    const is_updated_success = await schedulesShiftsDrivers.updateSchedule(
+      schedule_id,
+      shifts
+    );
+    if (is_updated_success) {
+      return res.status(200).json({ status: "success" });
+    }
+  } catch (error) {
+    next(error);
+  }
+};

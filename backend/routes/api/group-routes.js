@@ -214,20 +214,24 @@ router.put(
  * Employee make a schedule
  * .../group/manage/schedule/   POST
  */
-router.post("/manage/schedule", managerControllers.createSchedule);
-
-/**
- * Employee updated a unpublished schedule
- * .../group/schedule/:schedule_id   PUT
- */
+// TODO Data validation
 // TODO check whether the employee_id in the shift is in the current group
-router.put("/schedule/:schedule_id");
+
+router.post(
+  "/manage/schedule",
+  employeeActionChecker("M4"),
+  managerControllers.createSchedule
+);
 
 /**
- * Employee publish a schedule
- * .../group/schedule/publish/:schedule_id  PUT
+ * Employee updated a schedule
+ * .../group/manage/schedule/:schedule_id   PUT
  */
-router.put("/schedule/publish/:schedule_id");
+router.put(
+  "/manage/schedule/:schedule_id",
+  employeeActionChecker("M4"),
+  managerControllers.updateSchedule
+);
 
 /**
  * Employee get all punch records of the group of give date

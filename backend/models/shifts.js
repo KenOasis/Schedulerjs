@@ -14,12 +14,8 @@ module.exports = (sequelize, DataTypes) => {
   }
   Shifts.init(
     {
-      shift_id: {
-        autoIncrement: true,
-        primaryKey: true,
-        type: DataTypes.INTEGER,
-      },
       schedule_id: {
+        primaryKey: true,
         allowNull: false,
         type: DataTypes.INTEGER,
         references: {
@@ -29,6 +25,7 @@ module.exports = (sequelize, DataTypes) => {
         deferrable: Deferrable.INITIALLY_IMMEDIATE,
       },
       employee_id: {
+        primaryKey: true,
         allowNull: false,
         type: DataTypes.INTEGER,
         references: {

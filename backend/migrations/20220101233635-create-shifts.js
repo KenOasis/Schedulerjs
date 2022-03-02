@@ -2,12 +2,8 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable("Shifts", {
-      shift_id: {
-        autoIncrement: true,
-        primaryKey: true,
-        type: Sequelize.INTEGER,
-      },
       schedule_id: {
+        primaryKey: true,
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
@@ -17,6 +13,7 @@ module.exports = {
         onDelete: "CASCADE",
       },
       employee_id: {
+        primaryKey: true,
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
