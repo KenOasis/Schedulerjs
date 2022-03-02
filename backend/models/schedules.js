@@ -33,10 +33,6 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.DATEONLY,
         defaultValue: sequelize.fn("NOW"),
       },
-      day: {
-        allowNull: "false",
-        type: DataTypes.ENUM("SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"),
-      },
       created_at: {
         allowNull: false,
         type: DataTypes.DATE,

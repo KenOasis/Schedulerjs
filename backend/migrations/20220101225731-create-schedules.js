@@ -21,10 +21,6 @@ module.exports = {
         type: Sequelize.DATEONLY,
         defaultValue: Sequelize.literal("NOW()"),
       },
-      day: {
-        allowNull: "false",
-        type: Sequelize.ENUM("SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"),
-      },
       created_at: {
         allowNull: false,
         type: Sequelize.DATE,

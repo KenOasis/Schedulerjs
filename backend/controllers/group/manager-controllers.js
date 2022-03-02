@@ -1,6 +1,7 @@
 const offRecordsDrivers = require("../../db/group/off-records-drivers");
 const employeeDrivers = require("../../db/group/employee-drivers");
 const availableTimeDrivers = require("../../db/group/available-time-drivers");
+const schedulesShiftsDrivers = require("../../db/group/schedules-shifts-drivers");
 
 exports.getEmployeesByGroup = async (req, res, next) => {
   const group_id = req.userData.group_id;
@@ -93,6 +94,30 @@ exports.reviewOffRecords = async (req, res, next) => {
       return res
         .status(403)
         .json({ status: "forbidden", message: "The record has been reviewed" });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.createSchedule = async (req, res, next) => {
+  const group_id = req.userData.group_id;
+  const { schedule_date, shifts } = req.body;
+  try {
+    const schedule_id = await schedulesShiftsDrivers.createSchedule(
+      group_id,
+      schedule_date,
+      shifts
+    );
+    if (schedule_id) {
+      return res
+        .status(200)
+        .json({ status: "success", schedule_id: schedule_id });
+    } else {
+      return res.status(409).json({
+        status: "conflict",
+        message: `Schedule at ${schedule_date} is already existed`,
+      });
     }
   } catch (error) {
     next(error);

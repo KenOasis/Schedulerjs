@@ -212,14 +212,15 @@ router.put(
 //  Not checked routes
 /**
  * Employee make a schedule
- * .../group/schedule/   POST
+ * .../group/manage/schedule/   POST
  */
-router.post("/schedule");
+router.post("/manage/schedule", managerControllers.createSchedule);
 
 /**
  * Employee updated a unpublished schedule
  * .../group/schedule/:schedule_id   PUT
  */
+// TODO check whether the employee_id in the shift is in the current group
 router.put("/schedule/:schedule_id");
 
 /**
