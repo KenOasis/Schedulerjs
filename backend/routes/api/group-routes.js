@@ -60,10 +60,14 @@ router.get(
 router.use(emplyeeActivationChecker);
 
 /**
- * Employee get the schedule of the given timestamp
+ * Employee get the schedule of the given date (monthly or daily)
  * .../api/group/schedule/:year&:month&:day  GET
  */
-router.get("/schedule/:year&:month&:day");
+router.get(
+  "/schedule/:year&:month&:day",
+  dataValidator.paramsValidator,
+  employeeControllers.getSchedule
+);
 
 /**
  * Employee record timestamp
@@ -233,8 +237,9 @@ router.put(
   managerControllers.updateSchedule
 );
 
+// TODO design the punch record apis of management
 /**
- * Employee get all punch records of the group of give date
+ * Employee get all punch records of the group of the given date
  * .../empoyee/punch/all/:year&:month&:day  GET
  */
 router.get("/manage/punch/:year&:month&:day");

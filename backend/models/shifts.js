@@ -10,6 +10,14 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Shifts.belongsTo(models.Schedules, {
+        as: "schedule",
+        foreignKey: "schedule_id",
+      });
+      Shifts.belongsTo(models.Employees, {
+        as: "employee",
+        foreignKey: "employee_id",
+      });
     }
   }
   Shifts.init(

@@ -7,6 +7,7 @@ const employeeDrivers = require("../../db/group/employee-drivers");
 const availableTimeDrivers = require("../../db/group/available-time-drivers");
 const offRecordDrivers = require("../../db/group/off-records-drivers");
 const punchRecordDrivers = require("../../db/group/punch-record-drivers");
+const scheduleShiftDrivers = require("../../db/group/schedules-shifts-drivers");
 exports.login = async (req, res, next) => {
   const { username, password } = req.body;
   try {
@@ -255,6 +256,23 @@ exports.getPunchRecordsByDate = async (req, res, next) => {
     punch_records: punch_records,
   });
   try {
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.getSchedule = async (req, res, next) => {
+  const { employee_id, group_id } = req.userData;
+  const { year, month, day } = req.params;
+  try {
+    const schedules = await scheduleShiftDrivers.getSchedule(
+      employee_id,
+      group_id,
+      +year,
+      +month,
+      +day
+    );
+    return res.status(200).json({ status: "success", schedules: schedules });
   } catch (error) {
     next(error);
   }

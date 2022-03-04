@@ -7,7 +7,6 @@ const Companies = db["Companies"];
 const Off_Types = db["Off_Types"];
 const Role_Actions = db["Role_Actions"];
 const Actions = db["Actions"];
-require("../association");
 
 exports.existingEmployee = async (username) => {
   try {

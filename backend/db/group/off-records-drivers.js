@@ -33,7 +33,7 @@ exports.createOffRecord = async (
         ],
       },
     });
-    if (confilict_records) {
+    if (confilict_records && confilict_records.employee_id === employee_id) {
       return false;
     }
     const off_record = await Off_Records.create({

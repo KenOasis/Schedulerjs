@@ -2,6 +2,9 @@ const LogicalError = require("../../error/logical-error");
 const db = require("../../models");
 const Schedules = db["Schedules"];
 const Shifts = db["Shifts"];
+const Off_Records = db["Off_Records"];
+const employeeDrivers = require("./employee-drivers");
+const { Op } = require("sequelize");
 
 exports.createSchedule = async (group_id, schedule_date, shifts) => {
   try {
@@ -77,6 +80,149 @@ exports.updateSchedule = async (schedule_id, shifts) => {
       });
     }
     return true;
+  } catch (error) {
+    throw error;
+  }
+};
+
+exports.getSchedule = async (employee_id, group_id, year, month, day) => {
+  const schedules = [];
+  try {
+    if (day) {
+      const dateObj = new Date(year, month - 1, day);
+      // Check wheter the day is the legal day of the month in the year
+      if (month !== dateObj.getMonth() + 1) {
+        return schedules;
+      }
+      const employees = await employeeDrivers.getEmployeesOfGroup(group_id);
+      for await (employee of employees) {
+        let schedule = await Schedules.findAll({
+          raw: true,
+          where: {
+            group_id,
+            schedule_date: dateObj,
+          },
+          attributes: [
+            "schedule_id",
+            "schedule_date",
+            "shift.starts_at",
+            "shift.ends_at",
+          ],
+          include: {
+            model: Shifts,
+            as: "shift",
+            attributes: [],
+            where: {
+              employee_id: employee.employee_id,
+            },
+            required: true,
+          },
+        });
+        let dayoff = await Off_Records.findAll({
+          where: {
+            [Op.and]: [
+              {
+                employee_id: employee_id,
+              },
+              {
+                starts_at: {
+                  [Op.lte]: dateObj,
+                },
+              },
+              {
+                ends_at: {
+                  [Op.gte]: dateObj,
+                },
+              },
+            ],
+          },
+        });
+        let tempObj = {
+          employee_id: employee.employee_id,
+          firstname: employee.firstname,
+          lastname: employee.lastname,
+          scheduled: false,
+          dayoff: true,
+        };
+        if (schedule.length) {
+          tempObj.scheduled = true;
+          (tempObj.starts_at = schedule[0].starts_at),
+            (tempObj.ends_at = schedule[0].ends_at);
+        } else if (dayoff.length) {
+          tempObj.dayoff = true;
+        }
+        schedules.push(tempObj);
+      }
+    } else {
+      const employee = await employeeDrivers.getEmployeeInfo(employee_id);
+      const month_end = new Date(year, month, 0);
+      const days = [];
+      for (let i = 1; i <= month_end.getDate(); ++i) {
+        days.push(i);
+      }
+      for await (day of days) {
+        let dateObj = new Date(year, month - 1, day);
+        let schedule = await Schedules.findAll({
+          where: {
+            group_id,
+            schedule_date: dateObj,
+          },
+          attributes: [
+            "schedule_id",
+            "schedule_date",
+            "shift.starts_at",
+            "shift.ends_at",
+          ],
+          include: {
+            model: Shifts,
+            as: "shift",
+            attributes: [],
+            where: {
+              employee_id,
+            },
+            required: true,
+          },
+        });
+        let dayoff = await Off_Records.findAll({
+          where: {
+            [Op.and]: [
+              {
+                employee_id: employee_id,
+              },
+              {
+                starts_at: {
+                  [Op.lte]: dateObj,
+                },
+              },
+              {
+                ends_at: {
+                  [Op.gte]: dateObj,
+                },
+              },
+            ],
+          },
+        });
+        const tempObj = {
+          employee_id: employee_id,
+          firstname: employee.firstname,
+          lastname: employee.lastname,
+          year: year,
+          month: month,
+          day: day,
+          dayoff: false,
+          scheduled: false,
+        };
+        if (schedule.length) {
+          tempObj.starts_at = schedule[0].starts_at;
+          tempObj.ends_at = schedule[0].ends_at;
+          tempObj.scheduled = true;
+        } else if (dayoff.length) {
+          tempObj.dayoff = true;
+        }
+        schedules.push(tempObj);
+      }
+    }
+    return schedules;
   } catch (error) {
     throw error;
   }

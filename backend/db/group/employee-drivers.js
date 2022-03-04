@@ -89,11 +89,6 @@ exports.getEmployeesOfGroup = async (group_id) => {
       },
     });
 
-    // this may never run
-    if (!employees || employees.length === 0) {
-      throw new LogicalError("DB error", 500);
-    }
-
     return employees.map((employee) => {
       return {
         employee_id: employee.employee_id,

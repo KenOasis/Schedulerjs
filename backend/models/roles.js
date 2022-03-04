@@ -10,6 +10,11 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Roles.belongsTo(models.Groups, { as: "group", foreignKey: "group_id" });
+      Roles.hasMany(models.Role_Actions, {
+        as: "role_action",
+        foreignKey: "role_id",
+      });
     }
   }
   Roles.init(

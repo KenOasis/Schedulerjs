@@ -5,7 +5,6 @@ const Roles = db["Roles"];
 const Groups = db["Groups"];
 const Companies = db["Companies"];
 const Off_Types = db["Off_Types"];
-require("../association");
 
 exports.checkGroup = async (group_id, company_id) => {
   try {
