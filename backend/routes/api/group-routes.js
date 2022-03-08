@@ -218,12 +218,12 @@ router.put(
  * Employee make a schedule
  * .../group/manage/schedule/   POST
  */
-// TODO Data validation
-// TODO check whether the employee_id in the shift is in the current group
+// TODO check whether the employee_id in the shift is in the current group (integrity)
 
 router.post(
   "/manage/schedule",
   employeeActionChecker("M4"),
+  dataValidator.scheduleValidator,
   managerControllers.createSchedule
 );
 
@@ -234,14 +234,22 @@ router.post(
 router.put(
   "/manage/schedule/:schedule_id",
   employeeActionChecker("M4"),
+  dataValidator.paramsValidator,
+  dataValidator.scheduleValidator,
   managerControllers.updateSchedule
 );
 
 // TODO design the punch record apis of management
 /**
  * Employee get all punch records of the group of the given date
- * .../empoyee/punch/all/:year&:month&:day  GET
+ * .../group/manage/punch/:year&:month&:day  GET
  */
 router.get("/manage/punch/:year&:month&:day");
+
+/**
+ * Employee modifier a punch records by the given punch_record_id
+ * .../group/manage/punch/:punch_record_id  PUT
+ */
+router.put("/manage/punch/:punch_record_id");
 
 module.exports = router;

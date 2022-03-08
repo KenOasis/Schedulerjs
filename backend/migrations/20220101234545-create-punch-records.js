@@ -24,6 +24,15 @@ module.exports = {
         allowNull: false,
         type: Sequelize.TIME,
       },
+      modified_by: {
+        allowNull: true,
+        type: Sequelize.INTEGER,
+        references: {
+          model: "Employees",
+          key: "employee_id",
+        },
+        onDelete: "CASCADE",
+      },
     });
   },
   down: async (queryInterface, Sequelize) => {

@@ -548,6 +548,69 @@ exports.recordedPunchTimeValidator = async (req, res, next) => {
   }
 };
 
+exports.scheduleValidator = async (req, res, next) => {
+  if (req.method === "POST") {
+    await check("schedule_date")
+      .notEmpty()
+      .withMessage(notNullMessage)
+      .bail()
+      .matches(dateRegex)
+      .withMessage("invalid date format")
+      .run(req);
+  }
+  await check("shifts")
+    .notEmpty()
+    .withMessage(notNullMessage)
+    .bail()
+    .isArray()
+    .withMessage("invalid parameter type, must be an array")
+    .custom((value, { req }) => {
+      value.forEach((shift) => {
+        let starts_at = new Date("2022-02-22" + " " + shift.starts_at);
+        let ends_at = new Date("2022-02-22" + " " + shift.ends_at);
+        if (starts_at >= ends_at) {
+          throw new Error(
+            `For shift with employee_id ${shift.employee_id}, starts_at cannot greater or equal than ends_at time`
+          );
+        }
+      });
+      return true;
+    })
+    .run(req);
+
+  await check("shifts.*.employee_id")
+    .notEmpty()
+    .withMessage(notNullMessage)
+    .bail()
+    .isInt({ min: 1 })
+    .withMessage("must be an integer great than 1.")
+    .run(req);
+
+  await check("shifts.*.starts_at")
+    .notEmpty()
+    .withMessage(notNullMessage)
+    .bail()
+    .matches(timeRegex)
+    .withMessage("time format should be HH:MM:SS")
+    .run(req);
+
+  await check("shifts.*.ends_at")
+    .notEmpty()
+    .withMessage(notNullMessage)
+    .bail()
+    .matches(timeRegex)
+    .withMessage("time format should be HH:MM:SS")
+    .run(req);
+
+  let results = validationResult(req);
+  if (!results.isEmpty()) {
+    return res
+      .status(400)
+      .json({ status: "invalid data", errors: results.array() });
+  } else {
+    next();
+  }
+};
 // Parameters validator: All parameter must be numeric int
 exports.paramsValidator = async (req, res, next) => {
   await param("*")

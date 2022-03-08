@@ -10,6 +10,10 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Punch_Records.belongsTo(models.Employees, {
+        as: "employee",
+        foreignKey: "employee_id",
+      });
     }
   }
   Punch_Records.init(
@@ -35,6 +39,15 @@ module.exports = (sequelize, DataTypes) => {
       recorded_time: {
         allowNull: false,
         type: DataTypes.TIME,
+      },
+      modified_by: {
+        allowNull: true,
+        type: DataTypes.INTEGER,
+        references: {
+          model: "Employees",
+          key: "employee_id",
+        },
+        deferrable: Deferrable.INITIALLY_IMMEDIATE,
       },
     },
     {
