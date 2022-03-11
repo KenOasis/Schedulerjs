@@ -265,7 +265,7 @@ exports.getSchedule = async (req, res, next) => {
   const { employee_id, group_id } = req.userData;
   const { year, month, day } = req.params;
   try {
-    const schedules = await scheduleShiftDrivers.getSchedule(
+    const schedules = await scheduleShiftDrivers.getSchedules(
       employee_id,
       group_id,
       +year,

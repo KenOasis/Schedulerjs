@@ -202,7 +202,7 @@ router.get(
 );
 
 /**
- * Employee approved/decline a day off request
+ * Approved/decline a day off request
  * .../group/dayoff/:off_record_id  PUT
  */
 router.put(
@@ -213,9 +213,8 @@ router.put(
   managerControllers.reviewOffRecords
 );
 
-//  Not checked routes
 /**
- * Employee make a schedule
+ * Create a schedule
  * .../group/manage/schedule/   POST
  */
 // TODO check whether the employee_id in the shift is in the current group (integrity)
@@ -228,7 +227,7 @@ router.post(
 );
 
 /**
- * Employee updated a schedule
+ * Updated a schedule
  * .../group/manage/schedule/:schedule_id   PUT
  */
 router.put(
@@ -239,6 +238,17 @@ router.put(
   managerControllers.updateSchedule
 );
 
+/**
+ * Get schedule for the given date
+ * .../group/manage/schedule/:year&month&date
+ */
+router.get(
+  "/manage/schedule/:year&:month&:day",
+  employeeActionChecker("M4"),
+  dataValidator.paramsValidator,
+  managerControllers.getSchedules
+);
+
 // TODO design the punch record apis of management
 /**
  * Employee get all punch records of the group of the given date
@@ -247,7 +257,13 @@ router.put(
 router.get("/manage/punch/:year&:month&:day");
 
 /**
- * Employee modifier a punch records by the given punch_record_id
+ * Employee (management role) added a new punch records
+ * .../group/manage/punch/  POST
+ */
+router.post("/manage/punch");
+
+/**
+ * Employee modifies a punch records by the given punch_record_id
  * .../group/manage/punch/:punch_record_id  PUT
  */
 router.put("/manage/punch/:punch_record_id");

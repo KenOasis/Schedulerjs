@@ -139,3 +139,47 @@ exports.updateSchedule = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.getSchedules = async (req, res, next) => {
+  const group_id = req.userData.group_id;
+  const { year, month, day } = req.params;
+  try {
+    const schedules = await schedulesShiftsDrivers.getSchedules(
+      0,
+      group_id,
+      +year,
+      +month,
+      +day,
+      1
+    );
+    return res.status(200).json({ status: "success", schedules: schedules });
+  } catch (error) {
+    next(error);
+  }
+};
+exports.getPunchRecordsByDate = async (req, res, next) => {
+  const group_id = req.userData.group_id;
+  const { year, month, day } = req.params;
+  try {
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.addPunchRecords = async (req, res, next) => {
+  const modified_by = req.userData.employee_id;
+  const { employee_id, recorded_date, recorded_time } = req.body;
+  try {
+  } catch (error) {
+    next(error);
+  }
+};
+exports.modifyPunchRecords = async (req, res, next) => {
+  const punch_record_id = +req.params.punch_record_id;
+  const modified_by = req.userData.employee_id;
+  const { recorded_date, recorded_time } = req.body;
+  try {
+  } catch (error) {
+    next(error);
+  }
+};

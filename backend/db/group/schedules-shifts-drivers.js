@@ -85,8 +85,16 @@ exports.updateSchedule = async (schedule_id, shifts) => {
   }
 };
 
-exports.getSchedule = async (employee_id, group_id, year, month, day) => {
+exports.getSchedules = async (
+  employee_id,
+  group_id,
+  year,
+  month,
+  day,
+  mode = 0
+) => {
   const schedules = [];
+  let schedule_id = 0;
   try {
     if (day) {
       const dateObj = new Date(year, month - 1, day);
@@ -122,7 +130,7 @@ exports.getSchedule = async (employee_id, group_id, year, month, day) => {
           where: {
             [Op.and]: [
               {
-                employee_id: employee_id,
+                employee_id: employee.employee_id,
               },
               {
                 starts_at: {
@@ -142,17 +150,28 @@ exports.getSchedule = async (employee_id, group_id, year, month, day) => {
           firstname: employee.firstname,
           lastname: employee.lastname,
           scheduled: false,
-          dayoff: true,
+          dayoff: false,
         };
         if (schedule.length) {
           tempObj.scheduled = true;
           (tempObj.starts_at = schedule[0].starts_at),
             (tempObj.ends_at = schedule[0].ends_at);
+          if (schedule_id === 0) {
+            schedule_id = schedule[0].schedule_id;
+          }
         } else if (dayoff.length) {
           tempObj.dayoff = true;
         }
+
         schedules.push(tempObj);
       }
+      if (mode === 1) {
+        return {
+          schedule_id,
+          schedules,
+        };
+      }
+      return schedules;
     } else {
       const employee = await employeeDrivers.getEmployeeInfo(employee_id);
       const month_end = new Date(year, month, 0);
@@ -162,67 +181,94 @@ exports.getSchedule = async (employee_id, group_id, year, month, day) => {
       }
       for await (day of days) {
         let dateObj = new Date(year, month - 1, day);
-        let schedule = await Schedules.findAll({
-          where: {
-            group_id,
-            schedule_date: dateObj,
-          },
-          attributes: [
-            "schedule_id",
-            "schedule_date",
-            "shift.starts_at",
-            "shift.ends_at",
-          ],
-          include: {
-            model: Shifts,
-            as: "shift",
-            attributes: [],
+        console.log(dateObj);
+
+        if (mode === 0) {
+          let schedule = await Schedules.findAll({
+            raw: true,
             where: {
-              employee_id,
+              group_id,
+              schedule_date: dateObj,
             },
-            required: true,
-          },
-        });
-        let dayoff = await Off_Records.findAll({
-          where: {
-            [Op.and]: [
-              {
-                employee_id: employee_id,
-              },
-              {
-                starts_at: {
-                  [Op.lte]: dateObj,
-                },
-              },
-              {
-                ends_at: {
-                  [Op.gte]: dateObj,
-                },
-              },
+            attributes: [
+              "schedule_id",
+              "schedule_date",
+              "shift.starts_at",
+              "shift.ends_at",
             ],
-          },
-        });
-        const tempObj = {
-          employee_id: employee_id,
-          firstname: employee.firstname,
-          lastname: employee.lastname,
-          year: year,
-          month: month,
-          day: day,
-          dayoff: false,
-          scheduled: false,
-        };
-        if (schedule.length) {
-          tempObj.starts_at = schedule[0].starts_at;
-          tempObj.ends_at = schedule[0].ends_at;
-          tempObj.scheduled = true;
-        } else if (dayoff.length) {
-          tempObj.dayoff = true;
+            include: {
+              model: Shifts,
+              as: "shift",
+              attributes: [],
+              where: {
+                employee_id,
+              },
+              required: true,
+            },
+          });
+          let dayoff = await Off_Records.findAll({
+            where: {
+              [Op.and]: [
+                {
+                  employee_id: employee_id,
+                },
+                {
+                  starts_at: {
+                    [Op.lte]: dateObj,
+                  },
+                },
+                {
+                  ends_at: {
+                    [Op.gte]: dateObj,
+                  },
+                },
+              ],
+            },
+          });
+          const tempObj = {
+            employee_id: employee_id,
+            firstname: employee.firstname,
+            lastname: employee.lastname,
+            year: year,
+            month: month,
+            day: day,
+            dayoff: false,
+            scheduled: false,
+          };
+          if (schedule.length) {
+            console.log(schedule[0].starts_at);
+            tempObj.starts_at = schedule[0].starts_at;
+            tempObj.ends_at = schedule[0].ends_at;
+            tempObj.scheduled = true;
+            if (schedule_id === 0) {
+              schedule_id = schedule[0].schedule_id;
+            }
+          } else if (dayoff.length) {
+            tempObj.dayoff = true;
+          }
+          if (schedule.length || dayoff.length) {
+            schedules.push(tempObj);
+          }
+        } else {
+          let schedule = await Schedules.findAll({
+            raw: true,
+            where: {
+              group_id,
+              schedule_date: dateObj,
+            },
+          });
+          if (schedule.length) {
+            schedules.push({
+              year,
+              month,
+              day,
+              schedule_id: schedule[0].schedule_id,
+            });
+          }
         }
-        schedules.push(tempObj);
       }
+      return schedules;
     }
-    return schedules;
   } catch (error) {
     throw error;
   }

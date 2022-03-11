@@ -47,7 +47,10 @@ exports.getPunchRecordsByDate = async (employee_id, year, month, day) => {
         recorded_time: [],
       };
       records.forEach((record) => {
-        tempObj.recorded_time.push(record.recorded_time);
+        tempObj.recorded_time.push({
+          recorded_time: record.recorded_time,
+          is_modified: record.modified_by === null ? false : true,
+        });
       });
       punch_records.push(tempObj);
       return punch_records;
@@ -74,7 +77,10 @@ exports.getPunchRecordsByDate = async (employee_id, year, month, day) => {
             recorded_time: [],
           };
           records.forEach((record) => {
-            tempObj.recorded_time.push(record.recorded_time);
+            tempObj.recorded_time.push({
+              recorded_time: record.recorded_time,
+              is_modified: record.modified_by === null ? false : true,
+            });
           });
           punch_records.push(tempObj);
         }

@@ -384,7 +384,7 @@ body
 #### get the punch records of the current employee
 
 if day !== 0, then return the punch_records of the date
-year = 2022, month = 2, day = 8,
+year = 2022, month = 3, day = 10,
 it returns
 
 ```
@@ -393,14 +393,26 @@ it returns
     "punch_records": [
         {
             "year": 2022,
-            "month": 2,
-            "day": 8,
-            "day_of_week": "TUE",
+            "month": 3,
+            "day": 10,
+            "day_of_week": "THU",
             "recorded_time": [
-                "08:00:00",
-                "12:00:00",
-                "12:30:00",
-                "04:30:00"
+                {
+                    "recorded_time": "08:00:00",
+                    "is_modified": false
+                },
+                {
+                    "recorded_time": "12:30:00",
+                    "is_modified": false
+                },
+                {
+                    "recorded_time": "13:00:00",
+                    "is_modified": false
+                },
+                {
+                    "recorded_time": "16:28:00",
+                    "is_modified": false
+                }
             ]
         }
     ]
@@ -408,7 +420,7 @@ it returns
 ```
 
 if day = 0, it will return the punch_records of the whole month
-year = 2022, month = 2, day = 0
+year = 2022, month = 3, day = 0
 it returns
 
 ```
@@ -417,26 +429,174 @@ it returns
     "punch_records": [
         {
             "year": 2022,
-            "month": 2,
-            "day": 8,
-            "day_of_week": "TUE",
+            "month": 3,
+            "day": 9,
+            "day_of_week": "WED",
             "recorded_time": [
-                "08:00:00",
-                "12:00:00",
-                "12:30:00",
-                "04:30:00"
+                {
+                    "recorded_time": "09:00:00",
+                    "is_modified": false
+                }
             ]
         },
         {
             "year": 2022,
-            "month": 2,
-            "day": 11,
-            "day_of_week": "FRI",
+            "month": 3,
+            "day": 10,
+            "day_of_week": "THU",
             "recorded_time": [
-                "12:30:00",
-                "15:30:00",
-                "19:30:00"
+                {
+                    "recorded_time": "08:00:00",
+                    "is_modified": false
+                },
+                {
+                    "recorded_time": "12:30:00",
+                    "is_modified": false
+                },
+                {
+                    "recorded_time": "13:00:00",
+                    "is_modified": false
+                },
+                {
+                    "recorded_time": "16:28:00",
+                    "is_modified": false
+                }
             ]
+        }
+    ]
+}
+```
+
+## .../api/group/schedule/:year&:month&:day GET
+
+#### Get the schedule of current employee
+
+if day = 0, it return the schedule or dayoff (short-circuit) of the given month
+for employee_id = 5, he has dayoff record from 2022-3-15 to 2022-3-22, and he get schedule
+at 2022-3-20
+(year=2022, month = 03, day = 0)
+
+```
+{
+    "status": "success",
+    "schedules": [
+        {
+            "employee_id": 5,
+            "firstname": "John",
+            "lastname": "Doe",
+            "year": 2022,
+            "month": 3,
+            "day": 15,
+            "dayoff": true,
+            "scheduled": false
+        },
+        {
+            "employee_id": 5,
+            "firstname": "John",
+            "lastname": "Doe",
+            "year": 2022,
+            "month": 3,
+            "day": 16,
+            "dayoff": true,
+            "scheduled": false
+        },
+        {
+            "employee_id": 5,
+            "firstname": "John",
+            "lastname": "Doe",
+            "year": 2022,
+            "month": 3,
+            "day": 17,
+            "dayoff": true,
+            "scheduled": false
+        },
+        {
+            "employee_id": 5,
+            "firstname": "John",
+            "lastname": "Doe",
+            "year": 2022,
+            "month": 3,
+            "day": 18,
+            "dayoff": true,
+            "scheduled": false
+        },
+        {
+            "employee_id": 5,
+            "firstname": "John",
+            "lastname": "Doe",
+            "year": 2022,
+            "month": 3,
+            "day": 19,
+            "dayoff": true,
+            "scheduled": false
+        },
+        {
+            "employee_id": 5,
+            "firstname": "John",
+            "lastname": "Doe",
+            "year": 2022,
+            "month": 3,
+            "day": 20,
+            "dayoff": false,
+            "scheduled": true,
+            "starts_at": "09:00:00",
+            "ends_at": "17:30:00"
+        },
+        {
+            "employee_id": 5,
+            "firstname": "John",
+            "lastname": "Doe",
+            "year": 2022,
+            "month": 3,
+            "day": 21,
+            "dayoff": true,
+            "scheduled": false
+        },
+        {
+            "employee_id": 5,
+            "firstname": "John",
+            "lastname": "Doe",
+            "year": 2022,
+            "month": 3,
+            "day": 22,
+            "dayoff": true,
+            "scheduled": false
+        }
+    ]
+}
+```
+
+if day !== 0, it will return the schedule of all group member
+(year=2022, month = 03, day = 20)
+
+```
+{
+    "status": "success",
+    "schedules": [
+        {
+            "employee_id": 1,
+            "firstname": "Jimmy",
+            "lastname": "Tan",
+            "scheduled": true,
+            "dayoff": false,
+            "starts_at": "08:00:00",
+            "ends_at": "16:30:00"
+        },
+        {
+            "employee_id": 4,
+            "firstname": "John",
+            "lastname": "Doe",
+            "scheduled": false,
+            "dayoff": false
+        },
+        {
+            "employee_id": 5,
+            "firstname": "John",
+            "lastname": "Doe",
+            "scheduled": true,
+            "dayoff": false,
+            "starts_at": "09:00:00",
+            "ends_at": "17:30:00"
         }
     ]
 }
@@ -627,3 +787,140 @@ if success:
     ]
 }
 ```
+
+## .../api/group/manage/schedule POST
+
+#### create a new schedule
+
+body:
+
+```
+{
+    "schedule_date": "2022-03-20",
+    "shifts": [
+        {
+            "employee_id": 1,
+            "starts_at": "08:00:00",
+            "ends_at": "16:30:00"
+        },
+        {
+            "employee_id": 4,
+            "starts_at": "09:00:00",
+            "ends_at": "17:30:00"
+        },
+        {
+            "employee_id": 5,
+            "starts_at": "09:00:00",
+            "ends_at": "17:30:00"
+        }
+    ]
+}
+```
+
+if success:
+
+```
+{
+    "status": "success",
+    "schedule_id": 5
+}
+```
+
+if a schedule for the given date has existed in database:
+
+```
+{
+    "status": "conflict",
+    "message": "Schedule at 2022-03-20 is already existed"
+}
+```
+
+## .../api/group/manage/schedule/:year&:month&:day GET
+
+#### get schedule of given date
+
+if (day === 0), it will return all the schedule_id of the month if the day has schedule
+(year = 2022, month = 3, day = 0)
+
+```
+{
+    "status": "success",
+    "schedules": [
+        {
+            "year": 2022,
+            "month": 3,
+            "day": 20,
+            "schedule_id": 5
+        }
+    ]
+}
+```
+
+if (day !== 0), it will return the schedule of the given date
+(year = 2022, month = 3, day = 20)
+
+```
+{
+    "status": "success",
+    "schedules": {
+        "schedule_id": 5,
+        "schedules": [
+            {
+                "employee_id": 1,
+                "firstname": "Jimmy",
+                "lastname": "Tan",
+                "scheduled": true,
+                "dayoff": false,
+                "starts_at": "08:00:00",
+                "ends_at": "16:30:00"
+            },
+            {
+                "employee_id": 4,
+                "firstname": "John",
+                "lastname": "Doe",
+                "scheduled": false,
+                "dayoff": false
+            },
+            {
+                "employee_id": 5,
+                "firstname": "John",
+                "lastname": "Doe",
+                "scheduled": true,
+                "dayoff": false,
+                "starts_at": "09:00:00",
+                "ends_at": "17:30:00"
+            }
+        ]
+    }
+}
+```
+
+## .../api/group/manage/schedule/:schedule_id PUT
+
+#### update a schedule of given schedule_id
+
+body:
+
+```
+{
+    "shifts": [
+        {
+            "employee_id": 1,
+            "starts_at": "08:00:00",
+            "ends_at": "16:30:00"
+        },
+        {
+            "employee_id": 5,
+            "starts_at": "08:00:00",
+            "ends_at": "16:45:00"
+        }
+    ]
+}
+```
+
+#### it will update the shift and schedule table correctly by the given employee_id
+
+if the given employee_id HAVE shift data of the given schedule, it will update the existed
+data in shifts table
+if the given employee_id HAVE NO shift data of the given schedule, it will create the data in shifts table
+if the some shift data of the given schedule is NOT include in the body, they will deleted from the shifts table.
